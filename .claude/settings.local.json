@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(npx next:*)",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(rm:*)",
+      "Bash(ls:*)"
     ]
   }
 }
