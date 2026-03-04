@@ -632,44 +632,6 @@ export function TierPageContent({ category }: TierPageContentProps) {
         </Card>
       )}
 
-      {/* Stats Summary - S~B 티어만 표시 */}
-      <div className="grid grid-cols-3 gap-3 md:gap-4">
-        {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
-          const count = brands.filter((b) => b.tier === tier).length;
-          const tierLabels: Record<string, string> = {
-            S: '최고',
-            A: '우수',
-            B: '준수',
-          };
-          return (
-            <Card key={tier} className="card-base overflow-hidden">
-              <CardContent className="p-0">
-                <div className="flex items-center">
-                  {/* 티어 색상 바 */}
-                  <div
-                    className={`
-                      w-2 h-full self-stretch
-                      ${tier === 'S' ? 'bg-gradient-to-b from-amber-400 to-amber-600' : ''}
-                      ${tier === 'A' ? 'bg-gradient-to-b from-slate-300 to-slate-400' : ''}
-                      ${tier === 'B' ? 'bg-gradient-to-b from-orange-400 to-orange-600' : ''}
-                    `}
-                  />
-                  <div className="flex-1 py-3 md:py-4 px-3 md:px-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2 md:gap-3">
-                      <TierBadge tier={tier} size="lg" showLabel={false} />
-                      <div>
-                        <p className="text-xs text-muted-foreground">{tierLabels[tier]}</p>
-                        <p className="text-lg md:text-2xl font-bold">{count}개</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
       {/* View Tabs */}
       <Tabs defaultValue="usage" className="w-full">
         <TabsList className="mb-6 w-full grid grid-cols-2 h-14 p-1 bg-muted/80 rounded-xl">

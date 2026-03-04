@@ -20,7 +20,6 @@ import {
   ThumbsUp,
   Trophy,
 } from 'lucide-react';
-import { TIER_CONFIG } from '@/lib/tier';
 import type { TierLevel } from '@/lib/tier';
 
 // 카테고리 정보
@@ -36,7 +35,6 @@ const CATEGORIES = [
       { name: '나이키', tier: 'S' as TierLevel, score: 94.0, domain: 'nike.com' },
       { name: '호카', tier: 'S' as TierLevel, score: 92.5, domain: 'hoka.com' },
     ],
-    stats: { total: 12, sCount: 3, aCount: 5 },
     trending: '노바블라스트 5',
   },
   {
@@ -50,7 +48,6 @@ const CATEGORIES = [
       { name: '교촌 오리지날', tier: 'S' as TierLevel, score: 93.0, domain: 'kyochon.com' },
       { name: '뿌링클', tier: 'S' as TierLevel, score: 92.5, domain: 'bhc.co.kr' },
     ],
-    stats: { total: 14, sCount: 3, aCount: 6 },
     trending: '뿌링클',
   },
 ];
@@ -242,18 +239,6 @@ export function AllCategoriesOverview() {
                     <p className="text-sm text-muted-foreground">{category.description}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Badge variant="outline" className="bg-background">
-                      총 {category.stats.total}개
-                    </Badge>
-                    <Badge style={{ background: TIER_CONFIG.S.gradient }} className="text-black">
-                      S {category.stats.sCount}
-                    </Badge>
-                    <Badge style={{ background: TIER_CONFIG.A.gradient }} className="text-black">
-                      A {category.stats.aCount}
-                    </Badge>
-                  </div>
                 </div>
               </div>
 
