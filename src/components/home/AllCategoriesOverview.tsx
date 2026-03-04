@@ -239,7 +239,6 @@ export function AllCategoriesOverview() {
                     <p className="text-sm text-muted-foreground">{category.description}</p>
                   </div>
                 </div>
-                </div>
               </div>
 
               {/* TOP 3 미리보기 */}
