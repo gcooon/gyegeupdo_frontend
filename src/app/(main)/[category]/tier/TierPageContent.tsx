@@ -24,6 +24,7 @@ import {
   ThumbsUp,
 } from 'lucide-react';
 import { TierLevel } from '@/lib/tier';
+import { ShareButtons } from '@/components/share/ShareButtons';
 
 interface TierPageContentProps {
   category: string;
@@ -561,6 +562,11 @@ export function TierPageContent({ category }: TierPageContentProps) {
             <Download className="h-4 w-4 mr-2" />
             이미지 저장
           </Button>
+          <ShareButtons
+            title={`${categoryData?.name || '제품'} 계급도 - 계급도`}
+            description={`커뮤니티 리뷰 기반 ${categoryData?.name || '제품'} 티어 순위표`}
+            variant="compact"
+          />
         </div>
       </div>
 

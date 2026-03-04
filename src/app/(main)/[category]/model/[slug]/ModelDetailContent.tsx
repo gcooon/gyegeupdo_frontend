@@ -39,6 +39,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { TierLevel } from '@/lib/tier';
+import { ShareButtons } from '@/components/share/ShareButtons';
 
 interface Props {
   category: string;
@@ -457,12 +458,14 @@ export function ModelDetailContent({ category, slug }: Props) {
                 </div>
               </div>
 
-              {/* Share Button */}
+              {/* Share & Compare Buttons */}
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  공유하기
-                </Button>
+                <ShareButtons
+                  title={`${product.name} - ${product.brand.name} | 계급도`}
+                  description={`${product.brand.name} ${product.name} ${product.tier}티어 - 커뮤니티 리뷰 기반 평가`}
+                  variant="compact"
+                  className="flex-1"
+                />
                 <Button variant="outline" size="sm" className="flex-1" asChild>
                   <Link href={`/${category}/compare?models=${slug}`}>
                     비교하기

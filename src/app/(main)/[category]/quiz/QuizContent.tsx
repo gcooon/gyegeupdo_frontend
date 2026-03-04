@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TierBadge } from '@/components/tier/TierBadge';
-import { Share2, Link2, RotateCcw, ChevronLeft, Users, Trophy, Check } from 'lucide-react';
+import { RotateCcw, ChevronLeft, Users, Trophy, Check } from 'lucide-react';
+import { ShareButtons } from '@/components/share/ShareButtons';
 import { CHICKEN_MENUS, CHICKEN_RECOMMENDATIONS } from '@/lib/mockData';
 import type { TierLevel } from '@/lib/tier';
 
@@ -212,12 +213,6 @@ export function QuizContent({ category }: QuizContentProps) {
     setDirection(1);
   };
 
-  const handleShare = async (type: 'kakao' | 'link') => {
-    if (type === 'link') {
-      await navigator.clipboard.writeText(window.location.href);
-      alert('링크가 복사되었습니다!');
-    }
-  };
 
   if (isLoading) {
     return (
@@ -341,15 +336,12 @@ export function QuizContent({ category }: QuizContentProps) {
           </div>
 
           {/* Share & Reset */}
-          <div className="flex items-center justify-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => handleShare('kakao')}>
-              <Share2 className="h-4 w-4 mr-2" />
-              카카오톡
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => handleShare('link')}>
-              <Link2 className="h-4 w-4 mr-2" />
-              링크 복사
-            </Button>
+          <div className="flex flex-col items-center gap-4">
+            <ShareButtons
+              title={`${config.resultTitle} 퀴즈 결과 - 계급도`}
+              description={`나에게 맞는 ${categoryName} TOP 3를 확인해보세요!`}
+              variant="full"
+            />
             <Button variant="ghost" size="sm" onClick={handleReset}>
               <RotateCcw className="h-4 w-4 mr-2" />
               다시 테스트
