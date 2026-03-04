@@ -68,21 +68,13 @@ export function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname();
   const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
 
-  // 모바일에서는 사이드바를 기본으로 닫기
+  // 모바일에서 링크 클릭(경로 변경) 시 사이드바 닫기
   useEffect(() => {
-    const mql = window.matchMedia('(max-width: 767px)');
-    if (mql.matches) {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile && isOpen) {
       close();
     }
-  }, [close]);
-
-  // 모바일에서 경로 변경 시 사이드바 닫기
-  useEffect(() => {
-    const mql = window.matchMedia('(max-width: 767px)');
-    if (mql.matches && isOpen) {
-      close();
-    }
-  }, [pathname, close]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

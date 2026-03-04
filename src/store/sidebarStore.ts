@@ -16,7 +16,7 @@ interface SidebarState {
 export const useSidebarStore = create<SidebarState>()(
   persist(
     (set) => ({
-      isOpen: false,
+      isOpen: true,
       expandedCategories: ['running-shoes'],
 
       toggle: () => set((state) => ({ isOpen: !state.isOpen })),
@@ -45,7 +45,6 @@ export const useSidebarStore = create<SidebarState>()(
     {
       name: 'sidebar-storage',
       partialize: (state) => ({
-        isOpen: state.isOpen,
         expandedCategories: state.expandedCategories,
       }),
     }
