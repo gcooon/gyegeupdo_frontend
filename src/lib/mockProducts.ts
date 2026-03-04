@@ -2,12 +2,49 @@ import type { ProductDetail, Category, Brand } from '@/types/model';
 import type { TierLevel } from '@/lib/tier';
 import { RUNNING_SHOES_CATEGORY, CHICKEN_CATEGORY } from './mockData';
 
+// 브랜드 도메인 맵 (Google Favicon API 활용)
+const BRAND_DOMAINS: Record<string, string> = {
+  // 러닝화
+  'asics': 'asics.com',
+  'nike': 'nike.com',
+  'hoka': 'hoka.com',
+  'new-balance': 'newbalance.com',
+  'saucony': 'saucony.com',
+  'adidas': 'adidas.com',
+  'mizuno': 'mizuno.com',
+  'brooks': 'brooksrunning.com',
+  'on-running': 'on.com',
+  'puma': 'puma.com',
+  'under-armour': 'underarmour.com',
+  'reebok': 'reebok.com',
+  // 치킨
+  'bhc': 'bhc.co.kr',
+  'bbq': 'bbq.co.kr',
+  'kyochon': 'kyochon.com',
+  'goobne': 'goobne.co.kr',
+  'nene': 'nenechicken.com',
+  'puradak': 'puradak.co.kr',
+  'hosik': 'hosigi.com',
+  'pericana': 'pelicana.co.kr',
+  'chickenmania': 'chickenmania.co.kr',
+  'jadam': 'jadamchicken.com',
+  'sixtygye': '60chicken.co.kr',
+  'ddoraeore': 'ddoraeore.com',
+  'mexicana': 'mexicana.co.kr',
+  'norangtong': 'norangtongdak.com',
+  'cheogajip': 'cheogajip.co.kr',
+  'momstouch': 'momstouch.co.kr',
+  'jicoba': 'jicoba.co.kr',
+  'hollala': 'hollala.co.kr',
+  'chickenplus': 'chickenplus.co.kr',
+};
+
 // 브랜드 정보 헬퍼
 const createBrand = (id: number, name: string, slug: string, tier: TierLevel, score: number, category: string): Brand => ({
   id,
   name,
   slug,
-  logo_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1A1A2E&color=fff&size=128`,
+  logo_url: `https://www.google.com/s2/favicons?domain=${BRAND_DOMAINS[slug] || `${slug}.com`}&sz=128`,
   tier,
   tier_score: score,
   category,

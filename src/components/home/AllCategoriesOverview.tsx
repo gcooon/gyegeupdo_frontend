@@ -32,9 +32,9 @@ const CATEGORIES = [
     description: '브랜드별 계급도',
     color: '#E94560',
     topItems: [
-      { name: '아식스', tier: 'S' as TierLevel, score: 95.0, logo: 'ASICS' },
-      { name: '나이키', tier: 'S' as TierLevel, score: 94.0, logo: 'NIKE' },
-      { name: '호카', tier: 'S' as TierLevel, score: 92.5, logo: 'HOKA' },
+      { name: '아식스', tier: 'S' as TierLevel, score: 95.0, domain: 'asics.com' },
+      { name: '나이키', tier: 'S' as TierLevel, score: 94.0, domain: 'nike.com' },
+      { name: '호카', tier: 'S' as TierLevel, score: 92.5, domain: 'hoka.com' },
     ],
     stats: { total: 12, sCount: 3, aCount: 5 },
     trending: '노바블라스트 5',
@@ -46,9 +46,9 @@ const CATEGORIES = [
     description: '메뉴별 계급도',
     color: '#FF6B00',
     topItems: [
-      { name: '황금올리브치킨', tier: 'S' as TierLevel, score: 94.5, logo: 'BBQ' },
-      { name: '교촌 오리지날', tier: 'S' as TierLevel, score: 93.0, logo: '교촌' },
-      { name: '뿌링클', tier: 'S' as TierLevel, score: 92.5, logo: 'BHC' },
+      { name: '황금올리브치킨', tier: 'S' as TierLevel, score: 94.5, domain: 'bbq.co.kr' },
+      { name: '교촌 오리지날', tier: 'S' as TierLevel, score: 93.0, domain: 'kyochon.com' },
+      { name: '뿌링클', tier: 'S' as TierLevel, score: 92.5, domain: 'bhc.co.kr' },
     ],
     stats: { total: 14, sCount: 3, aCount: 6 },
     trending: '뿌링클',
@@ -284,7 +284,7 @@ export function AllCategoriesOverview() {
                       {/* 로고 */}
                       <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mb-2">
                         <Image
-                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.logo)}&background=${category.color.replace('#', '')}&color=fff&size=128&font-size=0.4&bold=true`}
+                          src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=128`}
                           alt={item.name}
                           fill
                           className="object-cover"
