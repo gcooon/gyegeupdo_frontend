@@ -1,11 +1,10 @@
 import type { Brand, Category } from '@/types/model';
 import type { TierLevel } from '@/lib/tier';
 
-// 브랜드 로고 URL 생성 함수 (플레이스홀더)
-const getBrandLogoUrl = (brandName: string, bgColor: string = '1A1A2E') => {
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(brandName)}&background=${bgColor}&color=fff&size=128&font-size=0.4&bold=true`;
+// 브랜드 로고 URL 생성 함수 (Google Favicon API 활용)
+const getFaviconUrl = (domain: string) => {
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 };
-
 // 런닝화 브랜드 Mock 데이터
 export const RUNNING_SHOES_BRANDS: Brand[] = [
   // S티어 - 최고 브랜드
@@ -13,7 +12,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 1,
     name: '아식스',
     slug: 'asics',
-    logo_url: getBrandLogoUrl('ASICS', 'E94560'),
+    logo_url: getFaviconUrl('asics.com'),
     tier: 'S' as TierLevel,
     tier_score: 95.0,
     description: '일본의 러닝화 명가, 젤 쿠셔닝 기술의 선두주자',
@@ -29,7 +28,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 2,
     name: '나이키',
     slug: 'nike',
-    logo_url: getBrandLogoUrl('NIKE', '000000'),
+    logo_url: getFaviconUrl('nike.com'),
     tier: 'S' as TierLevel,
     tier_score: 94.0,
     description: '세계 최대 스포츠 브랜드, 혁신적인 기술력',
@@ -45,7 +44,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 3,
     name: '호카',
     slug: 'hoka',
-    logo_url: getBrandLogoUrl('HOKA', '1E40AF'),
+    logo_url: getFaviconUrl('hoka.com'),
     tier: 'S' as TierLevel,
     tier_score: 92.5,
     description: '맥시멀 쿠셔닝의 혁명, 편안함의 대명사',
@@ -62,7 +61,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 4,
     name: '뉴발란스',
     slug: 'new-balance',
-    logo_url: getBrandLogoUrl('NB', 'DC143C'),
+    logo_url: getFaviconUrl('newbalance.com'),
     tier: 'A' as TierLevel,
     tier_score: 88.0,
     description: '프레시폼 기술의 선두, 안정성과 편안함',
@@ -78,7 +77,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 5,
     name: '써코니',
     slug: 'saucony',
-    logo_url: getBrandLogoUrl('SAUCONY', '4169E1'),
+    logo_url: getFaviconUrl('saucony.com'),
     tier: 'A' as TierLevel,
     tier_score: 87.0,
     description: '러너들의 러너, PWRRUN 쿠셔닝 기술',
@@ -94,7 +93,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 6,
     name: '브룩스',
     slug: 'brooks',
-    logo_url: getBrandLogoUrl('BROOKS', '1C4587'),
+    logo_url: getFaviconUrl('brooksrunning.com'),
     tier: 'A' as TierLevel,
     tier_score: 86.5,
     description: 'DNA 쿠셔닝 기술, 안정화의 명가',
@@ -110,7 +109,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 7,
     name: '아디다스',
     slug: 'adidas',
-    logo_url: getBrandLogoUrl('adidas', '000000'),
+    logo_url: getFaviconUrl('adidas.com'),
     tier: 'A' as TierLevel,
     tier_score: 85.5,
     description: '부스트 폼의 원조, 독일 스포츠 명가',
@@ -127,7 +126,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 8,
     name: '미즈노',
     slug: 'mizuno',
-    logo_url: getBrandLogoUrl('MIZUNO', '003366'),
+    logo_url: getFaviconUrl('mizuno.com'),
     tier: 'B' as TierLevel,
     tier_score: 82.0,
     description: '웨이브 플레이트 기술, 일본 장인 정신',
@@ -143,7 +142,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 9,
     name: '푸마',
     slug: 'puma',
-    logo_url: getBrandLogoUrl('PUMA', '000000'),
+    logo_url: getFaviconUrl('puma.com'),
     tier: 'B' as TierLevel,
     tier_score: 79.0,
     description: '나이트로 폼 기술, 가성비 좋은 선택',
@@ -159,7 +158,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 10,
     name: '언더아머',
     slug: 'under-armour',
-    logo_url: getBrandLogoUrl('UA', '1A1A1A'),
+    logo_url: getFaviconUrl('underarmour.com'),
     tier: 'B' as TierLevel,
     tier_score: 77.5,
     description: 'HOVR 기술, 에너지 리턴에 강점',
@@ -175,7 +174,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 11,
     name: '리복',
     slug: 'reebok',
-    logo_url: getBrandLogoUrl('REEBOK', 'CC0000'),
+    logo_url: getFaviconUrl('reebok.com'),
     tier: 'B' as TierLevel,
     tier_score: 75.0,
     description: '플로트라이드 기술, 합리적인 가격',
@@ -191,7 +190,7 @@ export const RUNNING_SHOES_BRANDS: Brand[] = [
     id: 12,
     name: '온러닝',
     slug: 'on-running',
-    logo_url: getBrandLogoUrl('On', '000000'),
+    logo_url: getFaviconUrl('on.com'),
     tier: 'A' as TierLevel,
     tier_score: 86.0,
     description: '클라우드텍 기술, 스위스 프리미엄',
@@ -289,18 +288,18 @@ export const RUNNING_SHOES_CATEGORY: Category = {
   ],
 };
 
-// 치킨 브랜드 로고 맵
+// 치킨 브랜드 로고 맵 (Google Favicon API 활용)
 const CHICKEN_BRAND_LOGOS: Record<string, string> = {
-  'BBQ': getBrandLogoUrl('BBQ', 'B8860B'),
-  '교촌': getBrandLogoUrl('교촌', 'C41E3A'),
-  'BHC': getBrandLogoUrl('BHC', 'FF6B00'),
-  '굽네': getBrandLogoUrl('굽네', '8B4513'),
-  '네네': getBrandLogoUrl('네네', 'FFD700'),
-  '푸라닭': getBrandLogoUrl('푸라닭', '000000'),
-  '처갓집': getBrandLogoUrl('처갓집', 'DC143C'),
-  '페리카나': getBrandLogoUrl('페리카나', 'FF4500'),
-  '호식이': getBrandLogoUrl('호식이', '228B22'),
-  '멕시카나': getBrandLogoUrl('멕시카나', 'FFD700'),
+  'BBQ': getFaviconUrl('bbq.co.kr'),
+  '교촌': getFaviconUrl('kyochon.com'),
+  'BHC': getFaviconUrl('bhc.co.kr'),
+  '굽네': getFaviconUrl('goobne.co.kr'),
+  '네네': getFaviconUrl('nenechicken.com'),
+  '푸라닭': getFaviconUrl('puradak.co.kr'),
+  '처갓집': getFaviconUrl('cheogajip.co.kr'),
+  '페리카나': getFaviconUrl('pelicana.co.kr'),
+  '호식이': getFaviconUrl('hosigi.com'),
+  '멕시카나': getFaviconUrl('mexicana.co.kr'),
 };
 
 // 치킨 메뉴 Mock 데이터 (브랜드별 대표 메뉴)
