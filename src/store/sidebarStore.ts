@@ -16,7 +16,7 @@ interface SidebarState {
 export const useSidebarStore = create<SidebarState>()(
   persist(
     (set) => ({
-      isOpen: true,
+      isOpen: false,
       expandedCategories: ['running-shoes'],
 
       toggle: () => set((state) => ({ isOpen: !state.isOpen })),

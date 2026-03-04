@@ -107,9 +107,6 @@ export function Header() {
           <Button variant="ghost" size="sm" asChild>
             <Link href="/login">로그인</Link>
           </Button>
-          <Button size="sm" className="hidden sm:inline-flex bg-accent hover:bg-accent/90" asChild>
-            <Link href="/running-shoes/quiz">내 러닝화 찾기</Link>
-          </Button>
         </div>
       </div>
     </header>

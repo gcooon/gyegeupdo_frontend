@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
@@ -65,7 +66,23 @@ interface SidebarProps {
 
 export function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname();
-  const { isOpen, expandedCategories, toggle, toggleCategory } = useSidebarStore();
+  const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
+
+  // 모바일에서는 사이드바를 기본으로 닫기
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    if (mql.matches) {
+      close();
+    }
+  }, [close]);
+
+  // 모바일에서 경로 변경 시 사이드바 닫기
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    if (mql.matches && isOpen) {
+      close();
+    }
+  }, [pathname, close]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
