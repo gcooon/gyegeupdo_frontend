@@ -1,18 +1,18 @@
 'use client';
 
+import { useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useBrands, useCategory } from '@/hooks/useBrands';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TierBadge } from '@/components/tier/TierBadge';
+import { TierGrid } from '@/components/tier/TierGrid';
+import { ShareButtons } from '@/components/share/ShareButtons';
 import { TIER_CONFIG } from '@/lib/tier';
 import type { TierLevel } from '@/lib/tier';
 import {
-  Crown,
-  Medal,
-  Award,
   ArrowRight,
   TrendingUp,
   Sparkles,
@@ -26,6 +26,7 @@ import {
   Star,
   ThumbsUp,
   MessageSquare,
+  Download,
 } from 'lucide-react';
 
 interface CategoryLandingContentProps {
@@ -76,6 +77,184 @@ const CATEGORY_CONFIG: Record<string, {
       modelCount: '30+',
       reviewCount: '1,800+',
       brandCount: '10',
+    },
+  },
+};
+
+// 카테고리별 용도 설정
+const USAGE_CATEGORIES: Record<string, { key: string; label: string; description: string; icon: string }[]> = {
+  'running-shoes': [
+    { key: 'race', label: '레이스/대회', description: '기록 도전용 최상급', icon: '🏆' },
+    { key: 'daily', label: '데일리 트레이너', description: '일상 훈련용', icon: '🏃' },
+    { key: 'beginner', label: '입문/초보', description: '처음 시작하는 러너', icon: '👟' },
+    { key: 'long', label: '장거리/마라톤', description: '풀코스 마라톤용', icon: '🛤️' },
+  ],
+  'chicken': [
+    { key: 'fried', label: '후라이드', description: '바삭한 기본의 정석', icon: '🍗' },
+    { key: 'yangnyum', label: '양념', description: '달콤 매콤한 소스', icon: '🌶️' },
+    { key: 'soy', label: '간장/허니', description: '달짭 간장 소스', icon: '🍯' },
+    { key: 'powder', label: '가루/시즈닝', description: '파우더 시즈닝', icon: '✨' },
+    { key: 'roasted', label: '구이', description: '오븐 구이 치킨', icon: '🔥' },
+  ],
+};
+
+// 용도별 계급도 데이터
+interface UsageTierItem {
+  name: string;
+  brand: string;
+  slug: string;
+  score: number;
+  upVotes: number;
+  downVotes: number;
+}
+
+const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, UsageTierItem[]>>>> = {
+  'running-shoes': {
+    race: {
+      S: [
+        { name: '알파플라이 3', brand: '나이키', slug: 'alphafly-3', score: 98, upVotes: 156, downVotes: 12 },
+        { name: '아디오스 프로 에보1', brand: '아디다스', slug: 'adios-pro-evo1', score: 97, upVotes: 142, downVotes: 18 },
+        { name: '베이퍼플라이 3', brand: '나이키', slug: 'vaporfly-3', score: 96, upVotes: 138, downVotes: 15 },
+      ],
+      A: [
+        { name: '메타스피드 스카이 파리', brand: '아식스', slug: 'metaspeed-sky-paris', score: 93, upVotes: 98, downVotes: 22 },
+        { name: '엔돌핀 프로 4', brand: '써코니', slug: 'endorphin-pro-4', score: 91, upVotes: 87, downVotes: 19 },
+        { name: '퓨어셀 엘리트 v4', brand: '뉴발란스', slug: 'fuelcell-elite-v4', score: 90, upVotes: 82, downVotes: 21 },
+      ],
+      B: [
+        { name: '씨엘로 X1', brand: '호카', slug: 'cielo-x1', score: 86, upVotes: 65, downVotes: 28 },
+        { name: '웨이브 리벨리온 프로2', brand: '미즈노', slug: 'wave-rebellion-pro2', score: 84, upVotes: 58, downVotes: 25 },
+      ],
+    },
+    daily: {
+      S: [
+        { name: '노바블라스트 4', brand: '아식스', slug: 'novablast-4', score: 95, upVotes: 245, downVotes: 18 },
+        { name: '마하 6', brand: '호카', slug: 'mach-6', score: 93, upVotes: 198, downVotes: 22 },
+        { name: '슈퍼블라스트', brand: '아식스', slug: 'superblast', score: 92, upVotes: 176, downVotes: 25 },
+      ],
+      A: [
+        { name: '페가수스 41', brand: '나이키', slug: 'pegasus-41', score: 88, upVotes: 156, downVotes: 35 },
+        { name: '퓨어셀 레벨 V4', brand: '뉴발란스', slug: 'fuelcell-rebel-v4', score: 87, upVotes: 142, downVotes: 32 },
+        { name: '아디제로 보스턴 12', brand: '아디다스', slug: 'adizero-boston-12', score: 86, upVotes: 128, downVotes: 28 },
+      ],
+      B: [
+        { name: '엔돌핀 스피드 4', brand: '써코니', slug: 'endorphin-speed-4', score: 83, upVotes: 95, downVotes: 38 },
+        { name: '킨바라 15', brand: '써코니', slug: 'kinvara-15', score: 81, upVotes: 78, downVotes: 35 },
+      ],
+    },
+    beginner: {
+      S: [
+        { name: '클리프톤 9', brand: '호카', slug: 'clifton-9', score: 96, upVotes: 312, downVotes: 15 },
+        { name: '젤 님버스 26', brand: '아식스', slug: 'gel-nimbus-26', score: 94, upVotes: 278, downVotes: 22 },
+        { name: '본디 8', brand: '호카', slug: 'bondi-8', score: 93, upVotes: 256, downVotes: 28 },
+      ],
+      A: [
+        { name: '1080 v13', brand: '뉴발란스', slug: '1080-v13', score: 90, upVotes: 198, downVotes: 35 },
+        { name: '인피니티 런 4', brand: '나이키', slug: 'infinity-run-4', score: 88, upVotes: 175, downVotes: 42 },
+        { name: '글라이드라이드 4', brand: '아식스', slug: 'glideride-4', score: 86, upVotes: 152, downVotes: 38 },
+      ],
+      B: [
+        { name: '고스트 15', brand: '브룩스', slug: 'ghost-15', score: 84, upVotes: 125, downVotes: 45 },
+        { name: '웨이브 라이더 28', brand: '미즈노', slug: 'wave-rider-28', score: 82, upVotes: 108, downVotes: 42 },
+      ],
+    },
+    long: {
+      S: [
+        { name: '젤 카야노 31', brand: '아식스', slug: 'gel-kayano-31', score: 95, upVotes: 198, downVotes: 18 },
+        { name: '본디 9', brand: '호카', slug: 'bondi-9', score: 94, upVotes: 185, downVotes: 22 },
+        { name: '젤 님버스 26', brand: '아식스', slug: 'gel-nimbus-26', score: 93, upVotes: 172, downVotes: 25 },
+      ],
+      A: [
+        { name: '1080 v14', brand: '뉴발란스', slug: '1080-v14', score: 89, upVotes: 142, downVotes: 32 },
+        { name: '클리프톤 10', brand: '호카', slug: 'clifton-10', score: 87, upVotes: 128, downVotes: 35 },
+        { name: '트라이엄프 22', brand: '써코니', slug: 'triumph-22', score: 85, upVotes: 112, downVotes: 38 },
+      ],
+      B: [
+        { name: '글리세린 21', brand: '브룩스', slug: 'glycerin-21', score: 83, upVotes: 92, downVotes: 42 },
+        { name: '인피니티 런 4', brand: '나이키', slug: 'infinity-run-4', score: 81, upVotes: 78, downVotes: 38 },
+      ],
+    },
+  },
+  'chicken': {
+    fried: {
+      S: [
+        { name: '황금올리브치킨', brand: 'BBQ', slug: 'bbq-golden-olive', score: 97, upVotes: 524, downVotes: 28 },
+        { name: '해바라기 후라이드', brand: 'BHC', slug: 'bhc-sunflower', score: 95, upVotes: 478, downVotes: 35 },
+        { name: '오리지날 후라이드', brand: '호식이', slug: 'hosik-original', score: 94, upVotes: 445, downVotes: 38 },
+      ],
+      A: [
+        { name: '후라이드치킨', brand: 'BHC', slug: 'bhc-fried', score: 91, upVotes: 358, downVotes: 52 },
+        { name: '크리스피치킨', brand: 'KFC', slug: 'kfc-crispy', score: 89, upVotes: 312, downVotes: 58 },
+        { name: '후라이드', brand: '노랑통닭', slug: 'norang-fried', score: 87, upVotes: 285, downVotes: 62 },
+      ],
+      B: [
+        { name: '후라이드', brand: '60계', slug: '60gye-fried', score: 84, upVotes: 225, downVotes: 72 },
+        { name: '후라이드', brand: '맘스터치', slug: 'moms-fried', score: 82, upVotes: 198, downVotes: 78 },
+      ],
+    },
+    yangnyum: {
+      S: [
+        { name: '양념치킨', brand: '페리카나', slug: 'pericana-yangnyum', score: 96, upVotes: 498, downVotes: 32 },
+        { name: '양념치킨', brand: 'BHC', slug: 'bhc-yangnyum', score: 95, upVotes: 465, downVotes: 38 },
+        { name: '레드콤보', brand: '교촌', slug: 'kyochon-red', score: 94, upVotes: 432, downVotes: 42 },
+      ],
+      A: [
+        { name: '슈프림양념', brand: '처갓집', slug: 'cheogajip-supreme', score: 91, upVotes: 368, downVotes: 55 },
+        { name: '양념치킨', brand: '60계', slug: '60gye-yangnyum', score: 89, upVotes: 325, downVotes: 62 },
+        { name: '매운양념', brand: '또래오래', slug: 'ttorae-hot', score: 87, upVotes: 285, downVotes: 68 },
+      ],
+      B: [
+        { name: '양념치킨', brand: '노랑통닭', slug: 'norang-yangnyum', score: 84, upVotes: 218, downVotes: 75 },
+        { name: '양념치킨', brand: '네네', slug: 'nene-yangnyum', score: 82, upVotes: 192, downVotes: 82 },
+      ],
+    },
+    soy: {
+      S: [
+        { name: '교촌 오리지날', brand: '교촌', slug: 'kyochon-original', score: 97, upVotes: 545, downVotes: 25 },
+        { name: '간장치킨', brand: '호식이', slug: 'hosik-soy', score: 95, upVotes: 498, downVotes: 32 },
+        { name: '맛초킹', brand: 'BHC', slug: 'bhc-matchoking', score: 94, upVotes: 468, downVotes: 38 },
+      ],
+      A: [
+        { name: '허니콤보', brand: '교촌', slug: 'kyochon-honey', score: 91, upVotes: 378, downVotes: 52 },
+        { name: '소이갈릭', brand: 'BBQ', slug: 'bbq-soy-garlic', score: 89, upVotes: 328, downVotes: 58 },
+        { name: '간장치킨', brand: '네네', slug: 'nene-soy', score: 87, upVotes: 292, downVotes: 65 },
+      ],
+      B: [
+        { name: '간장치킨', brand: '자담', slug: 'jadam-soy', score: 84, upVotes: 225, downVotes: 72 },
+        { name: '간장치킨', brand: '60계', slug: '60gye-soy', score: 82, upVotes: 198, downVotes: 78 },
+      ],
+    },
+    powder: {
+      S: [
+        { name: '뿌링클', brand: 'BHC', slug: 'bhc-puringkle', score: 98, upVotes: 612, downVotes: 22 },
+        { name: '치토스치킨', brand: 'KFC', slug: 'kfc-cheetos', score: 94, upVotes: 445, downVotes: 42 },
+        { name: '스노윙치즈', brand: '네네', slug: 'nene-snowing', score: 93, upVotes: 418, downVotes: 45 },
+      ],
+      A: [
+        { name: '크크크치킨', brand: '60계', slug: '60gye-kkk', score: 90, upVotes: 358, downVotes: 55 },
+        { name: '치즈볼', brand: 'BBQ', slug: 'bbq-cheeseball', score: 88, upVotes: 312, downVotes: 62 },
+        { name: '마라크치킨', brand: 'BHC', slug: 'bhc-marak', score: 86, upVotes: 278, downVotes: 68 },
+      ],
+      B: [
+        { name: '뿌링핫', brand: 'BHC', slug: 'bhc-puringhot', score: 83, upVotes: 215, downVotes: 75 },
+        { name: '갈릭파우더', brand: '굽네', slug: 'goobne-garlic', score: 81, upVotes: 188, downVotes: 82 },
+      ],
+    },
+    roasted: {
+      S: [
+        { name: '고추바사삭', brand: '굽네', slug: 'goobne-gochu', score: 96, upVotes: 512, downVotes: 28 },
+        { name: '굽네 오리지날', brand: '굽네', slug: 'goobne-original', score: 95, upVotes: 478, downVotes: 32 },
+        { name: '자메이카통다리', brand: 'BBQ', slug: 'bbq-jamaica', score: 94, upVotes: 445, downVotes: 38 },
+      ],
+      A: [
+        { name: '볼케이노', brand: '굽네', slug: 'goobne-volcano', score: 91, upVotes: 368, downVotes: 52 },
+        { name: '블랙알리오', brand: '푸라닭', slug: 'puradak-black-allio', score: 89, upVotes: 325, downVotes: 58 },
+        { name: '갈비치킨', brand: 'BHC', slug: 'bhc-galbi', score: 87, upVotes: 285, downVotes: 65 },
+      ],
+      B: [
+        { name: '훈제치킨', brand: '네네', slug: 'nene-smoked', score: 84, upVotes: 218, downVotes: 72 },
+        { name: '마늘바게트', brand: '굽네', slug: 'goobne-garlic-baguette', score: 82, upVotes: 192, downVotes: 78 },
+      ],
     },
   },
 };
@@ -297,14 +476,6 @@ const REVIEW_DATA: Record<string, {
   ],
 };
 
-const TIER_ICONS: Record<TierLevel, React.ElementType | null> = {
-  S: Crown,
-  A: Medal,
-  B: Award,
-  C: null,
-  D: null,
-};
-
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
@@ -321,11 +492,45 @@ function StarRating({ rating }: { rating: number }) {
 export function CategoryLandingContent({ category }: CategoryLandingContentProps) {
   const { data: brands, isLoading } = useBrands(category);
   const { data: categoryData } = useCategory(category);
+  const tierGridRef = useRef<HTMLDivElement>(null);
 
   const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];
   const trending = TRENDING_DATA[category] || [];
   const disputes = DISPUTE_DATA[category] || [];
   const reviews = REVIEW_DATA[category] || [];
+  const usageCategories = USAGE_CATEGORIES[category] || [];
+
+  const handleDownloadImage = async () => {
+    if (!tierGridRef.current) return;
+
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(tierGridRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+      });
+
+      // Add watermark
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.font = '16px Pretendard, sans-serif';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.textAlign = 'right';
+        ctx.fillText('gyegeupdo.kr', canvas.width - 20, canvas.height - 20);
+
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
+        ctx.fillText(dateStr, canvas.width - 20, canvas.height - 44);
+      }
+
+      const link = document.createElement('a');
+      link.download = `계급도_${category}_${new Date().toISOString().split('T')[0]}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      // html2canvas not available
+    }
+  };
 
   if (isLoading) {
     return (
@@ -337,15 +542,6 @@ export function CategoryLandingContent({ category }: CategoryLandingContentProps
       </div>
     );
   }
-
-  // 티어별 브랜드 그룹화
-  const brandsByTier: Partial<Record<TierLevel, typeof brands>> = brands?.reduce((acc, brand) => {
-    if (!acc[brand.tier]) acc[brand.tier] = [];
-    acc[brand.tier]!.push(brand);
-    return acc;
-  }, {} as Partial<Record<TierLevel, typeof brands>>) || {};
-
-  const tiers: TierLevel[] = ['S', 'A', 'B'];
 
   return (
     <div className="space-y-12 py-4">
@@ -373,55 +569,12 @@ export function CategoryLandingContent({ category }: CategoryLandingContentProps
               {config.heroSubDescription}
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="text-lg px-8"
-                style={{ background: config.color }}
-                asChild
-              >
-                <Link href={`/${category}/tier`}>
-                  계급도 보러가기
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8"
-                asChild
-              >
-                <Link href={`/${category}/compare`}>
-                  VS 비교하기
-                </Link>
-              </Button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="mt-12 grid grid-cols-3 gap-4 max-w-lg mx-auto">
-              <div className="text-center p-4 rounded-xl bg-card shadow-sm">
-                <Trophy className="h-5 w-5 mx-auto mb-2 text-accent" />
-                <p className="text-2xl font-bold">{config.stats.modelCount}</p>
-                <p className="text-xs text-muted-foreground">등록 {config.itemLabel}</p>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-card shadow-sm">
-                <Users className="h-5 w-5 mx-auto mb-2 text-accent" />
-                <p className="text-2xl font-bold">{config.stats.reviewCount}</p>
-                <p className="text-xs text-muted-foreground">사용자 리뷰</p>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-card shadow-sm">
-                <Star className="h-5 w-5 mx-auto mb-2 text-accent" />
-                <p className="text-2xl font-bold">{config.stats.brandCount}</p>
-                <p className="text-xs text-muted-foreground">브랜드</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* 관심 상승 TOP 5 */}
-      <section className="max-w-5xl mx-auto">
+      {/* 관심 상승 TOP 5 - 향후 활용 예정으로 숨김 처리 */}
+      {/* <section className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold mb-1">관심 상승 TOP5</h2>
@@ -477,149 +630,170 @@ export function CategoryLandingContent({ category }: CategoryLandingContentProps
             </div>
           </CardContent>
         </Card>
-      </section>
+      </section> */}
 
-      {/* 계급도 미리보기 */}
-      <section className="py-12 bg-muted/30 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold mb-1">{config.name} 계급도</h2>
-              <p className="text-muted-foreground">커뮤니티 리뷰 기반</p>
-            </div>
-            <Button variant="outline" asChild>
-              <Link href={`/${category}/tier`}>전체 계급도 보기</Link>
-            </Button>
+      {/* 계급도 메인 섹션 */}
+      <section className="max-w-5xl mx-auto">
+        {/* Header with Download Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-2xl font-bold">
+              {config.name} 계급도
+            </h2>
+            <p className="text-muted-foreground text-sm mt-1">
+              커뮤니티 리뷰와 {brands?.length || 0}개 브랜드 데이터 기반
+            </p>
           </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadImage}>
+              <Download className="h-4 w-4 mr-2" />
+              이미지 저장
+            </Button>
+            <ShareButtons
+              title={`${config.name} 계급도 - 계급도`}
+              description={`커뮤니티 리뷰 기반 ${config.name} 티어 순위표`}
+              variant="compact"
+            />
+          </div>
+        </div>
 
-          <div className="space-y-1 rounded-2xl overflow-hidden shadow-lg">
-            {tiers.map((tier) => {
-              const tierConfig = TIER_CONFIG[tier];
-              const TierIcon = TIER_ICONS[tier];
-              const tierBrands = brandsByTier[tier]?.slice(0, 4) || [];
-              const isSTier = tier === 'S';
-              const isATier = tier === 'A';
+        {/* View Tabs */}
+        <Tabs defaultValue="usage" className="w-full">
+          <TabsList className="mb-6 w-full grid grid-cols-2 h-14 p-1 bg-muted/80 rounded-xl">
+            <TabsTrigger
+              value="usage"
+              className="h-full text-base font-semibold rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+            >
+              🎯 용도별 계급도
+            </TabsTrigger>
+            <TabsTrigger
+              value="brand"
+              className="h-full text-base font-semibold rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+            >
+              🏆 브랜드 계급도
+            </TabsTrigger>
+          </TabsList>
 
-              return (
-                <div key={tier} className="flex">
-                  {/* 티어 라벨 */}
-                  <div
-                    className="relative flex flex-col items-center justify-center shrink-0 w-16 md:w-24"
-                    style={{ background: tierConfig.gradient }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
-                    <span className="font-black text-white drop-shadow-lg relative z-10 text-3xl md:text-4xl">
-                      {tier}
-                    </span>
-                    {TierIcon && (
-                      <TierIcon className="text-white/80 mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5" />
-                    )}
-                    {isSTier && (
-                      <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute -inset-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
+          <TabsContent value="usage">
+            <div className="space-y-8">
+              {usageCategories.map((usage) => {
+                const usageTiers = USAGE_TIER_DATA[category]?.[usage.key] || {};
+
+                return (
+                  <Card key={usage.key} className="card-base overflow-hidden">
+                    {/* 용도 헤더 */}
+                    <div className="bg-gradient-to-r from-accent/10 to-primary/5 px-5 py-4 border-b">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl">
+                          {usage.icon}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold">{usage.label}</h3>
+                          <p className="text-sm text-muted-foreground">{usage.description}</p>
+                        </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* 아이템들 */}
-                  <div
-                    className={`
-                      flex-1 p-2 md:p-3 overflow-x-auto
-                      ${isSTier
-                        ? 'bg-gradient-to-r from-amber-50 to-amber-50/50 dark:from-amber-950/30 dark:to-amber-950/10'
-                        : isATier
-                          ? 'bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-900/50 dark:to-slate-900/30'
-                          : 'bg-gradient-to-r from-orange-50/80 to-orange-50/30 dark:from-orange-950/20 dark:to-orange-950/10'
-                      }
-                    `}
-                  >
-                    <div className="flex gap-2 md:gap-3">
-                      {tierBrands.map((brand, index) => (
-                        <Link
-                          key={brand.id}
-                          href={category === 'chicken' ? `/${category}/model/${brand.slug}` : `/${category}/brand/${brand.slug}`}
-                          className="group shrink-0"
-                        >
-                          <div className={`
-                            relative flex flex-col items-center p-2 md:p-3 rounded-xl
-                            bg-white dark:bg-slate-800/80
-                            border-2 transition-all duration-200
-                            hover:shadow-lg hover:-translate-y-1 hover:border-accent
-                            w-[90px] md:w-[100px] h-[130px] md:h-[150px]
-                            ${isSTier
-                              ? 'border-amber-300 shadow-md'
-                              : isATier
-                                ? 'border-slate-200 dark:border-slate-600'
-                                : 'border-orange-200 dark:border-orange-800/50'
-                            }
-                          `}>
-                            {isSTier && index < 3 && (
-                              <div
-                                className={`
-                                  absolute -top-2 -left-2 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center
-                                  text-[10px] md:text-xs font-bold text-white shadow-md
-                                  ${index === 0 ? 'bg-amber-500' : index === 1 ? 'bg-slate-400' : 'bg-amber-700'}
-                                `}
-                              >
-                                {index + 1}
-                              </div>
-                            )}
-                            <div className="relative w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden mb-1 shrink-0">
-                              {brand.logo_url ? (
-                                <Image
-                                  src={brand.logo_url}
-                                  alt={brand.name}
-                                  fill
-                                  className="object-cover"
-                                />
+                    <CardContent className="p-0">
+                      {/* TierMaker 스타일 티어 행 */}
+                      {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
+                        const items = usageTiers[tier] || [];
+                        const tierColors: Record<TierLevel, string> = {
+                          S: '#FFB6C1',
+                          A: '#FFDAB9',
+                          B: '#FFFFE0',
+                          C: '#FDE047',
+                          D: '#FB923C',
+                        };
+                        return (
+                          <div key={tier} className="flex border-b last:border-b-0">
+                            {/* 티어 라벨 */}
+                            <div
+                              className="w-16 shrink-0 flex items-center justify-center"
+                              style={{
+                                backgroundColor: tierColors[tier],
+                              }}
+                            >
+                              <span className="text-xl font-black text-black">
+                                {tier}급
+                              </span>
+                            </div>
+
+                            {/* 제품 목록 */}
+                            <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
+                              {items.length === 0 ? (
+                                <span className="text-sm text-muted-foreground italic">아직 데이터가 없습니다</span>
                               ) : (
-                                <div className="w-full h-full bg-muted flex items-center justify-center text-sm font-bold">
-                                  {brand.name.charAt(0)}
-                                </div>
+                                items.map((item) => (
+                                  <Link
+                                    key={item.slug}
+                                    href={`/${category}/model/${item.slug}`}
+                                    className="group"
+                                  >
+                                    <div className="bg-card border rounded-lg px-3 py-2 hover:border-accent hover:shadow-md transition-all">
+                                      <p className="text-[10px] text-muted-foreground">{item.brand}</p>
+                                      <p className="font-medium text-sm group-hover:text-accent transition-colors line-clamp-1">
+                                        {item.name}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                ))
                               )}
                             </div>
-                            <div className="flex-1 flex flex-col items-center justify-center">
-                              <p className="font-semibold text-center line-clamp-2 w-full group-hover:text-accent transition-colors text-[10px] md:text-xs leading-tight">
-                                {brand.name}
-                              </p>
-                            </div>
-                            <p className={`
-                              font-bold text-[10px] shrink-0
-                              ${isSTier ? 'text-amber-600' : isATier ? 'text-slate-500' : 'text-orange-600/80'}
-                            `}>
-                              {brand.tier_score.toFixed(1)}점
-                            </p>
                           </div>
-                        </Link>
-                      ))}
+                        );
+                      })}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
 
-                      <Link href={`/${category}/tier?tier=${tier}`} className="shrink-0 self-center">
-                        <div className="px-4 py-2 rounded-lg border-2 border-dashed border-muted-foreground/30 text-muted-foreground text-sm hover:border-accent hover:text-accent transition-colors">
-                          더보기 →
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <TabsContent value="brand">
+            <div ref={tierGridRef} className="bg-card p-4 rounded-2xl">
+              {brands && <TierGrid brands={brands} category={category} />}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </section>
 
-          {/* 범례 */}
-          <div className="flex items-center justify-center gap-6 mt-6 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded" style={{ background: TIER_CONFIG.S.gradient }} />
-              <span>S: 최고</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded" style={{ background: TIER_CONFIG.A.gradient }} />
-              <span>A: 우수</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded" style={{ background: TIER_CONFIG.B.gradient }} />
-              <span>B: 준수</span>
-            </div>
-          </div>
+      {/* Interactive Features CTAs */}
+      <section className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* Quiz CTA */}
+          <Card className="card-base border-accent/30 bg-gradient-to-br from-accent/10 to-accent/5 hover:border-accent/50 transition-all">
+            <CardContent className="p-5 h-full flex flex-col">
+              <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl mb-3">
+                🎯
+              </div>
+              <h3 className="font-bold mb-1">
+                {config.quizCTA}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4 flex-1">
+                3분 퀴즈로 취향에 맞는 제품을 찾아보세요
+              </p>
+              <Button className="w-full bg-accent hover:bg-accent/90" asChild>
+                <Link href={`/${category}/quiz`}>퀴즈 시작 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Discover CTA */}
+          <Card className="card-base border-pink-300/30 bg-gradient-to-br from-pink-50 to-pink-100/50 dark:from-pink-950/20 dark:to-pink-900/10 hover:border-pink-400/50 transition-all">
+            <CardContent className="p-5 h-full flex flex-col">
+              <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center text-2xl mb-3">
+                💖
+              </div>
+              <h3 className="font-bold mb-1">스와이프로 발견하기</h3>
+              <p className="text-sm text-muted-foreground mb-4 flex-1">
+                좌우 스와이프로 취향에 맞는 제품을 찾아보세요
+              </p>
+              <Button variant="outline" className="w-full border-pink-300 hover:bg-pink-50" asChild>
+                <Link href={`/${category}/discover`}>시작하기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -860,14 +1034,7 @@ export function CategoryLandingContent({ category }: CategoryLandingContentProps
 
       {/* 퀵 메뉴 */}
       <section className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link href={`/${category}/tier`}>
-            <Card className="card-base text-center py-8 hover:border-accent/50 transition-colors">
-              <Crown className="h-10 w-10 mx-auto mb-3 text-amber-500" />
-              <p className="font-semibold">계급도 보기</p>
-              <p className="text-xs text-muted-foreground mt-1">전체 순위 확인</p>
-            </Card>
-          </Link>
+        <div className="grid grid-cols-3 gap-4">
           <Link href={`/${category}/quiz`}>
             <Card className="card-base text-center py-8 hover:border-accent/50 transition-colors">
               <Sparkles className="h-10 w-10 mx-auto mb-3 text-accent" />
