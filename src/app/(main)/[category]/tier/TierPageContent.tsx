@@ -673,33 +673,23 @@ export function TierPageContent({ category }: TierPageContentProps) {
                     {/* TierMaker 스타일 티어 행 */}
                     {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
                       const items = usageTiers[tier] || [];
-                      const tierGradients: Record<TierLevel, string> = {
-                        S: 'linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 50%, #FF9CAD 100%)',
-                        A: 'linear-gradient(135deg, #FFE4C9 0%, #FFDAB9 50%, #FFCBA4 100%)',
-                        B: 'linear-gradient(135deg, #FFFFF0 0%, #FFFFE0 50%, #FFFACD 100%)',
-                        C: 'linear-gradient(135deg, #FDE047 0%, #EAB308 50%, #CA8A04 100%)',
-                        D: 'linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)',
-                      };
-                      const tierShadows: Record<TierLevel, string> = {
-                        S: '0 0 12px rgba(255, 182, 193, 0.5)',
-                        A: '0 0 10px rgba(255, 218, 185, 0.5)',
-                        B: '0 0 8px rgba(255, 255, 224, 0.5)',
-                        C: 'none',
-                        D: 'none',
+                      const tierColors: Record<TierLevel, string> = {
+                        S: '#FFB6C1',
+                        A: '#FFDAB9',
+                        B: '#FFFFE0',
+                        C: '#FDE047',
+                        D: '#FB923C',
                       };
                       return (
                         <div key={tier} className="flex border-b last:border-b-0">
                           {/* 티어 라벨 */}
                           <div
-                            className="w-16 shrink-0 flex items-center justify-center relative overflow-hidden"
+                            className="w-16 shrink-0 flex items-center justify-center"
                             style={{
-                              background: tierGradients[tier],
-                              boxShadow: tierShadows[tier],
+                              backgroundColor: tierColors[tier],
                             }}
                           >
-                            {/* 광택 효과 */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5" />
-                            <span className="text-xl font-black relative z-10 text-black">
+                            <span className="text-xl font-black text-black">
                               {tier}급
                             </span>
                           </div>
