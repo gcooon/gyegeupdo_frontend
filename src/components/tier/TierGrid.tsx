@@ -2,8 +2,9 @@
 
 import { TierLevel, TIER_CONFIG } from '@/lib/tier';
 import { Brand } from '@/types/model';
-import { BrandTierCard } from './BrandTierCard';
-import { Crown, Medal, Award, Star } from 'lucide-react';
+import { Crown, Medal, Award, Star, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
 
 interface TierGridProps {
   brands: Brand[];
@@ -35,7 +36,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
 
   return (
     <div className="space-y-1">
-      {tiers.map((tier, tierIndex) => {
+      {tiers.map((tier) => {
         const config = TIER_CONFIG[tier];
         const TierIcon = TIER_ICONS[tier];
         const isSTier = tier === 'S';
@@ -52,7 +53,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
           >
             {/* 티어 라벨 영역 - TierMaker 스타일 */}
             <div
-              className="relative flex flex-col items-center justify-center shrink-0 w-20 md:w-28"
+              className="relative flex flex-col items-center justify-center shrink-0 w-16 md:w-20"
               style={{
                 background: config.gradient,
               }}
@@ -61,13 +62,13 @@ export function TierGrid({ brands, category }: TierGridProps) {
               <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
 
               {/* 티어 레터 */}
-              <span className="font-black text-white drop-shadow-lg relative z-10 text-4xl md:text-5xl">
+              <span className="font-black text-white drop-shadow-lg relative z-10 text-3xl md:text-4xl">
                 {tier}
               </span>
 
               {/* 아이콘 */}
               {TierIcon && (
-                <TierIcon className="text-white/80 mt-1 relative z-10 h-5 w-5 md:h-6 md:w-6" />
+                <TierIcon className="text-white/80 mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5" />
               )}
 
               {/* S티어 특별 효과 - 반짝임 */}
@@ -81,7 +82,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
             {/* 아이템 영역 */}
             <div
               className={`
-                flex-1 p-3 md:p-4
+                flex-1 p-2 md:p-3 min-h-[80px] md:min-h-[90px]
                 ${isSTier
                   ? 'bg-gradient-to-r from-amber-50 to-amber-50/50 dark:from-amber-950/30 dark:to-amber-950/10'
                   : isATier
@@ -91,12 +92,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
               `}
             >
               {brandsByTier[tier].length > 0 ? (
-                <div
-                  className={`
-                    flex flex-wrap gap-2 md:gap-3
-                    ${isSTier ? 'gap-3 md:gap-4' : ''}
-                  `}
-                >
+                <div className="flex flex-wrap gap-1.5 md:gap-2">
                   {brandsByTier[tier].map((brand, index) => (
                     <TierItem
                       key={brand.id}
@@ -108,7 +104,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
                   ))}
                 </div>
               ) : (
-                <div className="py-4 md:py-6 text-center text-muted-foreground text-sm">
+                <div className="py-4 text-center text-muted-foreground text-sm">
                   해당 티어에 항목이 없습니다
                 </div>
               )}
@@ -118,17 +114,17 @@ export function TierGrid({ brands, category }: TierGridProps) {
       })}
 
       {/* 범례/설명 */}
-      <div className="flex items-center justify-center gap-6 pt-4 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded" style={{ background: TIER_CONFIG.S.gradient }} />
-          <span>S: 최고 등급</span>
+      <div className="flex items-center justify-center gap-4 md:gap-6 pt-3 text-[10px] md:text-xs text-muted-foreground">
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.S.gradient }} />
+          <span>S: 최고</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded" style={{ background: TIER_CONFIG.A.gradient }} />
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.A.gradient }} />
           <span>A: 우수</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded" style={{ background: TIER_CONFIG.B.gradient }} />
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.B.gradient }} />
           <span>B: 준수</span>
         </div>
       </div>
@@ -136,17 +132,13 @@ export function TierGrid({ brands, category }: TierGridProps) {
   );
 }
 
-// 개별 티어 아이템 컴포넌트
+// 개별 티어 아이템 컴포넌트 - 단순화된 버전
 interface TierItemProps {
   brand: Brand;
   category?: string;
   tier: TierLevel;
   rank: number;
 }
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { ChevronUp, ChevronDown } from 'lucide-react';
 
 function TierItem({ brand, category, tier, rank }: TierItemProps) {
   const isSTier = tier === 'S';
@@ -159,105 +151,61 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
       ? `/${category}/brand/${brand.slug}`
       : `/brand/${brand.slug}`;
 
-  const handleVoteClick = (e: React.MouseEvent, voteType: 'up' | 'down') => {
-    e.preventDefault();
-    e.stopPropagation();
-    alert(`${brand.name}에 ${voteType === 'up' ? 'UP' : 'DOWN'} 투표하려면 로그인이 필요합니다.`);
-  };
-
-  // Mock vote data
-  const votes = {
-    upVotes: Math.floor(Math.random() * 50) + 5,
-    downVotes: Math.floor(Math.random() * 30) + 2,
-  };
-
   return (
     <Link href={href} className="group">
       <div
         className={`
-          relative flex flex-col items-center p-2 md:p-3 rounded-xl
+          relative flex flex-col items-center p-1.5 md:p-2 rounded-lg
           bg-white dark:bg-slate-800/80
-          border-2 transition-all duration-200
-          hover:shadow-lg hover:-translate-y-1 hover:border-accent
-          w-[100px] md:w-[110px] h-[140px] md:h-[160px]
+          border transition-all duration-200
+          hover:shadow-md hover:-translate-y-0.5 hover:border-accent
+          w-[70px] md:w-[80px]
           ${isSTier
-            ? 'border-amber-300 shadow-md'
+            ? 'border-amber-300/70 shadow-sm'
             : isATier
-              ? 'border-slate-200 dark:border-slate-600'
-              : 'border-orange-200 dark:border-orange-800/50'
+              ? 'border-slate-200/70 dark:border-slate-600/70'
+              : 'border-orange-200/70 dark:border-orange-800/50'
           }
         `}
       >
-        {/* 순위 뱃지 (S티어만) */}
+        {/* S티어 1-3위 순위 뱃지 */}
         {isSTier && rank <= 3 && (
           <div
             className={`
-              absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center
-              text-xs font-bold text-white shadow-md
-              ${rank === 1 ? 'bg-amber-500' : rank === 2 ? 'bg-slate-400' : 'bg-amber-700'}
+              absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center
+              text-[10px] font-bold text-white shadow-sm z-10
+              ${rank === 1 ? 'bg-gradient-to-br from-amber-400 to-amber-600' : rank === 2 ? 'bg-gradient-to-br from-slate-300 to-slate-500' : 'bg-gradient-to-br from-amber-600 to-amber-800'}
             `}
           >
             {rank}
           </div>
         )}
 
+        {/* S티어 1위 특별 효과 */}
+        {isSTier && rank === 1 && (
+          <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-amber-400 animate-pulse" />
+        )}
+
         {/* 로고/이미지 */}
-        <div className="relative rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 w-10 h-10 md:w-12 md:h-12">
+        <div className="relative rounded-full bg-muted/50 flex items-center justify-center overflow-hidden shrink-0 w-10 h-10 md:w-11 md:h-11">
           {brand.logo_url ? (
             <Image
               src={brand.logo_url}
               alt={brand.name}
               fill
-              className="object-contain p-2"
+              className="object-contain p-1.5"
             />
           ) : (
-            <span className="font-bold text-muted-foreground text-base md:text-lg">
+            <span className="font-bold text-muted-foreground text-sm md:text-base">
               {brand.name.charAt(0)}
             </span>
           )}
         </div>
 
-        {/* 이름 - 고정 높이 영역 */}
-        <div className="flex-1 flex items-center justify-center mt-1">
-          <h3 className="font-semibold text-center group-hover:text-accent transition-colors line-clamp-2 text-[11px] md:text-xs leading-tight">
-            {brand.name}
-          </h3>
-        </div>
-
-        {/* 점수 */}
-        <div
-          className={`
-            font-bold text-xs shrink-0
-            ${isSTier
-              ? 'text-amber-600'
-              : isATier
-                ? 'text-slate-500'
-                : 'text-orange-600/80'
-            }
-          `}
-        >
-          {brand.tier_score.toFixed(1)}점
-        </div>
-
-        {/* 투표 버튼 */}
-        <div className="flex items-center gap-1 mt-1 shrink-0">
-          <button
-            onClick={(e) => handleVoteClick(e, 'up')}
-            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 transition-colors"
-            title="등급 상향"
-          >
-            <ChevronUp className="h-3 w-3" />
-            <span>{votes.upVotes}</span>
-          </button>
-          <button
-            onClick={(e) => handleVoteClick(e, 'down')}
-            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors"
-            title="등급 하향"
-          >
-            <ChevronDown className="h-3 w-3" />
-            <span>{votes.downVotes}</span>
-          </button>
-        </div>
+        {/* 이름만 표시 - 깔끔하게 */}
+        <h3 className="font-medium text-center group-hover:text-accent transition-colors line-clamp-2 text-[10px] md:text-[11px] leading-tight mt-1 px-0.5">
+          {brand.name}
+        </h3>
       </div>
     </Link>
   );

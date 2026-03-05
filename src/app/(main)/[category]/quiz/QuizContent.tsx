@@ -1,17 +1,20 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCategory } from '@/hooks/useBrands';
 import { useQuizStore } from '@/store/quizStore';
+import { useGamificationStore } from '@/store/gamificationStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TierBadge } from '@/components/tier/TierBadge';
+import { Confetti } from '@/components/effects/Confetti';
 import { RotateCcw, ChevronLeft, Users, Trophy, Check } from 'lucide-react';
 import { ShareButtons } from '@/components/share/ShareButtons';
 import { CHICKEN_MENUS, CHICKEN_RECOMMENDATIONS } from '@/lib/mockData';
+import { POINT_ACTIONS } from '@/types/gamification';
 import type { TierLevel } from '@/lib/tier';
 
 interface QuizContentProps {
@@ -161,8 +164,10 @@ export function QuizContent({ category }: QuizContentProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isComplete, setIsComplete] = useState(false);
   const [direction, setDirection] = useState(1);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const { setQuizData } = useQuizStore();
+  const { addPoints, incrementStat } = useGamificationStore();
 
   // 카테고리별 설정
   const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];
@@ -196,6 +201,11 @@ export function QuizContent({ category }: QuizContentProps) {
         ...newAnswers,
       });
       setIsComplete(true);
+      setShowConfetti(true);
+
+      // Gamification: 퀴즈 완료 포인트 및 통계 업데이트
+      addPoints(POINT_ACTIONS.complete_quiz);
+      incrementStat('quizzes');
     }
   };
 
@@ -234,6 +244,14 @@ export function QuizContent({ category }: QuizContentProps) {
 
     return (
       <div className="container py-8 max-w-2xl mx-auto">
+        {/* Confetti Effect */}
+        <Confetti
+          isActive={showConfetti}
+          duration={4000}
+          particleCount={60}
+          onComplete={() => setShowConfetti(false)}
+        />
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

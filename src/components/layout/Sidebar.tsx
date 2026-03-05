@@ -12,7 +12,7 @@ interface Category {
   name: string;
   icon: string;
   enabled: boolean;
-  subLabel?: string; // 하위 항목 라벨 (브랜드, 인기 메뉴 등)
+  subLabel?: string;
   items?: { slug: string; name: string }[];
 }
 
@@ -52,7 +52,6 @@ const CATEGORIES: Category[] = [
   },
 ];
 
-// 카테고리별 서브 메뉴
 const CATEGORY_MENUS = [
   { key: 'tier', label: '계급도 보기', icon: Trophy },
   { key: 'quiz', label: '3분 진단', icon: Sparkles },
@@ -65,7 +64,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className = '' }: SidebarProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
 
   // 모바일에서 링크 클릭(경로 변경) 시 사이드바 닫기
@@ -78,7 +77,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
   return (
     <>
-      {/* Toggle Button - visible on tablet+ when sidebar is closed */}
       {!isOpen && (
         <Button
           variant="ghost"
@@ -90,7 +88,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
         </Button>
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -102,7 +99,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
           flex flex-col overflow-hidden
         `}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <span className="font-semibold">카테고리</span>
           <Button variant="ghost" size="icon" onClick={toggle}>
@@ -110,9 +106,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
           </Button>
         </div>
 
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto py-2">
-          {/* Categories */}
           <div className="px-2">
             {CATEGORIES.map((category) => {
               const isExpanded = expandedCategories.includes(category.slug);
@@ -121,7 +115,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
               return (
                 <div key={category.slug} className="mb-2">
-                  {/* Category Header */}
                   <button
                     onClick={() => category.enabled && toggleCategory(category.slug)}
                     disabled={!category.enabled}
@@ -150,10 +143,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
                     )}
                   </button>
 
-                  {/* Sub-items */}
                   {category.enabled && isExpanded && (
                     <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
-                      {/* Category Menus (계급도/3분진단/VS비교) */}
                       {CATEGORY_MENUS.map((menu) => {
                         const menuPath = `/${category.slug}/${menu.key}`;
                         const isActiveMenu = pathname === menuPath || pathname.startsWith(menuPath + '/');
@@ -177,7 +168,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
                         );
                       })}
 
-                      {/* Sub Items (Brands or Menus) */}
                       {category.items && category.items.length > 0 && (
                         <div className="pt-2 mt-2 border-t border-border/50">
                           <p className="px-3 py-1 text-xs text-muted-foreground font-medium">
@@ -185,7 +175,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
                           </p>
                           <div className="space-y-0.5">
                             {category.items.map((item) => {
-                              // 모든 카테고리 인기 제품은 model 경로 사용
                               const itemPath = `/${category.slug}/model/${item.slug}`;
                               const isActiveItem = pathname === itemPath || pathname.startsWith(itemPath + '/');
 
@@ -217,7 +206,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
         </div>
       </aside>
 
-      {/* Backdrop for mobile */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden"

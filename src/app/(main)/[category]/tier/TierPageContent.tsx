@@ -775,48 +775,58 @@ export function TierPageContent({ category }: TierPageContentProps) {
         </TabsContent>
       </Tabs>
 
-      {/* Quiz CTA Section */}
-      {(() => {
-        const quizCTA = {
-          'running-shoes': {
-            title: '어떤 러닝화가 나에게 맞을까?',
-            description: '3분 진단으로 내 발에 맞는 러닝화를 추천받으세요',
-          },
-          'chicken': {
-            title: '나에게 맞는 치킨은?',
-            description: '취향, 상황, 예산에 맞는 치킨을 추천받으세요',
-          },
-        }[category] || {
-          title: '나에게 맞는 제품 찾기',
-          description: '3분 진단으로 맞춤 제품을 추천받으세요',
-        };
+      {/* Interactive Features CTAs */}
+      <div className="grid md:grid-cols-3 gap-4">
+        {/* Quiz CTA */}
+        <Card className="card-base border-accent/30 bg-gradient-to-br from-accent/10 to-accent/5 hover:border-accent/50 transition-all">
+          <CardContent className="p-5 h-full flex flex-col">
+            <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl mb-3">
+              🎯
+            </div>
+            <h3 className="font-bold mb-1">
+              {category === 'running-shoes' ? '나에게 맞는 러닝화 찾기' : category === 'chicken' ? '나에게 맞는 치킨 찾기' : '맞춤 추천'}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4 flex-1">
+              3분 퀴즈로 취향에 맞는 제품을 찾아보세요
+            </p>
+            <Button className="w-full bg-accent hover:bg-accent/90" asChild>
+              <Link href={`/${category}/quiz`}>퀴즈 시작 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            </Button>
+          </CardContent>
+        </Card>
 
-        return (
-          <Card className="card-base border-accent/30 bg-gradient-to-r from-accent/5 to-primary/5">
-            <CardContent className="py-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-accent/20 flex items-center justify-center shrink-0">
-                    <Sparkles className="h-7 w-7 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold mb-1">{quizCTA.title}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {quizCTA.description}
-                    </p>
-                  </div>
-                </div>
-                <Button className="bg-accent hover:bg-accent/90 shrink-0" size="lg" asChild>
-                  <Link href={`/${category}/quiz`}>
-                    3분 진단 시작하기
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })()}
+        {/* My Tier CTA */}
+        <Card className="card-base border-purple-300/30 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10 hover:border-purple-400/50 transition-all">
+          <CardContent className="p-5 h-full flex flex-col">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl mb-3">
+              🎨
+            </div>
+            <h3 className="font-bold mb-1">나의 계급도 만들기</h3>
+            <p className="text-sm text-muted-foreground mb-4 flex-1">
+              드래그로 나만의 계급도를 만들고 친구들과 공유하세요
+            </p>
+            <Button variant="outline" className="w-full border-purple-300 hover:bg-purple-50" asChild>
+              <Link href={`/${category}/my-tier`}>만들기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Discover CTA */}
+        <Card className="card-base border-pink-300/30 bg-gradient-to-br from-pink-50 to-pink-100/50 dark:from-pink-950/20 dark:to-pink-900/10 hover:border-pink-400/50 transition-all">
+          <CardContent className="p-5 h-full flex flex-col">
+            <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center text-2xl mb-3">
+              💖
+            </div>
+            <h3 className="font-bold mb-1">스와이프로 발견하기</h3>
+            <p className="text-sm text-muted-foreground mb-4 flex-1">
+              좌우 스와이프로 취향에 맞는 제품을 찾아보세요
+            </p>
+            <Button variant="outline" className="w-full border-pink-300 hover:bg-pink-50" asChild>
+              <Link href={`/${category}/discover`}>시작하기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Scoring Criteria */}
       <Card className="card-base">

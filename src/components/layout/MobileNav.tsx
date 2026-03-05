@@ -13,7 +13,7 @@ const navItems = [
 ];
 
 export function MobileNav() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   // 현재 카테고리를 URL에서 추출 (예: /chicken/tier → chicken)
   const currentCategory = pathname.split('/')[1] || 'running-shoes';
