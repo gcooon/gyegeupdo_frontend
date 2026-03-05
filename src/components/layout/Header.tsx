@@ -85,10 +85,14 @@ export function Header() {
                   <div className="absolute top-full left-0 mt-1 w-44 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
                     {CATEGORY_MENUS.map((menu) => {
                       const Icon = menu.icon;
+                      // 계급도는 카테고리 메인 페이지로 이동
+                      const menuHref = menu.key === 'tier'
+                        ? `/${category.slug}`
+                        : `/${category.slug}/${menu.key}`;
                       return (
                         <Link
                           key={menu.key}
-                          href={`/${category.slug}/${menu.key}`}
+                          href={menuHref}
                           className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                         >
                           <Icon className="h-4 w-4" />

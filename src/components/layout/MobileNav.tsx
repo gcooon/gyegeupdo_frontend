@@ -6,7 +6,7 @@ import { Home, Trophy, Search, MessageSquare, User } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: '홈', icon: Home, matchExact: true },
-  { href: '/running-shoes/tier', label: '계급도', icon: Trophy, matchPrefix: '/tier' },
+  { href: '/running-shoes', label: '계급도', icon: Trophy, matchCategory: true },
   { href: '/running-shoes/quiz', label: '추천', icon: Search, matchPrefix: '/quiz' },
   { href: '/running-shoes/board', label: '게시판', icon: MessageSquare, matchPrefix: '/board' },
   { href: '/login', label: '내 정보', icon: User, matchExact: true },
@@ -28,6 +28,10 @@ export function MobileNav() {
 
   const isActive = (item: typeof navItems[number]) => {
     if (item.matchExact) return pathname === item.href;
+    if ('matchCategory' in item && item.matchCategory) {
+      // 카테고리 루트 페이지에서만 활성화 (예: /running-shoes, /chicken)
+      return pathname === `/${category}`;
+    }
     if (item.matchPrefix) return pathname.includes(item.matchPrefix);
     return false;
   };
@@ -35,7 +39,11 @@ export function MobileNav() {
   // 카테고리에 맞게 href를 동적으로 변환
   const getHref = (item: typeof navItems[number]) => {
     if (item.matchExact) return item.href;
-    // /running-shoes/tier → /{현재카테고리}/tier
+    if ('matchCategory' in item && item.matchCategory) {
+      // 카테고리 루트 페이지로 이동
+      return `/${category}`;
+    }
+    // /running-shoes/quiz → /{현재카테고리}/quiz
     return item.href.replace('running-shoes', category);
   };
 

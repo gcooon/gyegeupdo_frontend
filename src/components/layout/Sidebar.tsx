@@ -123,8 +123,13 @@ export function Sidebar({ className = '' }: SidebarProps) {
                   {category.enabled && isExpanded && (
                     <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
                       {CATEGORY_MENUS.map((menu) => {
-                        const menuPath = `/${category.slug}/${menu.key}`;
-                        const isActiveMenu = pathname === menuPath || pathname.startsWith(menuPath + '/');
+                        // 계급도는 카테고리 메인 페이지로 이동
+                        const menuPath = menu.key === 'tier'
+                          ? `/${category.slug}`
+                          : `/${category.slug}/${menu.key}`;
+                        const isActiveMenu = menu.key === 'tier'
+                          ? pathname === `/${category.slug}`
+                          : pathname === menuPath || pathname.startsWith(menuPath + '/');
                         const Icon = menu.icon;
 
                         return (
