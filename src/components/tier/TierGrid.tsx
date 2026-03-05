@@ -17,7 +17,6 @@ const TIER_ICONS: Record<TierLevel, React.ElementType | null> = {
   A: Medal,
   B: Award,
   C: Star,
-  D: null,
 };
 
 export function TierGrid({ brands, category }: TierGridProps) {

@@ -87,7 +87,6 @@ export function CompareContent({ category, slugs }: CompareContentProps) {
       A: [],
       B: [],
       C: [],
-      D: [],
     };
     filteredProducts.forEach((p) => {
       if (grouped[p.tier]) {

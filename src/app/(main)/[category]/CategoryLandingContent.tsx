@@ -696,14 +696,19 @@ export function CategoryLandingContent({ category }: CategoryLandingContentProps
 
                     <CardContent className="p-0">
                       {/* TierMaker 스타일 티어 행 */}
-                      {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
+                      {(['S', 'A', 'B', 'C'] as TierLevel[]).map((tier) => {
                         const items = usageTiers[tier] || [];
                         const tierColors: Record<TierLevel, string> = {
-                          S: '#FFB6C1',
-                          A: '#FFDAB9',
-                          B: '#FFFFE0',
-                          C: '#FDE047',
-                          D: '#FB923C',
+                          S: '#FFD700',  // 황제 - Gold
+                          A: '#9370DB',  // 왕 - Purple
+                          B: '#4169E1',  // 양반 - Royal Blue
+                          C: '#3CB371',  // 중인 - Green
+                        };
+                        const tierLabels: Record<TierLevel, string> = {
+                          S: '황제',
+                          A: '왕',
+                          B: '양반',
+                          C: '중인',
                         };
                         return (
                           <div key={tier} className="flex border-b last:border-b-0">
@@ -714,8 +719,8 @@ export function CategoryLandingContent({ category }: CategoryLandingContentProps
                                 backgroundColor: tierColors[tier],
                               }}
                             >
-                              <span className="text-xl font-black text-black">
-                                {tier}급
+                              <span className={`text-lg font-black ${tier === 'S' ? 'text-black' : 'text-white'}`}>
+                                {tierLabels[tier]}
                               </span>
                             </div>
 

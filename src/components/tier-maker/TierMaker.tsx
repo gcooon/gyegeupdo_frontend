@@ -44,7 +44,6 @@ const TIER_ICONS: Record<TierLevel, React.ElementType> = {
   A: Medal,
   B: Award,
   C: Sparkles,
-  D: Sparkles,
 };
 
 export function TierMaker({ category, categoryName, initialItems, onSave }: TierMakerProps) {
