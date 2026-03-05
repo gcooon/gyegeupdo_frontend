@@ -17,6 +17,7 @@ const TIER_ICONS: Record<TierLevel, React.ElementType | null> = {
   A: Medal,
   B: Award,
   C: Star,
+  D: null,
 };
 
 export function TierGrid({ brands, category }: TierGridProps) {
@@ -116,7 +117,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
       })}
 
       {/* 범례/설명 */}
-      <div className="flex items-center justify-center gap-3 md:gap-5 pt-3 text-[10px] md:text-xs text-muted-foreground">
+      <div className="flex items-center justify-center gap-2 md:gap-4 pt-3 text-[10px] md:text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.S.gradient }} />
           <span>황제</span>
@@ -132,6 +133,10 @@ export function TierGrid({ brands, category }: TierGridProps) {
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.C.gradient }} />
           <span>중인</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.D.gradient }} />
+          <span>평민</span>
         </div>
       </div>
     </div>

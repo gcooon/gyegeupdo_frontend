@@ -1,4 +1,4 @@
-export type TierLevel = 'S' | 'A' | 'B' | 'C';
+export type TierLevel = 'S' | 'A' | 'B' | 'C' | 'D';
 
 export const TIER_CONFIG: Record<TierLevel, {
   bg: string;
@@ -55,13 +55,25 @@ export const TIER_CONFIG: Record<TierLevel, {
     bgLight: 'rgba(60, 179, 113, 0.2)',
     emoji: '🏠',
   },
+  D: {
+    bg: 'tier-d',
+    text: 'text-stone-600',
+    label: '평민',
+    color: '#8B7355',
+    gradient: '#8B7355',
+    glow: 'none',
+    borderColor: '#8B7355',
+    bgLight: 'rgba(139, 115, 85, 0.2)',
+    emoji: '🌾',
+  },
 };
 
 export function getTierFromScore(score: number): TierLevel {
   if (score >= 85) return 'S';  // 황제
   if (score >= 70) return 'A';  // 왕
   if (score >= 55) return 'B';  // 양반
-  return 'C';                   // 중인
+  if (score >= 40) return 'C';  // 중인
+  return 'D';                   // 평민
 }
 
 export function getTierConfig(tier: TierLevel) {

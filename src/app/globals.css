@@ -52,6 +52,7 @@
   --color-tier-a: #9370DB;  /* 왕 - Purple */
   --color-tier-b: #4169E1;  /* 양반 - Royal Blue */
   --color-tier-c: #3CB371;  /* 중인 - Medium Sea Green */
+  --color-tier-d: #8B7355;  /* 평민 - Brown */
 
   /* Trend Colors */
   --color-up: #10B981;
@@ -174,6 +175,10 @@
   }
   .tier-c {
     background: #3CB371;  /* 중인 - Medium Sea Green */
+    @apply text-white;
+  }
+  .tier-d {
+    background: #8B7355;  /* 평민 - Brown */
     @apply text-white;
   }
 

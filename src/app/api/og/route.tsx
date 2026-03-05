@@ -9,6 +9,7 @@ const TIER_COLORS: Record<string, { bg: string; text: string; label: string }> =
   A: { bg: '#9370DB', text: '#FFF', label: '왕' },    // Purple
   B: { bg: '#4169E1', text: '#FFF', label: '양반' },  // Royal Blue
   C: { bg: '#3CB371', text: '#FFF', label: '중인' },  // Medium Sea Green
+  D: { bg: '#8B7355', text: '#FFF', label: '평민' },  // Brown
 };
 
 export async function GET(request: NextRequest) {
@@ -251,7 +252,7 @@ function generateMyTierOG({
   }
 
   // 티어별로 그룹화
-  const tiers = ['S', 'A', 'B', 'C'];
+  const tiers = ['S', 'A', 'B', 'C', 'D'];
   const categoryEmoji = category === 'running-shoes' ? '👟' : category === 'chicken' ? '🍗' : '🏆';
 
   return new ImageResponse(

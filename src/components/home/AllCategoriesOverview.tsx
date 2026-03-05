@@ -30,7 +30,6 @@ const CATEGORY_TICKER = [
   { slug: 'perfume', name: '향수', icon: '🧴', color: '#9C27B0', enabled: false },
   { slug: 'luxury-bag', name: '명품백', icon: '👜', color: '#8B4513', enabled: false },
   { slug: 'camera', name: '카메라', icon: '📷', color: '#607D8B', enabled: false },
-  { slug: 'car', name: '자동차', icon: '🚗', color: '#2196F3', enabled: false },
 ];
 
 // 카테고리 정보
@@ -227,30 +226,30 @@ export function AllCategoriesOverview() {
           </p>
 
           {/* 카테고리 티커 */}
-          <div className="flex flex-wrap justify-center gap-2 mt-8">
+          <div className="flex flex-wrap justify-center gap-1.5 mt-6">
             {CATEGORY_TICKER.map((cat) =>
               cat.enabled ? (
                 <Link
                   key={cat.slug}
                   href={`/${cat.slug}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 font-medium text-sm transition-all hover:scale-105 hover:shadow-md"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border font-medium text-xs transition-all hover:scale-105 hover:shadow-sm"
                   style={{
                     borderColor: cat.color,
                     backgroundColor: `${cat.color}15`,
                     color: cat.color,
                   }}
                 >
-                  <span>{cat.icon}</span>
+                  <span className="text-sm">{cat.icon}</span>
                   <span>{cat.name}</span>
                 </Link>
               ) : (
                 <span
                   key={cat.slug}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 bg-gray-100 text-gray-400 font-medium text-sm cursor-default"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-400 font-medium text-xs cursor-default"
                 >
-                  <span>{cat.icon}</span>
+                  <span className="text-sm">{cat.icon}</span>
                   <span>{cat.name}</span>
-                  <span className="text-xs">(준비중)</span>
+                  <span className="text-[10px]">(준비중)</span>
                 </span>
               )
             )}
