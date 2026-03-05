@@ -56,7 +56,7 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
 
   const { addPoints, incrementStat } = useGamificationStore();
 
-  const tiers: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
+  const tiers: TierLevel[] = ['S', 'A', 'B', 'C'];
 
   // 아이템을 특정 티어로 이동
   const moveToTier = useCallback((itemId: string, newTier: TierLevel | null) => {
@@ -349,7 +349,7 @@ function TierItemCard({ item, onRemove, isEditable = true }: TierItemCardProps) 
             className="border-t border-slate-200 dark:border-slate-600"
           >
             <div className="flex">
-              {(['S', 'A', 'B', 'C', 'D'] as TierLevel[]).map((tier) => (
+              {(['S', 'A', 'B', 'C'] as TierLevel[]).map((tier) => (
                 <button
                   key={tier}
                   onClick={(e) => {

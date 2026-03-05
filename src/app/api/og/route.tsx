@@ -3,13 +3,12 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-// 티어별 색상 설정
-const TIER_COLORS: Record<string, { bg: string; text: string }> = {
-  S: { bg: '#FBBF24', text: '#000' },
-  A: { bg: '#CBD5E1', text: '#000' },
-  B: { bg: '#FB923C', text: '#FFF' },
-  C: { bg: '#6B7280', text: '#FFF' },
-  D: { bg: '#374151', text: '#FFF' },
+// 티어별 색상 설정 - 한국 전통 계급 시스템
+const TIER_COLORS: Record<string, { bg: string; text: string; label: string }> = {
+  S: { bg: '#FFD700', text: '#000', label: '황제' },  // Gold
+  A: { bg: '#9370DB', text: '#FFF', label: '왕' },    // Purple
+  B: { bg: '#4169E1', text: '#FFF', label: '양반' },  // Royal Blue
+  C: { bg: '#3CB371', text: '#FFF', label: '중인' },  // Medium Sea Green
 };
 
 export async function GET(request: NextRequest) {
@@ -177,12 +176,12 @@ function generateTierOG({
         >
           <span
             style={{
-              fontSize: '120px',
+              fontSize: '80px',
               fontWeight: 'bold',
               color: tierColor.text,
             }}
           >
-            {tier}
+            {tierColor.label || tier}
           </span>
         </div>
 
@@ -252,7 +251,7 @@ function generateMyTierOG({
   }
 
   // 티어별로 그룹화
-  const tiers = ['S', 'A', 'B', 'C', 'D'];
+  const tiers = ['S', 'A', 'B', 'C'];
   const categoryEmoji = category === 'running-shoes' ? '👟' : category === 'chicken' ? '🍗' : '🏆';
 
   return new ImageResponse(
@@ -313,12 +312,12 @@ function generateMyTierOG({
                 >
                   <span
                     style={{
-                      fontSize: '48px',
+                      fontSize: '32px',
                       fontWeight: 'bold',
                       color: tierColor.text,
                     }}
                   >
-                    {tier}
+                    {tierColor.label || tier}
                   </span>
                 </div>
 

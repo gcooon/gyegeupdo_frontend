@@ -117,18 +117,22 @@ export function TierGrid({ brands, category }: TierGridProps) {
       })}
 
       {/* 범례/설명 */}
-      <div className="flex items-center justify-center gap-4 md:gap-6 pt-3 text-[10px] md:text-xs text-muted-foreground">
+      <div className="flex items-center justify-center gap-3 md:gap-5 pt-3 text-[10px] md:text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.S.gradient }} />
-          <span>S급: 최고</span>
+          <span>황제</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.A.gradient }} />
-          <span>A급: 우수</span>
+          <span>왕</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.B.gradient }} />
-          <span>B급: 준수</span>
+          <span>양반</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.C.gradient }} />
+          <span>중인</span>
         </div>
       </div>
     </div>

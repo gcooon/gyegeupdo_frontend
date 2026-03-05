@@ -47,12 +47,11 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  /* Tier Colors - Gold/Silver/Bronze System */
-  --color-tier-s: #FFD700;
-  --color-tier-a: #C0C0C0;
-  --color-tier-b: #CD7F32;
-  --color-tier-c: #6B7280;
-  --color-tier-d: #374151;
+  /* Tier Colors - 한국 전통 계급 시스템 */
+  --color-tier-s: #FFD700;  /* 황제 - Gold */
+  --color-tier-a: #9370DB;  /* 왕 - Purple */
+  --color-tier-b: #4169E1;  /* 양반 - Royal Blue */
+  --color-tier-c: #3CB371;  /* 중인 - Medium Sea Green */
 
   /* Trend Colors */
   --color-up: #10B981;
@@ -157,27 +156,25 @@
     @apply shadow-xl scale-[1.02];
   }
 
-  /* Tier Badge Styles - Gold/Silver/Bronze System */
+  /* Tier Badge Styles - 한국 전통 계급 시스템 */
   .tier-badge {
     @apply inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-bold;
   }
   .tier-s {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    background: #FFD700;  /* 황제 - Gold */
     @apply text-black;
   }
   .tier-a {
-    background: linear-gradient(135deg, #E8E8E8 0%, #C0C0C0 100%);
-    @apply text-black;
+    background: #9370DB;  /* 왕 - Purple */
+    @apply text-white;
   }
   .tier-b {
-    background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+    background: #4169E1;  /* 양반 - Royal Blue */
     @apply text-white;
   }
   .tier-c {
-    @apply bg-gray-500 text-white;
-  }
-  .tier-d {
-    @apply bg-gray-700 text-white;
+    background: #3CB371;  /* 중인 - Medium Sea Green */
+    @apply text-white;
   }
 
   /* Trend Colors */

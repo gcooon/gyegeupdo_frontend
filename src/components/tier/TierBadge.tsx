@@ -30,8 +30,8 @@ export function TierBadge({
     lg: 'min-w-[40px] h-10 px-3 text-base gap-1.5',
   };
 
-  // Text color: black for gold/silver, white for bronze and below
-  const textColorClass = tier === 'S' || tier === 'A' ? 'text-black' : 'text-white';
+  // Text color: black for 황제(gold), white for others
+  const textColorClass = tier === 'S' ? 'text-black' : 'text-white';
 
   const BadgeContent = (
     <>

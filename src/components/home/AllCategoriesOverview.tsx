@@ -26,10 +26,11 @@ import type { TierLevel } from '@/lib/tier';
 const CATEGORY_TICKER = [
   { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560', enabled: true },
   { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00', enabled: true },
-  { slug: 'coffee', name: '커피', icon: '☕', color: '#6B4423', enabled: false },
-  { slug: 'laptop', name: '노트북', icon: '💻', color: '#3B82F6', enabled: false },
-  { slug: 'earphone', name: '이어폰', icon: '🎧', color: '#8B5CF6', enabled: false },
-  { slug: 'camera', name: '카메라', icon: '📷', color: '#10B981', enabled: false },
+  { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F', enabled: false },
+  { slug: 'perfume', name: '향수', icon: '🧴', color: '#9C27B0', enabled: false },
+  { slug: 'luxury-bag', name: '명품백', icon: '👜', color: '#8B4513', enabled: false },
+  { slug: 'camera', name: '카메라', icon: '📷', color: '#607D8B', enabled: false },
+  { slug: 'car', name: '자동차', icon: '🚗', color: '#2196F3', enabled: false },
 ];
 
 // 카테고리 정보
