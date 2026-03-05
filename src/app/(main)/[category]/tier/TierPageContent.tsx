@@ -733,7 +733,7 @@ export function TierPageContent({ category }: TierPageContentProps) {
       </Tabs>
 
       {/* Interactive Features CTAs */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {/* Quiz CTA */}
         <Card className="card-base border-accent/30 bg-gradient-to-br from-accent/10 to-accent/5 hover:border-accent/50 transition-all">
           <CardContent className="p-5 h-full flex flex-col">
@@ -752,8 +752,8 @@ export function TierPageContent({ category }: TierPageContentProps) {
           </CardContent>
         </Card>
 
-        {/* My Tier CTA */}
-        <Card className="card-base border-purple-300/30 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10 hover:border-purple-400/50 transition-all">
+        {/* My Tier CTA - 향후 "내가 만든 계급도" 메뉴에서 별도 런칭 예정 (기존 카테고리에서는 숨김) */}
+        {/* <Card className="card-base border-purple-300/30 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10 hover:border-purple-400/50 transition-all">
           <CardContent className="p-5 h-full flex flex-col">
             <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl mb-3">
               🎨
@@ -766,7 +766,7 @@ export function TierPageContent({ category }: TierPageContentProps) {
               <Link href={`/${category}/my-tier`}>만들기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Discover CTA */}
         <Card className="card-base border-pink-300/30 bg-gradient-to-br from-pink-50 to-pink-100/50 dark:from-pink-950/20 dark:to-pink-900/10 hover:border-pink-400/50 transition-all">
