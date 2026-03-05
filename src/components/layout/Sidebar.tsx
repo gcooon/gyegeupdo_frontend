@@ -12,8 +12,6 @@ interface Category {
   name: string;
   icon: string;
   enabled: boolean;
-  subLabel?: string;
-  items?: { slug: string; name: string }[];
 }
 
 const CATEGORIES: Category[] = [
@@ -22,33 +20,12 @@ const CATEGORIES: Category[] = [
     name: '러닝화',
     icon: '👟',
     enabled: true,
-    subLabel: '인기 제품',
-    items: [
-      { slug: 'novablast-5', name: '노바블라스트 5' },
-      { slug: 'gel-kayano-31', name: '젤 카야노 31' },
-      { slug: 'alphafly-3', name: '알파플라이 3' },
-      { slug: 'vaporfly-3', name: '베이퍼플라이 3' },
-      { slug: 'clifton-10', name: '클리프톤 10' },
-      { slug: '1080v14', name: '1080v14' },
-      { slug: 'endorphin-speed-4', name: '엔돌핀 스피드 4' },
-      { slug: 'glycerin-21', name: '글리세린 21' },
-    ],
   },
   {
     slug: 'chicken',
     name: '치킨',
     icon: '🍗',
     enabled: true,
-    subLabel: '인기 메뉴',
-    items: [
-      { slug: 'bbq-golden-olive', name: '황금올리브치킨' },
-      { slug: 'kyochon-original', name: '교촌 오리지날' },
-      { slug: 'bhc-puringkle', name: '뿌링클' },
-      { slug: 'kyochon-red', name: '교촌 레드' },
-      { slug: 'goobne-gochu', name: '굽네 고추바사삭' },
-      { slug: 'nene-snowing', name: '네네 스노윙' },
-      { slug: 'puradak-black-allio', name: '푸라닭 블랙알리오' },
-    ],
   },
 ];
 
@@ -106,7 +83,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-2">
+        <div className="flex-1 overflow-y-auto overscroll-contain py-2" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="px-2">
             {CATEGORIES.map((category) => {
               const isExpanded = expandedCategories.includes(category.slug);
@@ -167,36 +144,6 @@ export function Sidebar({ className = '' }: SidebarProps) {
                           </Link>
                         );
                       })}
-
-                      {category.items && category.items.length > 0 && (
-                        <div className="pt-2 mt-2 border-t border-border/50">
-                          <p className="px-3 py-1 text-xs text-muted-foreground font-medium">
-                            {category.subLabel || '항목'}
-                          </p>
-                          <div className="space-y-0.5">
-                            {category.items.map((item) => {
-                              const itemPath = `/${category.slug}/model/${item.slug}`;
-                              const isActiveItem = pathname === itemPath || pathname.startsWith(itemPath + '/');
-
-                              return (
-                                <Link
-                                  key={item.slug}
-                                  href={itemPath}
-                                  className={`
-                                    block px-3 py-1.5 rounded-lg text-sm transition-colors
-                                    ${isActiveItem
-                                      ? 'bg-accent text-accent-foreground font-medium'
-                                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                                    }
-                                  `}
-                                >
-                                  {item.name}
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>

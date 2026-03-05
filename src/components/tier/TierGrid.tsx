@@ -62,8 +62,8 @@ export function TierGrid({ brands, category }: TierGridProps) {
               <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
 
               {/* 티어 레터 */}
-              <span className="font-black text-white drop-shadow-lg relative z-10 text-3xl md:text-4xl">
-                {tier}
+              <span className="font-black text-white drop-shadow-lg relative z-10 text-2xl md:text-3xl">
+                {tier}급
               </span>
 
               {/* 아이콘 */}
@@ -117,15 +117,15 @@ export function TierGrid({ brands, category }: TierGridProps) {
       <div className="flex items-center justify-center gap-4 md:gap-6 pt-3 text-[10px] md:text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.S.gradient }} />
-          <span>S: 최고</span>
+          <span>S급: 최고</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.A.gradient }} />
-          <span>A: 우수</span>
+          <span>A급: 우수</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG.B.gradient }} />
-          <span>B: 준수</span>
+          <span>B급: 준수</span>
         </div>
       </div>
     </div>

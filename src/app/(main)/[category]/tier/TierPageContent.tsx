@@ -685,77 +685,28 @@ export function TierPageContent({ category }: TierPageContentProps) {
                         <div key={tier} className="flex border-b last:border-b-0">
                           {/* 티어 라벨 */}
                           <div className={`w-16 shrink-0 ${tierStyles[tier]} flex items-center justify-center`}>
-                            <span className="text-2xl font-black text-white drop-shadow-md">{tier}</span>
+                            <span className="text-xl font-black text-white drop-shadow-md">{tier}급</span>
                           </div>
 
                           {/* 제품 목록 */}
-                          <div className="flex-1 p-3 bg-muted/30 flex flex-wrap gap-2 min-h-[80px] items-center">
+                          <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
                             {items.length === 0 ? (
                               <span className="text-sm text-muted-foreground italic">아직 데이터가 없습니다</span>
                             ) : (
-                              items.map((item) => {
-                                const netVotes = item.upVotes - item.downVotes;
-                                const isPositive = netVotes > 0;
-
-                                return (
-                                  <Link
-                                    key={item.slug}
-                                    href={`/${category}/model/${item.slug}`}
-                                    className="group relative"
-                                  >
-                                    <div className="bg-card border rounded-xl p-3 hover:border-accent hover:shadow-lg transition-all">
-                                      {/* 제품 정보 */}
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                          {item.brand}
-                                        </Badge>
-                                        <span className="font-semibold text-sm">{item.name}</span>
-                                      </div>
-
-                                      {/* 점수 및 투표 */}
-                                      <div className="flex items-center justify-between gap-3">
-                                        <Badge
-                                          variant="secondary"
-                                          className="bg-accent/10 text-accent font-bold text-xs"
-                                        >
-                                          {item.score}점
-                                        </Badge>
-
-                                        {/* UP/DOWN 투표 표시 */}
-                                        <div className="flex items-center gap-1.5">
-                                          <button
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              // TODO: Implement UP vote
-                                            }}
-                                            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 transition-colors"
-                                          >
-                                            <ChevronUp className="h-3.5 w-3.5" />
-                                            <span className="text-[10px] font-medium">{item.upVotes}</span>
-                                          </button>
-                                          <button
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              // TODO: Implement DOWN vote
-                                            }}
-                                            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 transition-colors"
-                                          >
-                                            <ChevronDown className="h-3.5 w-3.5" />
-                                            <span className="text-[10px] font-medium">{item.downVotes}</span>
-                                          </button>
-                                        </div>
-                                      </div>
-
-                                      {/* 순추천 표시 */}
-                                      <div className="mt-1.5 flex items-center justify-end">
-                                        <span className={`text-[10px] font-medium ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
-                                          {isPositive ? '+' : ''}{netVotes} 순추천
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </Link>
-                                );
-                              })
+                              items.map((item) => (
+                                <Link
+                                  key={item.slug}
+                                  href={`/${category}/model/${item.slug}`}
+                                  className="group"
+                                >
+                                  <div className="bg-card border rounded-lg px-3 py-2 hover:border-accent hover:shadow-md transition-all">
+                                    <p className="text-[10px] text-muted-foreground">{item.brand}</p>
+                                    <p className="font-medium text-sm group-hover:text-accent transition-colors line-clamp-1">
+                                      {item.name}
+                                    </p>
+                                  </div>
+                                </Link>
+                              ))
                             )}
                           </div>
                         </div>
