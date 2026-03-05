@@ -22,6 +22,16 @@ import {
 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
 
+// 카테고리 티커 데이터
+const CATEGORY_TICKER = [
+  { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560', enabled: true },
+  { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00', enabled: true },
+  { slug: 'coffee', name: '커피', icon: '☕', color: '#6B4423', enabled: false },
+  { slug: 'laptop', name: '노트북', icon: '💻', color: '#3B82F6', enabled: false },
+  { slug: 'earphone', name: '이어폰', icon: '🎧', color: '#8B5CF6', enabled: false },
+  { slug: 'camera', name: '카메라', icon: '📷', color: '#10B981', enabled: false },
+];
+
 // 카테고리 정보
 const CATEGORIES = [
   {
@@ -214,6 +224,36 @@ export function AllCategoriesOverview() {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             다양한 카테고리의 제품/서비스를 커뮤니티 리뷰 기반으로 S~B 등급으로 분류했습니다
           </p>
+
+          {/* 카테고리 티커 */}
+          <div className="flex flex-wrap justify-center gap-2 mt-8">
+            {CATEGORY_TICKER.map((cat) =>
+              cat.enabled ? (
+                <Link
+                  key={cat.slug}
+                  href={`/${cat.slug}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 font-medium text-sm transition-all hover:scale-105 hover:shadow-md"
+                  style={{
+                    borderColor: cat.color,
+                    backgroundColor: `${cat.color}15`,
+                    color: cat.color,
+                  }}
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.name}</span>
+                </Link>
+              ) : (
+                <span
+                  key={cat.slug}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 bg-gray-100 text-gray-400 font-medium text-sm cursor-default"
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.name}</span>
+                  <span className="text-xs">(준비중)</span>
+                </span>
+              )
+            )}
+          </div>
         </div>
       </section>
 
@@ -518,20 +558,6 @@ export function AllCategoriesOverview() {
         </div>
       </section>
 
-      {/* 추가 카테고리 예고 */}
-      <section className="text-center py-8">
-        <Card className="card-base border-dashed">
-          <CardContent className="py-8">
-            <p className="text-muted-foreground mb-2">더 많은 카테고리가 준비 중입니다</p>
-            <div className="flex items-center justify-center gap-4 text-2xl">
-              <span title="커피">☕</span>
-              <span title="노트북">💻</span>
-              <span title="이어폰">🎧</span>
-              <span title="카메라">📷</span>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
     </div>
   );
 }
