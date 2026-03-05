@@ -687,14 +687,6 @@ export function TierPageContent({ category }: TierPageContentProps) {
                         C: 'none',
                         D: 'none',
                       };
-                      const tierTextColors: Record<TierLevel, string> = {
-                        S: 'text-pink-700',
-                        A: 'text-orange-700',
-                        B: 'text-yellow-700',
-                        C: 'text-yellow-800',
-                        D: 'text-orange-800',
-                      };
-
                       return (
                         <div key={tier} className="flex border-b last:border-b-0">
                           {/* 티어 라벨 */}
@@ -707,12 +699,7 @@ export function TierPageContent({ category }: TierPageContentProps) {
                           >
                             {/* 광택 효과 */}
                             <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5" />
-                            <span
-                              className={`text-xl font-black relative z-10 ${tierTextColors[tier]}`}
-                              style={{
-                                textShadow: '0 1px 2px rgba(255,255,255,0.8)',
-                              }}
-                            >
+                            <span className="text-xl font-black relative z-10 text-black">
                               {tier}급
                             </span>
                           </div>

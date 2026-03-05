@@ -64,21 +64,14 @@ export function TierGrid({ brands, category }: TierGridProps) {
 
               {/* 티어 레터 */}
               <span
-                className={`font-black relative z-10 text-2xl md:text-3xl ${
-                  isSTier ? 'text-pink-700' : isATier ? 'text-orange-700' : 'text-yellow-700'
-                }`}
-                style={{
-                  textShadow: '0 1px 2px rgba(255,255,255,0.8)',
-                }}
+                className="font-black relative z-10 text-2xl md:text-3xl text-black"
               >
                 {tier}급
               </span>
 
               {/* 아이콘 */}
               {TierIcon && (
-                <TierIcon className={`mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 ${
-                  isSTier ? 'text-pink-600' : isATier ? 'text-orange-600' : 'text-yellow-600'
-                }`} />
+                <TierIcon className="mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 text-black/70" />
               )}
 
               {/* S티어 특별 효과 - 반짝임 */}
