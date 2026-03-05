@@ -673,19 +673,57 @@ export function TierPageContent({ category }: TierPageContentProps) {
                     {/* TierMaker 스타일 티어 행 */}
                     {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
                       const items = usageTiers[tier] || [];
-                      const tierStyles: Record<TierLevel, string> = {
-                        S: 'bg-gradient-to-r from-amber-500 to-amber-600',
-                        A: 'bg-gradient-to-r from-slate-400 to-slate-500',
-                        B: 'bg-gradient-to-r from-orange-500 to-orange-600',
-                        C: 'bg-gradient-to-r from-gray-400 to-gray-500',
-                        D: 'bg-gradient-to-r from-gray-500 to-gray-600',
+                      const tierStyles: Record<TierLevel, { bg: string; shadow: string }> = {
+                        S: {
+                          bg: 'background: linear-gradient(145deg, #FFD700 0%, #D4AF37 25%, #B8860B 50%, #D4AF37 75%, #FFD700 100%)',
+                          shadow: '0 0 15px rgba(212, 175, 55, 0.4)',
+                        },
+                        A: {
+                          bg: 'background: linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2d2d2d 100%)',
+                          shadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+                        },
+                        B: {
+                          bg: 'background: linear-gradient(145deg, #E8E8E8 0%, #C0C0C0 25%, #A8A8A8 50%, #C0C0C0 75%, #E8E8E8 100%)',
+                          shadow: '0 0 10px rgba(192, 192, 192, 0.3)',
+                        },
+                        C: {
+                          bg: 'background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 50%, #4B5563 100%)',
+                          shadow: 'none',
+                        },
+                        D: {
+                          bg: 'background: linear-gradient(135deg, #6B7280 0%, #4B5563 50%, #374151 100%)',
+                          shadow: 'none',
+                        },
                       };
 
                       return (
                         <div key={tier} className="flex border-b last:border-b-0">
                           {/* 티어 라벨 */}
-                          <div className={`w-16 shrink-0 ${tierStyles[tier]} flex items-center justify-center`}>
-                            <span className="text-xl font-black text-white drop-shadow-md">{tier}급</span>
+                          <div
+                            className="w-16 shrink-0 flex items-center justify-center relative overflow-hidden"
+                            style={{
+                              background: tier === 'S'
+                                ? 'linear-gradient(145deg, #FFD700 0%, #D4AF37 25%, #B8860B 50%, #D4AF37 75%, #FFD700 100%)'
+                                : tier === 'A'
+                                  ? 'linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2d2d2d 100%)'
+                                  : 'linear-gradient(145deg, #E8E8E8 0%, #C0C0C0 25%, #A8A8A8 50%, #C0C0C0 75%, #E8E8E8 100%)',
+                              boxShadow: tierStyles[tier].shadow,
+                            }}
+                          >
+                            {/* 광택 효과 */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10" />
+                            <span
+                              className={`text-xl font-black relative z-10 ${tier === 'B' ? 'text-slate-700' : 'text-white'}`}
+                              style={{
+                                textShadow: tier === 'S'
+                                  ? '0 2px 4px rgba(0,0,0,0.3), 0 0 15px rgba(255,215,0,0.4)'
+                                  : tier === 'A'
+                                    ? '0 2px 4px rgba(255,255,255,0.15)'
+                                    : '0 1px 2px rgba(0,0,0,0.2)',
+                              }}
+                            >
+                              {tier}급
+                            </span>
                           </div>
 
                           {/* 제품 목록 */}
