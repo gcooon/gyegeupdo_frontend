@@ -60,13 +60,15 @@ export function TierGrid({ brands, category }: TierGridProps) {
               }}
             >
               {/* 광택 효과 */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5" />
 
               {/* 티어 레터 */}
               <span
-                className="font-black relative z-10 text-2xl md:text-3xl text-white"
+                className={`font-black relative z-10 text-2xl md:text-3xl ${
+                  isSTier ? 'text-pink-700' : isATier ? 'text-orange-700' : 'text-yellow-700'
+                }`}
                 style={{
-                  textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                  textShadow: '0 1px 2px rgba(255,255,255,0.8)',
                 }}
               >
                 {tier}급
@@ -74,13 +76,15 @@ export function TierGrid({ brands, category }: TierGridProps) {
 
               {/* 아이콘 */}
               {TierIcon && (
-                <TierIcon className="mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 text-white/80" />
+                <TierIcon className={`mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 ${
+                  isSTier ? 'text-pink-600' : isATier ? 'text-orange-600' : 'text-yellow-600'
+                }`} />
               )}
 
               {/* S티어 특별 효과 - 반짝임 */}
               {isSTier && (
                 <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute -inset-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-purple-200/40 to-transparent skew-x-12" />
+                  <div className="absolute -inset-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12" />
                 </div>
               )}
             </div>
@@ -90,10 +94,10 @@ export function TierGrid({ brands, category }: TierGridProps) {
               className={`
                 flex-1 p-2 md:p-3 min-h-[80px] md:min-h-[90px]
                 ${isSTier
-                  ? 'bg-gradient-to-r from-purple-50/80 to-violet-50/40 dark:from-purple-950/40 dark:to-violet-950/20'
+                  ? 'bg-gradient-to-r from-pink-50/80 to-rose-50/40 dark:from-pink-950/30 dark:to-rose-950/20'
                   : isATier
-                    ? 'bg-gradient-to-r from-blue-50/80 to-sky-50/40 dark:from-blue-950/40 dark:to-sky-950/20'
-                    : 'bg-gradient-to-r from-green-50/80 to-emerald-50/40 dark:from-green-950/40 dark:to-emerald-950/20'
+                    ? 'bg-gradient-to-r from-orange-50/80 to-amber-50/40 dark:from-orange-950/30 dark:to-amber-950/20'
+                    : 'bg-gradient-to-r from-yellow-50/80 to-amber-50/30 dark:from-yellow-950/30 dark:to-amber-950/20'
                 }
               `}
             >
@@ -167,10 +171,10 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
           hover:shadow-md hover:-translate-y-0.5 hover:border-accent
           w-[70px] md:w-[80px]
           ${isSTier
-            ? 'border-purple-300/60 shadow-sm shadow-purple-200/30'
+            ? 'border-pink-300/70 shadow-sm shadow-pink-200/30'
             : isATier
-              ? 'border-blue-300/60 shadow-sm shadow-blue-200/20'
-              : 'border-green-300/60 shadow-sm shadow-green-200/20'
+              ? 'border-orange-300/70 shadow-sm shadow-orange-200/30'
+              : 'border-yellow-300/70 shadow-sm shadow-yellow-200/30'
           }
         `}
       >
@@ -181,10 +185,10 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
               absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center
               text-[10px] font-bold shadow-sm z-10
               ${rank === 1
-                ? 'bg-gradient-to-br from-purple-400 via-purple-500 to-purple-600 text-white'
+                ? 'bg-gradient-to-br from-pink-400 via-pink-500 to-pink-600 text-white'
                 : rank === 2
-                  ? 'bg-gradient-to-br from-purple-300 via-purple-400 to-purple-500 text-white'
-                  : 'bg-gradient-to-br from-purple-200 via-purple-300 to-purple-400 text-purple-800'
+                  ? 'bg-gradient-to-br from-pink-300 via-pink-400 to-pink-500 text-white'
+                  : 'bg-gradient-to-br from-pink-200 via-pink-300 to-pink-400 text-pink-800'
               }
             `}
           >
@@ -194,7 +198,7 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
 
         {/* S티어 1위 특별 효과 */}
         {isSTier && rank === 1 && (
-          <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-purple-400 animate-pulse" />
+          <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-pink-500 animate-pulse" />
         )}
 
         {/* 로고/이미지 */}

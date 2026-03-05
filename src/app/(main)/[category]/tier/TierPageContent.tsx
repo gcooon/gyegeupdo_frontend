@@ -674,18 +674,25 @@ export function TierPageContent({ category }: TierPageContentProps) {
                     {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
                       const items = usageTiers[tier] || [];
                       const tierGradients: Record<TierLevel, string> = {
-                        S: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 50%, #7C3AED 100%)',
-                        A: 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
-                        B: 'linear-gradient(135deg, #4ADE80 0%, #22C55E 50%, #16A34A 100%)',
+                        S: 'linear-gradient(135deg, #FFC0CB 0%, #FFB6C1 50%, #FF9CAD 100%)',
+                        A: 'linear-gradient(135deg, #FFE4C9 0%, #FFDAB9 50%, #FFCBA4 100%)',
+                        B: 'linear-gradient(135deg, #FFFFF0 0%, #FFFFE0 50%, #FFFACD 100%)',
                         C: 'linear-gradient(135deg, #FDE047 0%, #EAB308 50%, #CA8A04 100%)',
                         D: 'linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)',
                       };
                       const tierShadows: Record<TierLevel, string> = {
-                        S: '0 0 15px rgba(139, 92, 246, 0.4)',
-                        A: '0 0 12px rgba(59, 130, 246, 0.3)',
-                        B: '0 0 10px rgba(34, 197, 94, 0.3)',
+                        S: '0 0 12px rgba(255, 182, 193, 0.5)',
+                        A: '0 0 10px rgba(255, 218, 185, 0.5)',
+                        B: '0 0 8px rgba(255, 255, 224, 0.5)',
                         C: 'none',
                         D: 'none',
+                      };
+                      const tierTextColors: Record<TierLevel, string> = {
+                        S: 'text-pink-700',
+                        A: 'text-orange-700',
+                        B: 'text-yellow-700',
+                        C: 'text-yellow-800',
+                        D: 'text-orange-800',
                       };
 
                       return (
@@ -699,11 +706,11 @@ export function TierPageContent({ category }: TierPageContentProps) {
                             }}
                           >
                             {/* 광택 효과 */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10" />
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5" />
                             <span
-                              className="text-xl font-black relative z-10 text-white"
+                              className={`text-xl font-black relative z-10 ${tierTextColors[tier]}`}
                               style={{
-                                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                                textShadow: '0 1px 2px rgba(255,255,255,0.8)',
                               }}
                             >
                               {tier}급
