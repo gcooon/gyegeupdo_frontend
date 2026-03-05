@@ -673,27 +673,19 @@ export function TierPageContent({ category }: TierPageContentProps) {
                     {/* TierMaker 스타일 티어 행 */}
                     {(['S', 'A', 'B'] as TierLevel[]).map((tier) => {
                       const items = usageTiers[tier] || [];
-                      const tierStyles: Record<TierLevel, { bg: string; shadow: string }> = {
-                        S: {
-                          bg: 'background: linear-gradient(145deg, #FFD700 0%, #D4AF37 25%, #B8860B 50%, #D4AF37 75%, #FFD700 100%)',
-                          shadow: '0 0 15px rgba(212, 175, 55, 0.4)',
-                        },
-                        A: {
-                          bg: 'background: linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2d2d2d 100%)',
-                          shadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-                        },
-                        B: {
-                          bg: 'background: linear-gradient(145deg, #E8E8E8 0%, #C0C0C0 25%, #A8A8A8 50%, #C0C0C0 75%, #E8E8E8 100%)',
-                          shadow: '0 0 10px rgba(192, 192, 192, 0.3)',
-                        },
-                        C: {
-                          bg: 'background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 50%, #4B5563 100%)',
-                          shadow: 'none',
-                        },
-                        D: {
-                          bg: 'background: linear-gradient(135deg, #6B7280 0%, #4B5563 50%, #374151 100%)',
-                          shadow: 'none',
-                        },
+                      const tierGradients: Record<TierLevel, string> = {
+                        S: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 50%, #7C3AED 100%)',
+                        A: 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
+                        B: 'linear-gradient(135deg, #4ADE80 0%, #22C55E 50%, #16A34A 100%)',
+                        C: 'linear-gradient(135deg, #FDE047 0%, #EAB308 50%, #CA8A04 100%)',
+                        D: 'linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)',
+                      };
+                      const tierShadows: Record<TierLevel, string> = {
+                        S: '0 0 15px rgba(139, 92, 246, 0.4)',
+                        A: '0 0 12px rgba(59, 130, 246, 0.3)',
+                        B: '0 0 10px rgba(34, 197, 94, 0.3)',
+                        C: 'none',
+                        D: 'none',
                       };
 
                       return (
@@ -702,24 +694,16 @@ export function TierPageContent({ category }: TierPageContentProps) {
                           <div
                             className="w-16 shrink-0 flex items-center justify-center relative overflow-hidden"
                             style={{
-                              background: tier === 'S'
-                                ? 'linear-gradient(145deg, #FFD700 0%, #D4AF37 25%, #B8860B 50%, #D4AF37 75%, #FFD700 100%)'
-                                : tier === 'A'
-                                  ? 'linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2d2d2d 100%)'
-                                  : 'linear-gradient(145deg, #E8E8E8 0%, #C0C0C0 25%, #A8A8A8 50%, #C0C0C0 75%, #E8E8E8 100%)',
-                              boxShadow: tierStyles[tier].shadow,
+                              background: tierGradients[tier],
+                              boxShadow: tierShadows[tier],
                             }}
                           >
                             {/* 광택 효과 */}
                             <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10" />
                             <span
-                              className={`text-xl font-black relative z-10 ${tier === 'B' ? 'text-slate-700' : 'text-white'}`}
+                              className="text-xl font-black relative z-10 text-white"
                               style={{
-                                textShadow: tier === 'S'
-                                  ? '0 2px 4px rgba(0,0,0,0.3), 0 0 15px rgba(255,215,0,0.4)'
-                                  : tier === 'A'
-                                    ? '0 2px 4px rgba(255,255,255,0.15)'
-                                    : '0 1px 2px rgba(0,0,0,0.2)',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                               }}
                             >
                               {tier}급

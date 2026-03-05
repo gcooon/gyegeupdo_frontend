@@ -51,7 +51,7 @@ export function TierGrid({ brands, category }: TierGridProps) {
               ${tier === 'B' ? 'rounded-b-2xl' : ''}
             `}
           >
-            {/* 티어 라벨 영역 - 메탈릭 스타일 */}
+            {/* 티어 라벨 영역 */}
             <div
               className="relative flex flex-col items-center justify-center shrink-0 w-16 md:w-20"
               style={{
@@ -60,20 +60,13 @@ export function TierGrid({ brands, category }: TierGridProps) {
               }}
             >
               {/* 광택 효과 */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-black/10" />
-
-              {/* 세로 하이라이트 */}
-              <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-white/40 via-white/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10" />
 
               {/* 티어 레터 */}
               <span
-                className={`font-black relative z-10 text-2xl md:text-3xl ${isATier ? 'text-white' : 'text-white'}`}
+                className="font-black relative z-10 text-2xl md:text-3xl text-white"
                 style={{
-                  textShadow: isSTier
-                    ? '0 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,215,0,0.5)'
-                    : isATier
-                      ? '0 2px 4px rgba(255,255,255,0.2), 0 0 10px rgba(255,255,255,0.1)'
-                      : '0 2px 4px rgba(0,0,0,0.2)',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                 }}
               >
                 {tier}급
@@ -81,20 +74,13 @@ export function TierGrid({ brands, category }: TierGridProps) {
 
               {/* 아이콘 */}
               {TierIcon && (
-                <TierIcon className={`mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 ${isATier ? 'text-white/70' : 'text-white/80'}`} />
+                <TierIcon className="mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 text-white/80" />
               )}
 
-              {/* S티어 특별 효과 - 골드 반짝임 */}
+              {/* S티어 특별 효과 - 반짝임 */}
               {isSTier && (
                 <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute -inset-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-yellow-200/40 to-transparent skew-x-12" />
-                </div>
-              )}
-
-              {/* B티어 은색 반짝임 */}
-              {tier === 'B' && (
-                <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute -inset-full animate-[shimmer_4s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
+                  <div className="absolute -inset-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-purple-200/40 to-transparent skew-x-12" />
                 </div>
               )}
             </div>
@@ -104,10 +90,10 @@ export function TierGrid({ brands, category }: TierGridProps) {
               className={`
                 flex-1 p-2 md:p-3 min-h-[80px] md:min-h-[90px]
                 ${isSTier
-                  ? 'bg-gradient-to-r from-amber-50/80 to-yellow-50/40 dark:from-amber-950/40 dark:to-yellow-950/20'
+                  ? 'bg-gradient-to-r from-purple-50/80 to-violet-50/40 dark:from-purple-950/40 dark:to-violet-950/20'
                   : isATier
-                    ? 'bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-900/60 dark:to-slate-800/40'
-                    : 'bg-gradient-to-r from-slate-100/80 to-gray-50/50 dark:from-slate-800/40 dark:to-slate-700/20'
+                    ? 'bg-gradient-to-r from-blue-50/80 to-sky-50/40 dark:from-blue-950/40 dark:to-sky-950/20'
+                    : 'bg-gradient-to-r from-green-50/80 to-emerald-50/40 dark:from-green-950/40 dark:to-emerald-950/20'
                 }
               `}
             >
@@ -181,10 +167,10 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
           hover:shadow-md hover:-translate-y-0.5 hover:border-accent
           w-[70px] md:w-[80px]
           ${isSTier
-            ? 'border-amber-400/60 shadow-sm shadow-amber-200/30'
+            ? 'border-purple-300/60 shadow-sm shadow-purple-200/30'
             : isATier
-              ? 'border-slate-400/50 dark:border-slate-500/50'
-              : 'border-slate-300/60 dark:border-slate-500/40'
+              ? 'border-blue-300/60 shadow-sm shadow-blue-200/20'
+              : 'border-green-300/60 shadow-sm shadow-green-200/20'
           }
         `}
       >
@@ -195,10 +181,10 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
               absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full flex items-center justify-center
               text-[10px] font-bold shadow-sm z-10
               ${rank === 1
-                ? 'bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 text-amber-900'
+                ? 'bg-gradient-to-br from-purple-400 via-purple-500 to-purple-600 text-white'
                 : rank === 2
-                  ? 'bg-gradient-to-br from-slate-200 via-slate-400 to-slate-500 text-slate-800'
-                  : 'bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white'
+                  ? 'bg-gradient-to-br from-purple-300 via-purple-400 to-purple-500 text-white'
+                  : 'bg-gradient-to-br from-purple-200 via-purple-300 to-purple-400 text-purple-800'
               }
             `}
           >
@@ -208,7 +194,7 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
 
         {/* S티어 1위 특별 효과 */}
         {isSTier && rank === 1 && (
-          <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-amber-400 animate-pulse" />
+          <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-purple-400 animate-pulse" />
         )}
 
         {/* 로고/이미지 */}
