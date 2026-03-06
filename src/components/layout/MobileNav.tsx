@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Trophy, Search, MessageSquare, User } from 'lucide-react';
+import { useSidebarStore } from '@/store/sidebarStore';
 
 const navItems = [
   { href: '/', label: '홈', icon: Home, matchExact: true },
@@ -19,6 +20,10 @@ const CATEGORY_LABELS: Record<string, { label: string; icon: string }> = {
 
 export function MobileNav() {
   const pathname = usePathname() ?? '';
+  const { isOpen: isSidebarOpen } = useSidebarStore();
+
+  // 사이드바가 열려있으면 하단 네비게이션 숨김
+  if (isSidebarOpen) return null;
 
   // 현재 카테고리를 URL에서 추출 (예: /chicken/tier → chicken)
   const currentCategory = pathname.split('/')[1] || 'running-shoes';

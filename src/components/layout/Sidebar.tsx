@@ -85,7 +85,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
       <aside
         className={`
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          fixed md:sticky top-16 left-0 z-40
+          fixed md:sticky top-16 left-0 z-50
           h-[calc(100vh-4rem)]
           ${isOpen ? 'w-64' : 'w-0 md:w-0'}
           bg-card border-r border-border
@@ -236,7 +236,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={toggle}
           style={{ touchAction: 'none' }}
         />
