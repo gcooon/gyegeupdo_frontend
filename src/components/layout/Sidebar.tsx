@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
@@ -43,6 +43,7 @@ interface SidebarProps {
 export function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname() ?? '';
   const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // 모바일에서 링크 클릭(경로 변경) 시 사이드바 닫기
   useEffect(() => {
@@ -51,6 +52,22 @@ export function Sidebar({ className = '' }: SidebarProps) {
       close();
     }
   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 모바일에서 사이드바 열릴 때 body 스크롤 방지
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile && isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -84,10 +101,14 @@ export function Sidebar({ className = '' }: SidebarProps) {
         </div>
 
         <div
+          ref={scrollRef}
           className="flex-1 min-h-0 overflow-y-auto py-2 pb-8"
           style={{
             WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehavior: 'contain',
           }}
+          onTouchMove={(e) => e.stopPropagation()}
         >
           <div className="px-2">
             {/* 내가 만든 계급도 */}
@@ -217,7 +238,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden"
           onClick={toggle}
-          onTouchStart={(e) => e.stopPropagation()}
+          style={{ touchAction: 'none' }}
         />
       )}
     </>
