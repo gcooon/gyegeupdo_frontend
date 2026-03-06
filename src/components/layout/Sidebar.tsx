@@ -73,7 +73,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
           ${isOpen ? 'w-64' : 'w-0 md:w-0'}
           bg-card border-r border-border
           transition-all duration-200 ease-in-out
-          flex flex-col overflow-hidden
+          flex flex-col overflow-x-hidden overflow-y-hidden
         `}
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -83,7 +83,14 @@ export function Sidebar({ className = '' }: SidebarProps) {
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto overscroll-contain py-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div
+          className="flex-1 min-h-0 overflow-y-scroll overscroll-contain py-2"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehavior: 'contain',
+          }}
+        >
           <div className="px-2">
             {/* 내가 만든 계급도 */}
             <div className="mb-4">
@@ -212,6 +219,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         <div
           className="fixed inset-0 bg-black/50 z-30 md:hidden"
           onClick={toggle}
+          onTouchStart={(e) => e.stopPropagation()}
         />
       )}
     </>
