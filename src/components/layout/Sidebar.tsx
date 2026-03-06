@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
-import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Category {
@@ -85,6 +85,56 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
         <div className="flex-1 overflow-y-auto overscroll-contain py-2" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="px-2">
+            {/* 내가 만든 계급도 */}
+            <div className="mb-4">
+              <Link
+                href="/my-tier"
+                className={`
+                  w-full flex items-center gap-2 px-3 py-3 rounded-lg
+                  text-sm font-semibold transition-colors
+                  ${pathname.startsWith('/my-tier')
+                    ? 'bg-accent/10 text-accent'
+                    : 'hover:bg-muted'
+                  }
+                `}
+              >
+                <Sparkles className="h-5 w-5 text-accent" />
+                <span>내가 만든 계급도</span>
+              </Link>
+              {pathname.startsWith('/my-tier') && (
+                <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
+                  <Link
+                    href="/my-tier"
+                    className={`
+                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                      ${pathname === '/my-tier'
+                        ? 'bg-accent text-accent-foreground font-medium'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }
+                    `}
+                  >
+                    <Trophy className="h-4 w-4" />
+                    전체 보기
+                  </Link>
+                  <Link
+                    href="/my-tier/create"
+                    className={`
+                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                      ${pathname === '/my-tier/create'
+                        ? 'bg-accent text-accent-foreground font-medium'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }
+                    `}
+                  >
+                    <Plus className="h-4 w-4" />
+                    새로 만들기
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-border my-2 mx-2" />
+
             {CATEGORIES.map((category) => {
               const isExpanded = expandedCategories.includes(category.slug);
               const categoryPath = `/${category.slug}`;

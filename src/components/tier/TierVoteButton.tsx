@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { ChevronUp, ChevronDown, MessageCircle, User } from 'lucide-react';
+import { ChevronUp, ChevronDown, MessageCircle, User, LogIn } from 'lucide-react';
 import type { VoteType, VoteComment } from '@/types/dispute';
 import type { TierLevel } from '@/lib/tier';
 
@@ -40,12 +42,13 @@ export function TierVoteButton({
 }: TierVoteButtonProps) {
   const [showVoteDialog, setShowVoteDialog] = useState(false);
   const [showCommentsDialog, setShowCommentsDialog] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [selectedVote, setSelectedVote] = useState<VoteType | null>(null);
   const [comment, setComment] = useState('');
 
   const handleVoteClick = (voteType: VoteType) => {
     if (!isLoggedIn) {
-      alert('투표하려면 로그인이 필요합니다.');
+      setShowLoginDialog(true);
       return;
     }
     if (userVote) {
@@ -225,6 +228,43 @@ export function TierVoteButton({
 
             <p className="text-xs text-muted-foreground text-center">
               제품당 1회만 투표 가능합니다
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Login Required Dialog */}
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-center">로그인이 필요합니다</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4 text-center">
+            <div className="w-16 h-16 mx-auto rounded-full bg-accent/20 flex items-center justify-center">
+              <LogIn className="w-8 h-8 text-accent" />
+            </div>
+            <p className="text-muted-foreground">
+              투표에 참여하려면 로그인이 필요합니다.
+              <br />
+              회원이 아니시라면 무료로 가입하세요!
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowLoginDialog(false)}
+              >
+                취소
+              </Button>
+              <Button className="flex-1 bg-accent hover:bg-accent/90" asChild>
+                <Link href="/login">로그인</Link>
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              계정이 없으신가요?{' '}
+              <Link href="/signup" className="text-accent hover:underline">
+                회원가입
+              </Link>
             </p>
           </div>
         </DialogContent>

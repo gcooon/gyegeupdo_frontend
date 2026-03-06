@@ -42,3 +42,86 @@ export interface TrendResponse {
   direction: 'up' | 'down';
   items: TrendItem[];
 }
+
+// ===== 사용자 계급도 타입 =====
+
+export interface TierChartItem {
+  name: string;
+  reason?: string;
+  imageUrl?: string;
+}
+
+export interface TierChartData {
+  S?: TierChartItem[];
+  A?: TierChartItem[];
+  B?: TierChartItem[];
+  C?: TierChartItem[];
+  D?: TierChartItem[];
+}
+
+export interface UserTierChart {
+  id: number;
+  uuid: string;
+  slug: string;
+  title: string;
+  description: string;
+  tier_data: TierChartData;
+  user_nickname: string;
+  user_badge: string;
+  view_count: number;
+  like_count: number;
+  comment_count: number;
+  is_liked: boolean;
+  is_owner: boolean;
+  is_featured: boolean;
+  visibility: 'public' | 'private';
+  share_url: string;
+  created_at: string;
+  updated_at: string;
+  comments?: TierChartComment[];
+}
+
+export interface UserTierChartListItem {
+  id: number;
+  uuid: string;
+  slug: string;
+  title: string;
+  description: string;
+  user_nickname: string;
+  user_badge: string;
+  item_count: number;
+  view_count: number;
+  like_count: number;
+  comment_count: number;
+  is_liked: boolean;
+  is_featured: boolean;
+  created_at: string;
+}
+
+export interface TierChartComment {
+  id: number;
+  user_nickname: string;
+  user_badge: string;
+  content: string;
+  like_count: number;
+  created_at: string;
+  updated_at: string;
+  parent: number | null;
+  replies: TierChartComment[];
+  is_owner: boolean;
+}
+
+export interface UserTierChartListResponse {
+  items: UserTierChartListItem[];
+  total_count: number;
+  page: number;
+  limit: number;
+  has_next: boolean;
+}
+
+export interface CreateTierChartPayload {
+  title: string;
+  description?: string;
+  tier_data: TierChartData;
+  visibility?: 'public' | 'private';
+}

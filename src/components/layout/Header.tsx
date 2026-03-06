@@ -2,9 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare } from 'lucide-react';
+import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useSidebarStore } from '@/store/sidebarStore';
+import { useAuth } from '@/hooks/useAuth';
 
 const CATEGORIES = [
   {
@@ -30,7 +38,13 @@ const CATEGORY_MENUS = [
 
 export function Header() {
   const { toggle } = useSidebarStore();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/';
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
@@ -104,13 +118,71 @@ export function Header() {
                 )}
               </div>
             ))}
+
+            {/* 내가 만든 계급도 메뉴 */}
+            <Link
+              href="/my-tier"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors ml-2"
+            >
+              <Sparkles className="h-4 w-4 text-accent" />
+              <span>내가 만든 계급도</span>
+            </Link>
           </nav>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/login">로그인</Link>
-          </Button>
+          {isLoading ? (
+            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+          ) : isAuthenticated && user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center">
+                    <User className="h-4 w-4 text-accent" />
+                  </div>
+                  <span className="hidden sm:inline-block max-w-[100px] truncate">
+                    {user.profile?.badge && user.profile.badge !== 'none' && (
+                      <span className="mr-1">
+                        {user.profile.badge === 'verified' && '✓'}
+                        {user.profile.badge === 'reviewer' && '⭐'}
+                        {user.profile.badge === 'master' && '👑'}
+                        {user.profile.badge === 'pioneer' && '🏆'}
+                      </span>
+                    )}
+                    {user.first_name || user.email.split('@')[0]}
+                  </span>
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-medium">{user.first_name || '사용자'}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/mypage" className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    마이페이지
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  로그아웃
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/login">로그인</Link>
+              </Button>
+              <Button size="sm" className="bg-accent hover:bg-accent/90" asChild>
+                <Link href="/signup">회원가입</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

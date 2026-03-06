@@ -112,66 +112,162 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
   'running-shoes': {
     race: {
       S: [
-        { name: '알파플라이 3', brand: '나이키', slug: 'alphafly-3', score: 98, upVotes: 156, downVotes: 12 },
-        { name: '아디오스 프로 에보1', brand: '아디다스', slug: 'adios-pro-evo1', score: 97, upVotes: 142, downVotes: 18 },
-        { name: '베이퍼플라이 3', brand: '나이키', slug: 'vaporfly-3', score: 96, upVotes: 138, downVotes: 15 },
+        { name: '메타스피드 스카이 도쿄', brand: '아식스', slug: 'metaspeed-sky-tokyo', score: 98, upVotes: 234, downVotes: 12 },
+        { name: '알파플라이 3', brand: '나이키', slug: 'alphafly-3', score: 97, upVotes: 198, downVotes: 15 },
+        { name: '패스트-R 3', brand: '푸마', slug: 'fast-r-3', score: 97, upVotes: 178, downVotes: 14 },
+        { name: '베이퍼플라이 3', brand: '나이키', slug: 'vaporfly-3', score: 96, upVotes: 165, downVotes: 18 },
       ],
       A: [
-        { name: '메타스피드 스카이 파리', brand: '아식스', slug: 'metaspeed-sky-paris', score: 93, upVotes: 98, downVotes: 22 },
-        { name: '엔돌핀 프로 4', brand: '써코니', slug: 'endorphin-pro-4', score: 91, upVotes: 87, downVotes: 19 },
-        { name: '퓨어셀 엘리트 v4', brand: '뉴발란스', slug: 'fuelcell-elite-v4', score: 90, upVotes: 82, downVotes: 21 },
+        { name: '메타스피드 스카이 파리', brand: '아식스', slug: 'metaspeed-sky-paris', score: 94, upVotes: 142, downVotes: 22 },
+        { name: '아디오스 프로 3', brand: '아디다스', slug: 'adizero-adios-pro-3', score: 93, upVotes: 128, downVotes: 25 },
+        { name: '슈퍼컴프 엘리트 v4', brand: '뉴발란스', slug: 'supercomp-elite-v4', score: 92, upVotes: 115, downVotes: 21 },
       ],
       B: [
-        { name: '씨엘로 X1', brand: '호카', slug: 'cielo-x1', score: 86, upVotes: 65, downVotes: 28 },
-        { name: '웨이브 리벨리온 프로2', brand: '미즈노', slug: 'wave-rebellion-pro2', score: 84, upVotes: 58, downVotes: 25 },
+        { name: '로켓 X 2', brand: '호카', slug: 'rocket-x-2', score: 88, upVotes: 95, downVotes: 28 },
+        { name: '엔돌핀 프로 4', brand: '써코니', slug: 'endorphin-pro-4', score: 86, upVotes: 85, downVotes: 25 },
+      ],
+      C: [
+        { name: '킵런 KD900X', brand: '데카트론', slug: 'kiprun-kd900x', score: 72, upVotes: 45, downVotes: 38 },
+        { name: '플로트라이드 에너지 5', brand: '리복', slug: 'floatride-energy-5', score: 70, upVotes: 38, downVotes: 42 },
+      ],
+      D: [
+        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 42, upVotes: 12, downVotes: 78 },
       ],
     },
     daily: {
       S: [
-        { name: '노바블라스트 4', brand: '아식스', slug: 'novablast-4', score: 95, upVotes: 245, downVotes: 18 },
-        { name: '마하 6', brand: '호카', slug: 'mach-6', score: 93, upVotes: 198, downVotes: 22 },
-        { name: '슈퍼블라스트', brand: '아식스', slug: 'superblast', score: 92, upVotes: 176, downVotes: 25 },
+        { name: '노바블라스트 5', brand: '아식스', slug: 'novablast-5', score: 96, upVotes: 1245, downVotes: 45 },
+        { name: '마하 X', brand: '호카', slug: 'mach-x', score: 94, upVotes: 423, downVotes: 32 },
+        { name: '슈퍼블라스트 2', brand: '아식스', slug: 'superblast-2', score: 93, upVotes: 312, downVotes: 28 },
+        { name: '매그니파이 니트로 3', brand: '푸마', slug: 'magnify-nitro-3', score: 92, upVotes: 289, downVotes: 25 },
       ],
       A: [
-        { name: '페가수스 41', brand: '나이키', slug: 'pegasus-41', score: 88, upVotes: 156, downVotes: 35 },
-        { name: '퓨어셀 레벨 V4', brand: '뉴발란스', slug: 'fuelcell-rebel-v4', score: 87, upVotes: 142, downVotes: 32 },
-        { name: '아디제로 보스턴 12', brand: '아디다스', slug: 'adizero-boston-12', score: 86, upVotes: 128, downVotes: 28 },
+        { name: '페가수스 41', brand: '나이키', slug: 'pegasus-41', score: 88, upVotes: 425, downVotes: 55 },
+        { name: '퓨얼셀 레벨 v4', brand: '뉴발란스', slug: 'fuelcell-rebel-v4', score: 89, upVotes: 198, downVotes: 32 },
+        { name: '보스턴 12', brand: '아디다스', slug: 'boston-12', score: 87, upVotes: 189, downVotes: 35 },
+        { name: '클라우드몬스터', brand: '온러닝', slug: 'cloudmonster', score: 86, upVotes: 234, downVotes: 42 },
       ],
       B: [
-        { name: '엔돌핀 스피드 4', brand: '써코니', slug: 'endorphin-speed-4', score: 83, upVotes: 95, downVotes: 38 },
-        { name: '킨바라 15', brand: '써코니', slug: 'kinvara-15', score: 81, upVotes: 78, downVotes: 35 },
+        { name: '마하 6', brand: '호카', slug: 'mach-6', score: 84, upVotes: 167, downVotes: 48 },
+        { name: '킨바라 15', brand: '써코니', slug: 'kinvara-15', score: 82, upVotes: 145, downVotes: 45 },
+      ],
+      C: [
+        { name: '고런 맥스로드 6', brand: '스케쳐스', slug: 'gorun-maxroad-6', score: 72, upVotes: 89, downVotes: 65 },
+        { name: '킵런 KS500', brand: '데카트론', slug: 'kiprun-ks500', score: 70, upVotes: 78, downVotes: 72 },
+        { name: '레볼루션 7', brand: '나이키', slug: 'revolution-7', score: 68, upVotes: 125, downVotes: 98 },
+        { name: '갤럭시 7', brand: '아디다스', slug: 'galaxy-7', score: 66, upVotes: 112, downVotes: 105 },
+        { name: '플로트 맥스 2', brand: '필라', slug: 'float-max-2', score: 64, upVotes: 67, downVotes: 88 },
+      ],
+      D: [
+        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 45, upVotes: 34, downVotes: 156 },
+        { name: '스파오 스니커즈', brand: '스파오', slug: 'spao-sneakers', score: 38, upVotes: 23, downVotes: 187 },
+        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 35, upVotes: 18, downVotes: 212 },
       ],
     },
     beginner: {
       S: [
-        { name: '클리프톤 9', brand: '호카', slug: 'clifton-9', score: 96, upVotes: 312, downVotes: 15 },
-        { name: '젤 님버스 26', brand: '아식스', slug: 'gel-nimbus-26', score: 94, upVotes: 278, downVotes: 22 },
-        { name: '본디 8', brand: '호카', slug: 'bondi-8', score: 93, upVotes: 256, downVotes: 28 },
+        { name: '클리프톤 10', brand: '호카', slug: 'clifton-10', score: 96, upVotes: 892, downVotes: 35 },
+        { name: '노바블라스트 5', brand: '아식스', slug: 'novablast-5', score: 96, upVotes: 756, downVotes: 28 },
+        { name: '젤 님버스 27', brand: '아식스', slug: 'gel-nimbus-27', score: 94, upVotes: 523, downVotes: 32 },
+        { name: '본디 9', brand: '호카', slug: 'bondi-9', score: 94, upVotes: 567, downVotes: 38 },
       ],
       A: [
-        { name: '1080 v13', brand: '뉴발란스', slug: '1080-v13', score: 90, upVotes: 198, downVotes: 35 },
-        { name: '인피니티 런 4', brand: '나이키', slug: 'infinity-run-4', score: 88, upVotes: 175, downVotes: 42 },
-        { name: '글라이드라이드 4', brand: '아식스', slug: 'glideride-4', score: 86, upVotes: 152, downVotes: 38 },
+        { name: '프레시폼 1080 v14', brand: '뉴발란스', slug: 'fresh-foam-1080-v14', score: 91, upVotes: 412, downVotes: 45 },
+        { name: '라이드 18', brand: '써코니', slug: 'ride-18', score: 90, upVotes: 456, downVotes: 52 },
+        { name: '페가수스 41', brand: '나이키', slug: 'pegasus-41', score: 88, upVotes: 385, downVotes: 48 },
       ],
       B: [
-        { name: '고스트 15', brand: '브룩스', slug: 'ghost-15', score: 84, upVotes: 125, downVotes: 45 },
-        { name: '웨이브 라이더 28', brand: '미즈노', slug: 'wave-rider-28', score: 82, upVotes: 108, downVotes: 42 },
+        { name: '고스트 17', brand: '브룩스', slug: 'ghost-17', score: 85, upVotes: 285, downVotes: 55 },
+        { name: '클라우드서퍼', brand: '온러닝', slug: 'cloudsurfer', score: 83, upVotes: 178, downVotes: 52 },
+      ],
+      C: [
+        { name: '젤 컨텐드 8', brand: '아식스', slug: 'gel-contend-8', score: 72, upVotes: 178, downVotes: 125 },
+        { name: '졸트 4', brand: '아식스', slug: 'jolt-4', score: 70, upVotes: 156, downVotes: 138 },
+        { name: '에어로 버스트', brand: '스케쳐스', slug: 'aero-burst', score: 68, upVotes: 89, downVotes: 112 },
+        { name: '레볼루션 7', brand: '나이키', slug: 'revolution-7', score: 66, upVotes: 145, downVotes: 167 },
+        { name: '스피드러쉬', brand: '프로스펙스', slug: 'speedrush', score: 64, upVotes: 78, downVotes: 134 },
+      ],
+      D: [
+        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 48, upVotes: 56, downVotes: 234 },
+        { name: '스파오 스니커즈', brand: '스파오', slug: 'spao-sneakers', score: 42, upVotes: 34, downVotes: 267 },
+        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 38, upVotes: 23, downVotes: 298 },
+        { name: '다이소 운동화', brand: '다이소', slug: 'daiso-running', score: 32, upVotes: 12, downVotes: 345 },
       ],
     },
     long: {
       S: [
-        { name: '젤 카야노 31', brand: '아식스', slug: 'gel-kayano-31', score: 95, upVotes: 198, downVotes: 18 },
-        { name: '본디 9', brand: '호카', slug: 'bondi-9', score: 94, upVotes: 185, downVotes: 22 },
-        { name: '젤 님버스 26', brand: '아식스', slug: 'gel-nimbus-26', score: 93, upVotes: 172, downVotes: 25 },
+        { name: '젤 님버스 27', brand: '아식스', slug: 'gel-nimbus-27', score: 96, upVotes: 523, downVotes: 25 },
+        { name: '본디 9', brand: '호카', slug: 'bondi-9', score: 95, upVotes: 485, downVotes: 28 },
+        { name: '젤 카야노 31', brand: '아식스', slug: 'gel-kayano-31', score: 95, upVotes: 412, downVotes: 22 },
       ],
       A: [
-        { name: '1080 v14', brand: '뉴발란스', slug: '1080-v14', score: 89, upVotes: 142, downVotes: 32 },
-        { name: '클리프톤 10', brand: '호카', slug: 'clifton-10', score: 87, upVotes: 128, downVotes: 35 },
-        { name: '트라이엄프 22', brand: '써코니', slug: 'triumph-22', score: 85, upVotes: 112, downVotes: 38 },
+        { name: '프레시폼 1080 v14', brand: '뉴발란스', slug: 'fresh-foam-1080-v14', score: 91, upVotes: 342, downVotes: 38 },
+        { name: '클리프톤 10', brand: '호카', slug: 'clifton-10', score: 90, upVotes: 328, downVotes: 42 },
+        { name: '트라이엄프 22', brand: '써코니', slug: 'triumph-22', score: 88, upVotes: 267, downVotes: 45 },
       ],
       B: [
-        { name: '글리세린 21', brand: '브룩스', slug: 'glycerin-21', score: 83, upVotes: 92, downVotes: 42 },
-        { name: '인피니티 런 4', brand: '나이키', slug: 'infinity-run-4', score: 81, upVotes: 78, downVotes: 38 },
+        { name: '글리세린 21', brand: '브룩스', slug: 'glycerin-21', score: 85, upVotes: 198, downVotes: 52 },
+        { name: '인빈서블 3', brand: '나이키', slug: 'invincible-3', score: 84, upVotes: 178, downVotes: 48 },
+      ],
+      C: [
+        { name: '웨이브 라이더 27', brand: '미즈노', slug: 'wave-rider-27', score: 74, upVotes: 134, downVotes: 98 },
+        { name: '고런 맥스로드 6', brand: '스케쳐스', slug: 'gorun-maxroad-6', score: 70, upVotes: 112, downVotes: 125 },
+        { name: '킵런 KD900X', brand: '데카트론', slug: 'kiprun-kd900x', score: 68, upVotes: 89, downVotes: 134 },
+        { name: '에너지 부스트', brand: '데상트', slug: 'energy-boost', score: 65, upVotes: 67, downVotes: 156 },
+      ],
+      D: [
+        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 40, upVotes: 23, downVotes: 289 },
+        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 35, upVotes: 12, downVotes: 334 },
+      ],
+    },
+    stability: {
+      S: [
+        { name: '젤 카야노 31', brand: '아식스', slug: 'gel-kayano-31', score: 96, upVotes: 412, downVotes: 18 },
+        { name: '아라히 8', brand: '호카', slug: 'arahi-8', score: 94, upVotes: 345, downVotes: 22 },
+      ],
+      A: [
+        { name: '스트럭처 25', brand: '나이키', slug: 'structure-25', score: 90, upVotes: 245, downVotes: 35 },
+        { name: '아라히 7', brand: '호카', slug: 'arahi-7', score: 88, upVotes: 178, downVotes: 32 },
+        { name: 'GT-2000 13', brand: '아식스', slug: 'gt-2000-13', score: 87, upVotes: 156, downVotes: 38 },
+      ],
+      B: [
+        { name: '가이드 17', brand: '써코니', slug: 'guide-17', score: 84, upVotes: 125, downVotes: 42 },
+        { name: '아드레날린 GTS 24', brand: '브룩스', slug: 'adrenaline-gts-24', score: 83, upVotes: 112, downVotes: 45 },
+      ],
+      C: [
+        { name: '젤 컨텐드 8', brand: '아식스', slug: 'gel-contend-8', score: 70, upVotes: 89, downVotes: 98 },
+        { name: '웨이브 라이더 27', brand: '미즈노', slug: 'wave-rider-27', score: 68, upVotes: 78, downVotes: 112 },
+        { name: '스피드러쉬', brand: '프로스펙스', slug: 'speedrush', score: 62, upVotes: 56, downVotes: 145 },
+      ],
+      D: [
+        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 38, upVotes: 18, downVotes: 267 },
+        { name: '스파오 스니커즈', brand: '스파오', slug: 'spao-sneakers', score: 32, upVotes: 12, downVotes: 312 },
+      ],
+    },
+    tempo: {
+      S: [
+        { name: '엔돌핀 스피드 5', brand: '써코니', slug: 'endorphin-speed-5', score: 96, upVotes: 378, downVotes: 22 },
+        { name: '마하 X', brand: '호카', slug: 'mach-x', score: 95, upVotes: 356, downVotes: 25 },
+        { name: '매직 스피드 4', brand: '아식스', slug: 'magic-speed-4', score: 93, upVotes: 312, downVotes: 28 },
+      ],
+      A: [
+        { name: '퓨얼셀 레벨 v4', brand: '뉴발란스', slug: 'fuelcell-rebel-v4', score: 90, upVotes: 245, downVotes: 35 },
+        { name: '보스턴 12', brand: '아디다스', slug: 'boston-12', score: 89, upVotes: 198, downVotes: 32 },
+        { name: '줌 플라이 6', brand: '나이키', slug: 'zoom-fly-6', score: 88, upVotes: 178, downVotes: 38 },
+      ],
+      B: [
+        { name: '킨바라 15', brand: '써코니', slug: 'kinvara-15', score: 85, upVotes: 145, downVotes: 42 },
+        { name: '디비에이트 니트로 3', brand: '푸마', slug: 'deviate-nitro-3', score: 83, upVotes: 134, downVotes: 45 },
+      ],
+      C: [
+        { name: '플로트라이드 에너지 5', brand: '리복', slug: 'floatride-energy-5', score: 72, upVotes: 89, downVotes: 78 },
+        { name: '킵런 KS500', brand: '데카트론', slug: 'kiprun-ks500', score: 68, upVotes: 67, downVotes: 98 },
+        { name: '에어로 버스트', brand: '스케쳐스', slug: 'aero-burst', score: 65, upVotes: 56, downVotes: 112 },
+        { name: '르까프 러너', brand: '르까프', slug: 'lecoq-runner', score: 60, upVotes: 45, downVotes: 134 },
+      ],
+      D: [
+        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 42, upVotes: 23, downVotes: 245 },
+        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 35, upVotes: 15, downVotes: 289 },
       ],
     },
   },
@@ -191,6 +287,17 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
         { name: '후라이드', brand: '60계', slug: '60gye-fried', score: 84, upVotes: 225, downVotes: 72 },
         { name: '후라이드', brand: '맘스터치', slug: 'moms-fried', score: 82, upVotes: 198, downVotes: 78 },
       ],
+      C: [
+        { name: '후라이드', brand: '또래오래', slug: 'ttorae-fried', score: 72, upVotes: 134, downVotes: 112 },
+        { name: '후라이드', brand: '가마치통닭', slug: 'gamachi-fried', score: 70, upVotes: 112, downVotes: 125 },
+        { name: '후라이드', brand: '자담치킨', slug: 'jadam-fried', score: 68, upVotes: 98, downVotes: 134 },
+        { name: '후라이드', brand: '피자나라치킨공주', slug: 'pizzanara-fried', score: 65, upVotes: 78, downVotes: 156 },
+      ],
+      D: [
+        { name: '편의점 치킨', brand: 'CU/GS25', slug: 'convenience-fried', score: 42, upVotes: 34, downVotes: 245 },
+        { name: '마트 치킨', brand: '이마트/홈플러스', slug: 'mart-fried', score: 38, upVotes: 45, downVotes: 267 },
+        { name: '냉동 치킨', brand: '비비고/풀무원', slug: 'frozen-fried', score: 35, upVotes: 23, downVotes: 298 },
+      ],
     },
     yangnyum: {
       S: [
@@ -206,6 +313,17 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
       B: [
         { name: '양념치킨', brand: '노랑통닭', slug: 'norang-yangnyum', score: 84, upVotes: 218, downVotes: 75 },
         { name: '양념치킨', brand: '네네', slug: 'nene-yangnyum', score: 82, upVotes: 192, downVotes: 82 },
+      ],
+      C: [
+        { name: '양념치킨', brand: '자담치킨', slug: 'jadam-yangnyum', score: 72, upVotes: 112, downVotes: 134 },
+        { name: '양념치킨', brand: '가마치통닭', slug: 'gamachi-yangnyum', score: 70, upVotes: 98, downVotes: 145 },
+        { name: '양념치킨', brand: '피자나라치킨공주', slug: 'pizzanara-yangnyum', score: 68, upVotes: 78, downVotes: 167 },
+        { name: '양념치킨', brand: '땅땅치킨', slug: 'ddangddang-yangnyum', score: 65, upVotes: 67, downVotes: 178 },
+      ],
+      D: [
+        { name: '양념 편의점 치킨', brand: 'CU/GS25', slug: 'convenience-yangnyum', score: 40, upVotes: 28, downVotes: 256 },
+        { name: '양념 마트 치킨', brand: '이마트/홈플러스', slug: 'mart-yangnyum', score: 36, upVotes: 34, downVotes: 278 },
+        { name: '양념 냉동 치킨', brand: '비비고/풀무원', score: 32, slug: 'frozen-yangnyum', upVotes: 18, downVotes: 312 },
       ],
     },
     soy: {
@@ -223,6 +341,17 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
         { name: '간장치킨', brand: '자담', slug: 'jadam-soy', score: 84, upVotes: 225, downVotes: 72 },
         { name: '간장치킨', brand: '60계', slug: '60gye-soy', score: 82, upVotes: 198, downVotes: 78 },
       ],
+      C: [
+        { name: '간장치킨', brand: '노랑통닭', slug: 'norang-soy', score: 72, upVotes: 134, downVotes: 112 },
+        { name: '허니간장', brand: '또래오래', slug: 'ttorae-honey', score: 70, upVotes: 112, downVotes: 134 },
+        { name: '간장치킨', brand: '가마치통닭', slug: 'gamachi-soy', score: 68, upVotes: 89, downVotes: 145 },
+        { name: '간장치킨', brand: '땅땅치킨', slug: 'ddangddang-soy', score: 65, upVotes: 67, downVotes: 167 },
+      ],
+      D: [
+        { name: '간장 편의점 치킨', brand: 'CU/GS25', slug: 'convenience-soy', score: 38, upVotes: 23, downVotes: 267 },
+        { name: '간장 마트 치킨', brand: '이마트/홈플러스', slug: 'mart-soy', score: 35, upVotes: 28, downVotes: 289 },
+        { name: '냉동 간장치킨', brand: '비비고/풀무원', slug: 'frozen-soy', score: 30, upVotes: 15, downVotes: 312 },
+      ],
     },
     powder: {
       S: [
@@ -238,6 +367,16 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
       B: [
         { name: '뿌링핫', brand: 'BHC', slug: 'bhc-puringhot', score: 83, upVotes: 215, downVotes: 75 },
         { name: '갈릭파우더', brand: '굽네', slug: 'goobne-garlic', score: 81, upVotes: 188, downVotes: 82 },
+      ],
+      C: [
+        { name: '양파치킨', brand: '노랑통닭', slug: 'norang-onion', score: 72, upVotes: 112, downVotes: 134 },
+        { name: '마늘치킨', brand: '또래오래', slug: 'ttorae-garlic', score: 70, upVotes: 98, downVotes: 145 },
+        { name: '시즈닝치킨', brand: '자담치킨', slug: 'jadam-seasoning', score: 68, upVotes: 78, downVotes: 156 },
+        { name: '파우더치킨', brand: '가마치통닭', slug: 'gamachi-powder', score: 65, upVotes: 67, downVotes: 178 },
+      ],
+      D: [
+        { name: '시즈닝 편의점 치킨', brand: 'CU/GS25', slug: 'convenience-powder', score: 40, upVotes: 23, downVotes: 267 },
+        { name: '냉동 시즈닝치킨', brand: '비비고/풀무원', slug: 'frozen-powder', score: 35, upVotes: 18, downVotes: 289 },
       ],
     },
     roasted: {
@@ -255,6 +394,17 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
         { name: '훈제치킨', brand: '네네', slug: 'nene-smoked', score: 84, upVotes: 218, downVotes: 72 },
         { name: '마늘바게트', brand: '굽네', slug: 'goobne-garlic-baguette', score: 82, upVotes: 192, downVotes: 78 },
       ],
+      C: [
+        { name: '숯불구이', brand: '지코바', slug: 'zicoba-charcoal', score: 74, upVotes: 145, downVotes: 112 },
+        { name: '오븐구이', brand: '또래오래', slug: 'ttorae-oven', score: 70, upVotes: 112, downVotes: 134 },
+        { name: '로스트치킨', brand: '자담치킨', slug: 'jadam-roast', score: 68, upVotes: 89, downVotes: 145 },
+        { name: '오븐치킨', brand: '땅땅치킨', slug: 'ddangddang-oven', score: 65, upVotes: 67, downVotes: 167 },
+      ],
+      D: [
+        { name: '마트 로티세리', brand: '코스트코/이마트', slug: 'mart-rotisserie', score: 45, upVotes: 56, downVotes: 234 },
+        { name: '편의점 구이치킨', brand: 'CU/GS25', slug: 'convenience-roasted', score: 38, upVotes: 28, downVotes: 267 },
+        { name: '냉동 오븐치킨', brand: '비비고/풀무원', slug: 'frozen-roasted', score: 32, upVotes: 18, downVotes: 298 },
+      ],
     },
   },
 };
@@ -262,11 +412,13 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
 // Mock 트렌딩 데이터
 const TRENDING_DATA: Record<string, { name: string; brand: string; tier: TierLevel; change: string; slug: string }[]> = {
   'running-shoes': [
-    { name: '노바블라스트 5', brand: '아식스', tier: 'A', change: '+12.5', slug: 'novablast-5' },
-    { name: '클리프톤 10', brand: '호카', tier: 'A', change: '+8.3', slug: 'clifton-10' },
-    { name: '페가수스 41', brand: '나이키', tier: 'B', change: '+7.1', slug: 'pegasus-41' },
-    { name: '젤 카야노 31', brand: '아식스', tier: 'S', change: '+5.9', slug: 'gel-kayano-31' },
-    { name: '1080v14', brand: '뉴발란스', tier: 'B', change: '+4.2', slug: '1080v14' },
+    { name: '노바블라스트 5', brand: '아식스', tier: 'S', change: '+18.5', slug: 'novablast-5' },
+    { name: '메타스피드 스카이 도쿄', brand: '아식스', tier: 'S', change: '+15.2', slug: 'metaspeed-sky-tokyo' },
+    { name: '클리프톤 10', brand: '호카', tier: 'S', change: '+12.3', slug: 'clifton-10' },
+    { name: '엔돌핀 스피드 5', brand: '써코니', tier: 'S', change: '+10.8', slug: 'endorphin-speed-5' },
+    { name: '본디 9', brand: '호카', tier: 'S', change: '+9.5', slug: 'bondi-9' },
+    { name: '패스트-R 3', brand: '푸마', tier: 'S', change: '+8.7', slug: 'fast-r-3' },
+    { name: '아라히 8', brand: '호카', tier: 'S', change: '+7.2', slug: 'arahi-8' },
   ],
   'chicken': [
     { name: '뿌링클', brand: 'BHC', tier: 'S', change: '+18.2', slug: 'bhc-puringkle' },

@@ -19,6 +19,9 @@ import {
   Star,
   ThumbsUp,
   Trophy,
+  Heart,
+  Eye,
+  Plus,
 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
 
@@ -38,12 +41,12 @@ const CATEGORIES = [
     slug: 'running-shoes',
     name: '러닝화',
     icon: '👟',
-    description: '브랜드별 계급도',
+    description: '용도별 계급도',
     color: '#E94560',
     topItems: [
-      { name: '아식스', tier: 'S' as TierLevel, score: 95.0, domain: 'asics.com' },
-      { name: '나이키', tier: 'S' as TierLevel, score: 94.0, domain: 'nike.com' },
-      { name: '호카', tier: 'S' as TierLevel, score: 92.5, domain: 'hoka.com' },
+      { name: '메타스피드 스카이 도쿄', tier: 'S' as TierLevel, score: 98.0, domain: 'asics.com', usage: '레이스/대회' },
+      { name: '노바블라스트 5', tier: 'S' as TierLevel, score: 96.0, domain: 'asics.com', usage: '데일리 트레이너' },
+      { name: '클리프톤 10', tier: 'S' as TierLevel, score: 96.0, domain: 'hoka.com', usage: '입문/초보' },
     ],
     trending: '노바블라스트 5',
   },
@@ -69,17 +72,17 @@ const ALL_HOT_DISPUTES = [
     categoryName: '러닝화',
     categoryIcon: '👟',
     productId: 1,
-    productName: '노바블라스트 5',
-    productSlug: 'novablast-5',
-    brandName: '아식스',
+    productName: '엔돌핀 스피드 5',
+    productSlug: 'endorphin-speed-5',
+    brandName: '써코니',
     currentTier: 'A' as TierLevel,
-    upVotes: 73,
-    downVotes: 12,
-    totalVotes: 85,
+    upVotes: 89,
+    downVotes: 15,
+    totalVotes: 104,
     topComment: {
       userName: '러닝매니아',
       voteType: 'up' as const,
-      comment: '쿠셔닝이 정말 좋고 반발력도 훌륭합니다. S티어 자격 충분해요.',
+      comment: 'INCREDIRUN 폼 반발력이 역대급입니다. S티어 확정이에요!',
     },
     daysLeft: 3,
   },
@@ -107,17 +110,17 @@ const ALL_HOT_DISPUTES = [
     categoryName: '러닝화',
     categoryIcon: '👟',
     productId: 2,
-    productName: '클리프톤 10',
-    productSlug: 'clifton-10',
-    brandName: '호카',
+    productName: '매그니파이 니트로 3',
+    productSlug: 'magnify-nitro-3',
+    brandName: '푸마',
     currentTier: 'A' as TierLevel,
-    upVotes: 28,
-    downVotes: 45,
-    totalVotes: 73,
+    upVotes: 67,
+    downVotes: 22,
+    totalVotes: 89,
     topComment: {
       userName: '마라토너K',
-      voteType: 'down' as const,
-      comment: '내구성이 이전 버전보다 많이 떨어집니다. B티어가 맞다고 봅니다.',
+      voteType: 'up' as const,
+      comment: '2025년 푸마의 반란! 쿠셔닝과 반응성 둘 다 좋습니다. S티어 가능!',
     },
     daysLeft: 5,
   },
@@ -149,11 +152,11 @@ const ALL_RECENT_REVIEWS = [
     category: 'running-shoes',
     categoryIcon: '👟',
     user: { name: '러닝좋아', type: '평발 / 넓은 발' },
-    model: { name: '노바블라스트 5', brand: '아식스', tier: 'A' as TierLevel, slug: 'novablast-5' },
+    model: { name: '노바블라스트 5', brand: '아식스', tier: 'S' as TierLevel, slug: 'novablast-5' },
     rating: 5,
-    content: '평발인데 아치 서포트가 적당하고 쿠셔닝이 정말 좋아요. 10km 이상 달려도 발이 편합니다.',
-    likes: 24,
-    comments: 5,
+    content: '2025년 최고의 데일리 러닝화! 쿠셔닝과 반발력의 완벽한 균형. 공홈 마비될 정도로 인기 있는 이유를 알겠어요.',
+    likes: 156,
+    comments: 23,
     createdAt: '2시간 전',
   },
   {
@@ -173,11 +176,11 @@ const ALL_RECENT_REVIEWS = [
     category: 'running-shoes',
     categoryIcon: '👟',
     user: { name: '마라토너K', type: '보통 / 보통 발' },
-    model: { name: '알파플라이 3', brand: '나이키', tier: 'S' as TierLevel, slug: 'alphafly-3' },
-    rating: 4,
-    content: '가격이 비싸지만 레이스용으로는 최고입니다. 다만 내구성은 좀 아쉬워요.',
-    likes: 18,
-    comments: 3,
+    model: { name: '메타스피드 스카이 도쿄', brand: '아식스', tier: 'S' as TierLevel, slug: 'metaspeed-sky-tokyo' },
+    rating: 5,
+    content: '아식스가 레이싱화 왕좌 탈환! FF LEAP 폼 반발력이 미쳤어요. 서브3 도전하시는 분들 강추합니다.',
+    likes: 87,
+    comments: 15,
     createdAt: '5시간 전',
   },
   {
@@ -315,6 +318,13 @@ export function AllCategoriesOverview() {
                         />
                       </div>
 
+                      {/* 용도 라벨 (있는 경우) */}
+                      {'usage' in item && item.usage && (
+                        <p className="text-[10px] text-muted-foreground mb-0.5">
+                          {item.usage}
+                        </p>
+                      )}
+
                       {/* 이름 */}
                       <p className="text-xs md:text-sm font-medium text-center line-clamp-1">
                         {item.name}
@@ -353,6 +363,85 @@ export function AllCategoriesOverview() {
             </CardContent>
           </Card>
         ))}
+      </section>
+
+      {/* 내가 만든 계급도 섹션 */}
+      <section className="py-8 bg-gradient-to-r from-accent/5 to-primary/5 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8 rounded-2xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-accent" />
+              </div>
+              <h2 className="text-2xl font-bold">내가 만든 계급도</h2>
+            </div>
+            <p className="text-muted-foreground">사용자들이 만든 다양한 계급도를 둘러보세요</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link href="/my-tier">
+                전체 보기
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </Link>
+            </Button>
+            <Button className="bg-accent hover:bg-accent/90" asChild>
+              <Link href="/my-tier/create">
+                <Plus className="h-4 w-4 mr-1" />
+                계급도 만들기
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* 인기 계급도 미리보기 (정적 데이터로 시작) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { title: '라면 계급도', author: '라면러버', likes: 128, views: 1420, items: 15 },
+            { title: '커피 프랜차이즈 순위', author: '카페인중독', likes: 95, views: 890, items: 12 },
+            { title: '배달앱 순위', author: '야식킹', likes: 67, views: 654, items: 8 },
+            { title: '편의점 도시락 티어', author: '혼밥러', likes: 54, views: 432, items: 10 },
+          ].map((chart, index) => (
+            <Link key={index} href="/my-tier">
+              <Card className="card-base h-full hover:border-accent/50 transition-all hover:shadow-lg group cursor-pointer">
+                <CardContent className="p-4">
+                  {/* 티어 미니 프리뷰 */}
+                  <div className="h-3 flex rounded-t overflow-hidden mb-3">
+                    {['S', 'A', 'B', 'C', 'D'].map((tier) => (
+                      <div
+                        key={tier}
+                        className="flex-1"
+                        style={{
+                          background: tier === 'S' ? 'linear-gradient(135deg, #F59E0B, #FCD34D)'
+                            : tier === 'A' ? 'linear-gradient(135deg, #10B981, #6EE7B7)'
+                            : tier === 'B' ? 'linear-gradient(135deg, #3B82F6, #93C5FD)'
+                            : tier === 'C' ? 'linear-gradient(135deg, #94A3B8, #CBD5E1)'
+                            : 'linear-gradient(135deg, #F87171, #FCA5A5)'
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  <h3 className="font-semibold text-sm mb-1 group-hover:text-accent transition-colors line-clamp-1">
+                    {chart.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-3">{chart.author}</p>
+
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-3 w-3" />
+                      {chart.likes}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Eye className="h-3 w-3" />
+                      {chart.views}
+                    </span>
+                    <span className="text-[10px]">{chart.items}개</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* 이번 주 HOT 이의 */}
