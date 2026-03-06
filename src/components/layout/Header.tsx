@@ -64,7 +64,7 @@ export function Header() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground font-bold">
               계
             </div>
-            <span className="hidden font-bold text-lg sm:inline-block">계급도</span>
+            <span className="font-bold text-lg">계급도</span>
           </Link>
 
           {/* Category Navigation */}
