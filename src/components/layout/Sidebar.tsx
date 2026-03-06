@@ -73,7 +73,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
           ${isOpen ? 'w-64' : 'w-0 md:w-0'}
           bg-card border-r border-border
           transition-all duration-200 ease-in-out
-          flex flex-col overflow-x-hidden overflow-y-hidden
+          flex flex-col overflow-x-hidden
         `}
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -84,11 +84,9 @@ export function Sidebar({ className = '' }: SidebarProps) {
         </div>
 
         <div
-          className="flex-1 min-h-0 overflow-y-scroll overscroll-contain py-2"
+          className="flex-1 min-h-0 overflow-y-auto py-2 pb-8"
           style={{
             WebkitOverflowScrolling: 'touch',
-            touchAction: 'pan-y',
-            overscrollBehavior: 'contain',
           }}
         >
           <div className="px-2">
