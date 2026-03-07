@@ -39,19 +39,30 @@
 
 ---
 
-## 남은 작업 (도메인 등록 전 가능)
+### 도메인 등록 및 배포
+- [x] 커스텀 도메인 구매 (`tier-chart.com` — Cloudflare)
+- [x] Cloudflare DNS → Vercel 연결 (프론트엔드: `tier-chart.com`)
+- [x] Cloudflare DNS → Railway 연결 (백엔드 API: `api.tier-chart.com`)
+- [x] SSL 인증서 적용 (Vercel + Railway 자동)
+- [x] `www.tier-chart.com` → `tier-chart.com` 리다이렉트
+- [x] 코드 내 도메인 `gyegeupdo.kr` → `tier-chart.com` 일괄 변경 (11+ 파일)
+- [x] `metadataBase` 실 도메인 반영 확인
+- [x] canonical URL 실 도메인 반영 확인
+- [x] OG 이미지 URL 실 도메인으로 동작 확인
+- [x] sitemap에 치킨 카테고리 페이지들 추가
+- [x] sitemap에 게시글 상세 URL 추가 (`/running-shoes/board/1` ~ `7`, `/chicken/board/101` ~ `106`)
+
+---
+
+## 남은 작업
 
 ### 높은 우선순위
-- [ ] favicon / 앱 아이콘 — `public/favicon.ico`를 계급도 전용으로 교체, apple-touch-icon 추가
-- [ ] sitemap에 치킨 카테고리 페이지들 추가
-- [ ] sitemap에 게시글 상세 URL 추가 (`/running-shoes/board/1` ~ `7`, `/chicken/board/101` ~ `106`)
+- [ ] Google Search Console 등록 및 sitemap 제출 → `SEARCH_ENGINE_SETUP.md` 참고
+- [ ] Naver Search Advisor 등록 → `SEARCH_ENGINE_SETUP.md` 참고
+- [ ] `layout.tsx`에 verification 메타데이터 추가 (Google/Naver 인증 코드)
 
-### 낮은 우선순위 (도메인 등록 후)
-- [ ] Google Search Console 등록 및 sitemap 제출
-- [ ] Naver Search Advisor 등록
-- [ ] `metadataBase`를 실제 도메인으로 확인 (현재 `NEXT_PUBLIC_SITE_URL` 환경변수 사용)
-- [ ] canonical URL 실 도메인 반영 확인
-- [ ] OG 이미지 URL 실 도메인으로 동작 확인
+### 낮은 우선순위
+- [ ] favicon / 앱 아이콘 — `public/favicon.ico`를 계급도 전용으로 교체, apple-touch-icon 추가
 - [ ] 페이지 속도 최적화 (Core Web Vitals)
 - [ ] 구조화 데이터 추가 — `BreadcrumbList`, `Product`, `Review` 등
 
