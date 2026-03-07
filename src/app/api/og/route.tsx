@@ -125,7 +125,7 @@ function generateDefaultOG({
             fontSize: '24px',
           }}
         >
-          gyegeupdo.kr
+          tier-chart.com
         </div>
       </div>
     ),
@@ -222,7 +222,7 @@ function generateTierOG({
               marginTop: '24px',
             }}
           >
-            gyegeupdo.kr
+            tier-chart.com
           </p>
         </div>
       </div>
@@ -283,7 +283,7 @@ function generateMyTierOG({
               {title || '나의 계급도'}
             </span>
           </div>
-          <span style={{ fontSize: '20px', color: '#94A3B8' }}>gyegeupdo.kr</span>
+          <span style={{ fontSize: '20px', color: '#94A3B8' }}>tier-chart.com</span>
         </div>
 
         {/* 티어 리스트 */}
@@ -483,7 +483,7 @@ function generateQuizResultOG({
             color: 'rgba(255,255,255,0.6)',
           }}
         >
-          gyegeupdo.kr
+          tier-chart.com
         </p>
       </div>
     ),

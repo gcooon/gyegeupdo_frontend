@@ -4,7 +4,7 @@ import { AppProviders } from '@/components/providers/AppProviders';
 import { generateWebSiteJsonLd } from '@/lib/jsonLd';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://gyegeupdo.kr'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://tier-chart.com'),
   title: {
     default: '계급도 - 러닝화 계급도 큐레이션',
     template: '%s | 계급도',
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ko_KR',
-    url: 'https://gyegeupdo.kr',
+    url: 'https://tier-chart.com',
     siteName: '계급도',
     title: '계급도 - 러닝화 계급도 큐레이션',
     description: '나와 발형이 비슷한 러너들이 선택한 러닝화를 찾아보세요.',

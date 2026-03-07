@@ -68,7 +68,7 @@ export function ShareButtons({
           content: {
             title: title,
             description: description,
-            imageUrl: imageUrl || 'https://gyegeupdo.kr/og-image.png',
+            imageUrl: imageUrl || 'https://tier-chart.com/og-image.png',
             link: {
               webUrl: shareUrl,
               mobileWebUrl: shareUrl,

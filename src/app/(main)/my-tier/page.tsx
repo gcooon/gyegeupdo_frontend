@@ -4,7 +4,7 @@ import { generateSeoMeta } from '@/lib/seo';
 import { generateItemListJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonLd';
 import { getMockUserTierCharts } from '@/lib/mockUserTierCharts';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gyegeupdo.kr';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tier-chart.com';
 
 export const metadata: Metadata = {
   ...generateSeoMeta({

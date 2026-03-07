@@ -510,7 +510,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
         ctx.font = '16px Pretendard, sans-serif';
         ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         ctx.textAlign = 'right';
-        ctx.fillText('gyegeupdo.kr', canvas.width - 20, canvas.height - 20);
+        ctx.fillText('tier-chart.com', canvas.width - 20, canvas.height - 20);
 
         const now = new Date();
         const dateStr = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;

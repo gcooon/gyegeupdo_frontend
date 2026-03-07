@@ -582,7 +582,7 @@ const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<H
 
       {/* 워터마크 */}
       <div className="bg-slate-900 text-center py-2 text-xs text-slate-500">
-        gyegeupdo.kr
+        tier-chart.com
       </div>
     </div>
   );
