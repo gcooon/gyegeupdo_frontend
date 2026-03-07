@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const response = await api.post<{
       access: string;
       refresh: string;
-    }>('/auth/token/', { email, password });
+    }>('/auth/token/', { username: email, password });
 
     localStorage.setItem('access_token', response.data.access);
     localStorage.setItem('refresh_token', response.data.refresh);
