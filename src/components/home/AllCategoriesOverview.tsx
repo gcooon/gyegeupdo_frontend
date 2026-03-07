@@ -396,12 +396,12 @@ export function AllCategoriesOverview() {
         {/* 인기 계급도 미리보기 (정적 데이터로 시작) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { title: '라면 계급도', author: '라면러버', likes: 128, views: 1420, items: 15 },
-            { title: '커피 프랜차이즈 순위', author: '카페인중독', likes: 95, views: 890, items: 12 },
-            { title: '배달앱 순위', author: '야식킹', likes: 67, views: 654, items: 8 },
-            { title: '편의점 도시락 티어', author: '혼밥러', likes: 54, views: 432, items: 10 },
+            { slug: 'ramen-tier', title: '라면 계급도', author: '라면러버', likes: 128, views: 1420, items: 14 },
+            { slug: 'coffee-franchise-tier', title: '커피 프랜차이즈 순위', author: '카페인중독', likes: 95, views: 890, items: 11 },
+            { slug: 'delivery-app-tier', title: '배달앱 순위', author: '야식킹', likes: 67, views: 654, items: 8 },
+            { slug: 'convenience-store-dosirak-tier', title: '편의점 도시락 티어', author: '혼밥러', likes: 54, views: 432, items: 9 },
           ].map((chart, index) => (
-            <Link key={index} href="/my-tier">
+            <Link key={index} href={`/my-tier/${chart.slug}`}>
               <Card className="card-base h-full hover:border-accent/50 transition-all hover:shadow-lg group cursor-pointer">
                 <CardContent className="p-4">
                   {/* 티어 미니 프리뷰 */}

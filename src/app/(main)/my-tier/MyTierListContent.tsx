@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import type { UserTierChartListItem, UserTierChartListResponse } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
+import { getMockUserTierCharts } from '@/lib/mockUserTierCharts';
 
 type SortOption = 'popular' | 'latest' | 'views';
 
@@ -96,6 +97,11 @@ export function MyTierListContent() {
       }
     } catch (error) {
       console.error('Failed to fetch charts:', error);
+      // API 실패 시 mock 데이터 fallback
+      const mockData = getMockUserTierCharts();
+      setCharts(mockData.items);
+      setTotalCount(mockData.total_count);
+      setHasNext(mockData.has_next);
     } finally {
       setIsLoading(false);
     }

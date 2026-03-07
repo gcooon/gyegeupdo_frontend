@@ -42,6 +42,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
+import { getMockUserTierChart } from '@/lib/mockUserTierCharts';
 import type { UserTierChart, TierChartComment, TierChartData } from '@/types/tier';
 
 const TIER_ICONS: Record<TierLevel, React.ElementType> = {
@@ -86,6 +87,17 @@ export function TierChartDetailContent({ slug }: TierChartDetailContentProps) {
     const fetchChart = async () => {
       setIsLoading(true);
       try {
+        // Mock 데이터 우선 체크
+        const mockChart = getMockUserTierChart(slug);
+        if (mockChart) {
+          setChart(mockChart);
+          setIsLiked(mockChart.is_liked);
+          setLikeCount(mockChart.like_count);
+          setComments(mockChart.comments || []);
+          setIsLoading(false);
+          return;
+        }
+
         const response = await api.get<{
           success: boolean;
           data: UserTierChart;
@@ -101,7 +113,16 @@ export function TierChartDetailContent({ slug }: TierChartDetailContentProps) {
           setError(response.data.message);
         }
       } catch (err) {
-        setError('계급도를 불러올 수 없습니다.');
+        // API 실패 시 mock fallback
+        const mockChart = getMockUserTierChart(slug);
+        if (mockChart) {
+          setChart(mockChart);
+          setIsLiked(mockChart.is_liked);
+          setLikeCount(mockChart.like_count);
+          setComments(mockChart.comments || []);
+        } else {
+          setError('계급도를 불러올 수 없습니다.');
+        }
       } finally {
         setIsLoading(false);
       }
