@@ -10,8 +10,15 @@ export function useCategories() {
   return useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
-      const response = await api.get<ApiResponse<Category[]>>('/categories/');
-      return response.data.data;
+      try {
+        const response = await api.get<ApiResponse<Category[]>>('/categories/');
+        if (response.data.data && response.data.data.length > 0) {
+          return response.data.data;
+        }
+      } catch {
+        // API 실패 시 무시
+      }
+      return null;
     },
   });
 }
@@ -20,14 +27,17 @@ export function useCategory(slug: string, initialData?: Category) {
   return useQuery({
     queryKey: ['category', slug],
     queryFn: async () => {
-      // Mock 데이터 우선 체크
-      const mockCategory = getMockCategory(slug);
-      if (mockCategory) {
-        return mockCategory;
+      try {
+        const response = await api.get<ApiResponse<Category>>(`/categories/${slug}/`);
+        if (response.data.data) {
+          return response.data.data;
+        }
+      } catch {
+        // API 실패 시 mock 폴백
       }
-
-      const response = await api.get<ApiResponse<Category>>(`/categories/${slug}/`);
-      return response.data.data;
+      const mockCategory = getMockCategory(slug);
+      if (mockCategory) return mockCategory;
+      throw new Error('Category not found');
     },
     enabled: !!slug,
     initialData,
@@ -39,17 +49,32 @@ export function useBrands(categorySlug?: string, initialData?: Brand[]) {
   return useQuery({
     queryKey: ['brands', categorySlug],
     queryFn: async () => {
-      // Mock 데이터 우선 체크
+      try {
+        const params = categorySlug ? `?category=${categorySlug}` : '';
+        const response = await api.get<ApiResponse<Brand[]>>(`/brands/${params}`);
+        if (response.data.data && response.data.data.length > 0) {
+          // API 응답을 프론트엔드 Brand 타입에 맞게 변환
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return response.data.data.map((b: any) => ({
+            id: b.id,
+            name: b.name,
+            slug: b.slug,
+            logo_url: b.logo_url,
+            tier: b.tier,
+            tier_score: b.tier_score,
+            description: b.description || '',
+            category: b.category_slug || categorySlug || '',
+            scores: b.scores || [],
+          })) as Brand[];
+        }
+      } catch {
+        // API 실패 시 mock 폴백
+      }
       if (categorySlug) {
         const mockBrands = getMockBrands(categorySlug);
-        if (mockBrands) {
-          return mockBrands;
-        }
+        if (mockBrands) return mockBrands;
       }
-
-      const params = categorySlug ? `?category=${categorySlug}` : '';
-      const response = await api.get<ApiResponse<Brand[]>>(`/brands/${params}`);
-      return response.data.data;
+      return [];
     },
     initialData,
   });

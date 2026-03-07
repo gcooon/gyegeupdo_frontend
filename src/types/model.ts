@@ -12,6 +12,7 @@ export interface Category {
   brand_score_definitions: ScoreDefinition[];
   quiz_definitions: QuizDefinition[];
   filter_definitions: FilterDefinitions;
+  display_config?: Record<string, unknown>;
   display_order: number;
   is_active: boolean;
   product_count?: number;
