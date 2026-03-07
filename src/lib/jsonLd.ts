@@ -10,7 +10,7 @@ export function generateWebSiteJsonLd() {
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL,
-    description: '나와 발형이 비슷한 러너들이 선택한 러닝화를 찾아보세요. 브랜드 계급도, 3분 진단, 모델 비교까지.',
+    description: '러닝화, 치킨, 커피 등 다양한 카테고리의 계급도를 한눈에 비교하고 나만의 계급도를 만들어보세요.',
     inLanguage: 'ko-KR',
     potentialAction: {
       '@type': 'SearchAction',
