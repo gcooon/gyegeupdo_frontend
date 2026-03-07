@@ -38,6 +38,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    other: {
+      'naver-site-verification': ['f5eaa5925436b936790bd222a2493fd0e604c0dd'],
+    },
+  },
 };
 
 export default function RootLayout({
