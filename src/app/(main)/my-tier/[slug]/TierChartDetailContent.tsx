@@ -314,70 +314,130 @@ export function TierChartDetailContent({ slug }: TierChartDetailContentProps) {
       </div>
 
       {/* 티어 차트 */}
-      <div ref={tierListRef} className="rounded-xl overflow-hidden shadow-lg mb-6 bg-slate-900">
+      <div ref={tierListRef} className="rounded-2xl overflow-hidden shadow-lg mb-6">
         {/* 제목 */}
         <div className="bg-gradient-to-r from-accent to-primary p-4 text-center">
           <h2 className="text-xl font-bold text-white">{chart.title}</h2>
         </div>
 
         {/* 티어 */}
-        {TIERS.map((tier) => {
-          const config = TIER_CONFIG[tier];
-          const items = (chart.tier_data as TierChartData)[tier] || [];
+        <div className="space-y-1">
+          {TIERS.map((tier, tierIndex) => {
+            const config = TIER_CONFIG[tier];
+            const TierIcon = TIER_ICONS[tier];
+            const items = (chart.tier_data as TierChartData)[tier] || [];
+            const isSTier = tier === 'S';
+            const isATier = tier === 'A';
+            const isBTier = tier === 'B';
 
-          return (
-            <div key={tier} className="flex min-h-[60px]">
+            return (
               <div
-                className="w-20 md:w-24 flex flex-col items-center justify-center shrink-0 relative border-r-2 border-white/30"
-                style={{ background: config.gradient }}
+                key={tier}
+                className={`
+                  relative flex overflow-hidden
+                  ${tierIndex === TIERS.length - 1 ? 'rounded-b-2xl' : ''}
+                `}
               >
-                <div className="absolute inset-0 bg-black/20" />
-                <span className="text-xl relative z-10">{config.emoji}</span>
-                <span
-                  className="font-black text-lg md:text-xl relative z-10"
-                  style={{
-                    color: '#fff',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)'
-                  }}
+                {/* 티어 라벨 영역 - TierGrid 스타일 */}
+                <div
+                  className="relative flex flex-col items-center justify-center shrink-0 w-16 md:w-20"
+                  style={{ background: config.gradient }}
                 >
-                  {config.label}
-                </span>
-                <span
-                  className="text-[10px] font-bold relative z-10"
-                  style={{
-                    color: '#fff',
-                    textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
-                  }}
+                  {/* 광택 효과 */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/5" />
+
+                  {/* 티어 레터 */}
+                  <span className="font-black relative z-10 text-2xl md:text-3xl text-black">
+                    {tier}급
+                  </span>
+
+                  {/* 아이콘 */}
+                  {TierIcon && (
+                    <TierIcon className="mt-0.5 relative z-10 h-4 w-4 md:h-5 md:w-5 text-black/70" />
+                  )}
+
+                  {/* S티어 shimmer 효과 */}
+                  {isSTier && (
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div className="absolute -inset-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12" />
+                    </div>
+                  )}
+                </div>
+
+                {/* 아이템 영역 - TierGrid 스타일 배경 */}
+                <div
+                  className={`
+                    flex-1 p-2 md:p-3 min-h-[70px] md:min-h-[80px]
+                    ${isSTier
+                      ? 'bg-gradient-to-r from-pink-50/80 to-rose-50/40 dark:from-pink-950/30 dark:to-rose-950/20'
+                      : isATier
+                        ? 'bg-gradient-to-r from-orange-50/80 to-amber-50/40 dark:from-orange-950/30 dark:to-amber-950/20'
+                        : isBTier
+                          ? 'bg-gradient-to-r from-yellow-50/80 to-amber-50/30 dark:from-yellow-950/30 dark:to-amber-950/20'
+                          : tier === 'C'
+                            ? 'bg-gradient-to-r from-emerald-50/80 to-green-50/30 dark:from-emerald-950/30 dark:to-green-950/20'
+                            : 'bg-gradient-to-r from-stone-50/80 to-stone-50/30 dark:from-stone-950/30 dark:to-stone-950/20'
+                    }
+                  `}
                 >
-                  ({tier}티어)
-                </span>
+                  {items.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 md:gap-2">
+                      {items.map((item, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className={`
+                            relative flex flex-col items-center p-1.5 md:p-2 rounded-lg
+                            bg-white dark:bg-slate-800/80
+                            border transition-all duration-200
+                            hover:shadow-md hover:-translate-y-0.5
+                            min-w-[70px] md:min-w-[90px] max-w-[120px]
+                            ${isSTier
+                              ? 'border-pink-300/70 shadow-sm shadow-pink-200/30'
+                              : isATier
+                                ? 'border-orange-300/70 shadow-sm shadow-orange-200/30'
+                                : isBTier
+                                  ? 'border-yellow-300/70 shadow-sm shadow-yellow-200/30'
+                                  : tier === 'C'
+                                    ? 'border-emerald-300/70 shadow-sm shadow-emerald-200/30'
+                                    : 'border-stone-300/70 shadow-sm shadow-stone-200/30'
+                            }
+                          `}
+                        >
+                          <div className="font-medium text-center text-[11px] md:text-xs leading-tight">
+                            {item.name}
+                          </div>
+                          {item.reason && (
+                            <div className="text-[9px] md:text-[10px] text-muted-foreground mt-1 text-center line-clamp-2 leading-tight">
+                              {item.reason}
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-4 text-center text-muted-foreground text-sm">-</div>
+                  )}
+                </div>
               </div>
-              <div className="flex-1 p-3 bg-slate-800/50 flex flex-wrap gap-2 items-start">
-                {items.length > 0 ? (
-                  items.map((item, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="bg-white/10 px-3 py-2 rounded-lg group"
-                    >
-                      <div className="text-sm font-medium text-white">{item.name}</div>
-                      {item.reason && (
-                        <div className="text-xs text-white/60 mt-1">{item.reason}</div>
-                      )}
-                    </motion.div>
-                  ))
-                ) : (
-                  <span className="text-slate-500 text-sm py-2">-</span>
-                )}
-              </div>
+            );
+          })}
+        </div>
+
+        {/* 범례 */}
+        <div className="flex items-center justify-center gap-2 md:gap-4 py-3 bg-muted/30 text-[10px] md:text-xs text-muted-foreground">
+          {TIERS.map((t) => (
+            <div key={t} className="flex items-center gap-1">
+              <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded" style={{ background: TIER_CONFIG[t].gradient }} />
+              <span>{TIER_CONFIG[t].label}</span>
             </div>
-          );
-        })}
+          ))}
+        </div>
 
         {/* 워터마크 */}
-        <div className="bg-slate-900 text-center py-2 text-xs text-slate-500">
+        <div className="bg-muted/50 text-center py-2 text-xs text-muted-foreground">
           gyegeupdo.kr
         </div>
       </div>
