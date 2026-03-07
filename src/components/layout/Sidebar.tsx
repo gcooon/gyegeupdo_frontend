@@ -4,35 +4,15 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
+import { useCategories } from '@/hooks/useBrands';
 import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface Category {
-  slug: string;
-  name: string;
-  icon: string;
-  enabled: boolean;
-}
-
-const CATEGORIES: Category[] = [
-  {
-    slug: 'running-shoes',
-    name: '러닝화',
-    icon: '👟',
-    enabled: true,
-  },
-  {
-    slug: 'chicken',
-    name: '치킨',
-    icon: '🍗',
-    enabled: true,
-  },
-  {
-    slug: 'mens-watch',
-    name: '남자시계',
-    icon: '⌚',
-    enabled: true,
-  },
+// API 실패 시 폴백용 최소 카테고리 목록
+const FALLBACK_CATEGORIES = [
+  { slug: 'running-shoes', name: '러닝화', icon: '👟' },
+  { slug: 'chicken', name: '치킨', icon: '🍗' },
+  { slug: 'mens-watch', name: '남자시계', icon: '⌚' },
 ];
 
 const CATEGORY_MENUS = [
@@ -50,6 +30,10 @@ export function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname() ?? '';
   const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { data: apiCategories } = useCategories();
+  const categories = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
+    : FALLBACK_CATEGORIES;
 
   // 모바일에서 링크 클릭(경로 변경) 시 사이드바 닫기
   useEffect(() => {
@@ -167,7 +151,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
             <div className="border-t border-border my-2 mx-2" />
 
-            {CATEGORIES.map((category) => {
+            {categories.map((category) => {
               const isExpanded = expandedCategories.includes(category.slug);
               const categoryPath = `/${category.slug}`;
               const isActiveCategory = pathname.startsWith(categoryPath);
@@ -175,34 +159,27 @@ export function Sidebar({ className = '' }: SidebarProps) {
               return (
                 <div key={category.slug} className="mb-2">
                   <button
-                    onClick={() => category.enabled && toggleCategory(category.slug)}
-                    disabled={!category.enabled}
+                    onClick={() => toggleCategory(category.slug)}
                     className={`
                       w-full flex items-center justify-between px-3 py-3 rounded-lg
                       text-sm font-semibold transition-colors
-                      ${!category.enabled
-                        ? 'opacity-50 cursor-not-allowed'
-                        : isActiveCategory
-                          ? 'bg-accent/10 text-accent'
-                          : 'hover:bg-muted'
+                      ${isActiveCategory
+                        ? 'bg-accent/10 text-accent'
+                        : 'hover:bg-muted'
                       }
                     `}
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{category.icon}</span>
                       <span>{category.name}</span>
-                      {!category.enabled && (
-                        <span className="text-xs text-muted-foreground font-normal">(준비중)</span>
-                      )}
                     </div>
-                    {category.enabled && (
-                      isExpanded
-                        ? <ChevronDown className="h-4 w-4" />
-                        : <ChevronRight className="h-4 w-4" />
-                    )}
+                    {isExpanded
+                      ? <ChevronDown className="h-4 w-4" />
+                      : <ChevronRight className="h-4 w-4" />
+                    }
                   </button>
 
-                  {category.enabled && isExpanded && (
+                  {isExpanded && (
                     <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
                       {CATEGORY_MENUS.map((menu) => {
                         // 계급도는 카테고리 메인 페이지로 이동

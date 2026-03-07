@@ -19,7 +19,7 @@ export const useSidebarStore = create<SidebarState>()(
   persist(
     (set) => ({
       isOpen: true,
-      expandedCategories: ['running-shoes'],
+      expandedCategories: [],
       _hasHydrated: false,
 
       toggle: () => set((state) => ({ isOpen: !state.isOpen })),

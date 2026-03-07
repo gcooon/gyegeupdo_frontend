@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Trophy, Search, MessageSquare, User } from 'lucide-react';
 import { useSidebarStore } from '@/store/sidebarStore';
+import { useCategories } from '@/hooks/useBrands';
 
 const navItems = [
   { href: '/', label: '홈', icon: Home, matchExact: true },
@@ -13,23 +14,31 @@ const navItems = [
   { href: '/login', label: '내 정보', icon: User, matchExact: true },
 ];
 
-const CATEGORY_LABELS: Record<string, { label: string; icon: string }> = {
+const FALLBACK_CATEGORY_LABELS: Record<string, { label: string; icon: string }> = {
   'running-shoes': { label: '러닝화', icon: '👟' },
   'chicken': { label: '치킨', icon: '🍗' },
+  'mens-watch': { label: '남자시계', icon: '⌚' },
 };
 
 export function MobileNav() {
   const pathname = usePathname() ?? '';
   const { isOpen: isSidebarOpen } = useSidebarStore();
+  const { data: apiCategories } = useCategories();
 
   // 사이드바가 열려있으면 하단 네비게이션 숨김
   if (isSidebarOpen) return null;
 
+  // API에서 가져온 카테고리 슬러그 목록 또는 폴백
+  const categoryLabels: Record<string, { label: string; icon: string }> =
+    (apiCategories && apiCategories.length > 0)
+      ? Object.fromEntries(apiCategories.map(c => [c.slug, { label: c.name, icon: c.icon }]))
+      : FALLBACK_CATEGORY_LABELS;
+  const validCategories = Object.keys(categoryLabels);
+
   // 현재 카테고리를 URL에서 추출 (예: /chicken/tier → chicken)
   const currentCategory = pathname.split('/')[1] || 'running-shoes';
-  const validCategories = ['running-shoes', 'chicken'];
-  const category = validCategories.includes(currentCategory) ? currentCategory : 'running-shoes';
-  const categoryInfo = CATEGORY_LABELS[category] || CATEGORY_LABELS['running-shoes'];
+  const category = validCategories.includes(currentCategory) ? currentCategory : validCategories[0] || 'running-shoes';
+  const categoryInfo = categoryLabels[category] || { label: '계급도', icon: '📊' };
 
   const isActive = (item: typeof navItems[number]) => {
     if (item.matchExact) return pathname === item.href;

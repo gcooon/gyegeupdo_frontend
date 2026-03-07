@@ -13,26 +13,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useAuth } from '@/hooks/useAuth';
+import { useCategories } from '@/hooks/useBrands';
 
-const CATEGORIES = [
-  {
-    slug: 'running-shoes',
-    name: '러닝화',
-    icon: '👟',
-    enabled: true,
-  },
-  {
-    slug: 'chicken',
-    name: '치킨',
-    icon: '🍗',
-    enabled: true,
-  },
-  {
-    slug: 'mens-watch',
-    name: '남자시계',
-    icon: '⌚',
-    enabled: true,
-  },
+// API 실패 시 폴백용
+const FALLBACK_CATEGORIES = [
+  { slug: 'running-shoes', name: '러닝화', icon: '👟' },
+  { slug: 'chicken', name: '치킨', icon: '🍗' },
+  { slug: 'mens-watch', name: '남자시계', icon: '⌚' },
 ];
 
 const CATEGORY_MENUS = [
@@ -46,6 +33,10 @@ export function Header() {
   const { toggle } = useSidebarStore();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const { data: apiCategories } = useCategories();
+  const categories = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
+    : FALLBACK_CATEGORIES;
 
   const handleLogout = () => {
     logout();
@@ -75,33 +66,29 @@ export function Header() {
 
           {/* Category Navigation */}
           <nav className="hidden lg:flex items-center gap-1 ml-4">
-            {CATEGORIES.map((category) => (
+            {categories.map((category) => (
               <div
                 key={category.slug}
                 className="relative"
-                onMouseEnter={() => category.enabled && setOpenCategory(category.slug)}
+                onMouseEnter={() => setOpenCategory(category.slug)}
                 onMouseLeave={() => setOpenCategory(null)}
               >
                 <button
-                  disabled={!category.enabled}
                   className={`
                     flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    ${!category.enabled
-                      ? 'opacity-50 cursor-not-allowed'
-                      : openCategory === category.slug
-                        ? 'bg-muted text-foreground'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    ${openCategory === category.slug
+                      ? 'bg-muted text-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     }
                   `}
                 >
                   <span>{category.icon}</span>
                   <span>{category.name}</span>
-                  {category.enabled && <ChevronDown className="h-3 w-3" />}
-                  {!category.enabled && <span className="text-xs">(준비중)</span>}
+                  <ChevronDown className="h-3 w-3" />
                 </button>
 
                 {/* Dropdown */}
-                {category.enabled && openCategory === category.slug && (
+                {openCategory === category.slug && (
                   <div className="absolute top-full left-0 mt-1 w-44 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
                     {CATEGORY_MENUS.map((menu) => {
                       const Icon = menu.icon;
