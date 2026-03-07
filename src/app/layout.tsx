@@ -4,6 +4,7 @@ import { AppProviders } from '@/components/providers/AppProviders';
 import { generateWebSiteJsonLd } from '@/lib/jsonLd';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://gyegeupdo.kr'),
   title: {
     default: '계급도 - 러닝화 계급도 큐레이션',
     template: '%s | 계급도',

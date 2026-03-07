@@ -55,7 +55,54 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.7,
     },
+    // 치킨 카테고리
+    {
+      url: `${SITE_URL}/chicken`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/chicken/tier`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/chicken/quiz`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/chicken/discover`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/chicken/board`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
   ];
+
+  // 게시글 상세 페이지
+  const boardPostIds: Record<string, string[]> = {
+    'running-shoes': ['1', '2', '3', '4', '5', '6', '7'],
+    'chicken': ['101', '102', '103', '104', '105', '106'],
+  };
+
+  const boardPostPages: MetadataRoute.Sitemap = Object.entries(boardPostIds).flatMap(
+    ([category, ids]) =>
+      ids.map((id) => ({
+        url: `${SITE_URL}/${category}/board/${id}`,
+        lastModified: now,
+        changeFrequency: 'weekly' as const,
+        priority: 0.5,
+      }))
+  );
 
   // 내가 만든 계급도 샘플 페이지
   const tierChartSlugs = [
@@ -72,5 +119,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...tierChartPages];
+  return [...staticPages, ...boardPostPages, ...tierChartPages];
 }
