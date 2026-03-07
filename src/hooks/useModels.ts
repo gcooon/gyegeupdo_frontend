@@ -34,7 +34,7 @@ export function useProducts(filters?: ProductFilters) {
   });
 }
 
-export function useProduct(slug: string) {
+export function useProduct(slug: string, initialData?: ProductDetail) {
   return useQuery({
     queryKey: ['product', slug],
     queryFn: async () => {
@@ -52,6 +52,7 @@ export function useProduct(slug: string) {
     },
     enabled: !!slug,
     retry: false, // Mock 데이터를 바로 사용하기 위해 재시도 비활성화
+    initialData,
   });
 }
 

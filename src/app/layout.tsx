@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AppProviders } from '@/components/providers/AppProviders';
+import { generateWebSiteJsonLd } from '@/lib/jsonLd';
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateWebSiteJsonLd()),
+          }}
+        />
+      </head>
       <body className="font-pretendard antialiased min-h-screen">
         <AppProviders>{children}</AppProviders>
       </body>

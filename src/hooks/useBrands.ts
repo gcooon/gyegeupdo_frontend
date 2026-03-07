@@ -16,7 +16,7 @@ export function useCategories() {
   });
 }
 
-export function useCategory(slug: string) {
+export function useCategory(slug: string, initialData?: Category) {
   return useQuery({
     queryKey: ['category', slug],
     queryFn: async () => {
@@ -30,11 +30,12 @@ export function useCategory(slug: string) {
       return response.data.data;
     },
     enabled: !!slug,
+    initialData,
   });
 }
 
 // 브랜드 관련 hooks
-export function useBrands(categorySlug?: string) {
+export function useBrands(categorySlug?: string, initialData?: Brand[]) {
   return useQuery({
     queryKey: ['brands', categorySlug],
     queryFn: async () => {
@@ -50,10 +51,11 @@ export function useBrands(categorySlug?: string) {
       const response = await api.get<ApiResponse<Brand[]>>(`/brands/${params}`);
       return response.data.data;
     },
+    initialData,
   });
 }
 
-export function useBrand(slug: string) {
+export function useBrand(slug: string, initialData?: Brand) {
   return useQuery({
     queryKey: ['brand', slug],
     queryFn: async () => {
@@ -61,6 +63,7 @@ export function useBrand(slug: string) {
       return response.data.data;
     },
     enabled: !!slug,
+    initialData,
   });
 }
 

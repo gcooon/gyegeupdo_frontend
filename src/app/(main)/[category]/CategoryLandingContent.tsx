@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { useBrands, useCategory } from '@/hooks/useBrands';
+import type { Brand, Category } from '@/types/model';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,8 @@ import {
 
 interface CategoryLandingContentProps {
   category: string;
+  initialBrands?: import('@/types/model').Brand[];
+  initialCategory?: import('@/types/model').Category;
 }
 
 // 카테고리별 설정
@@ -641,9 +644,9 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export function CategoryLandingContent({ category }: CategoryLandingContentProps) {
-  const { data: brands, isLoading } = useBrands(category);
-  const { data: categoryData } = useCategory(category);
+export function CategoryLandingContent({ category, initialBrands, initialCategory }: CategoryLandingContentProps) {
+  const { data: brands = initialBrands, isLoading } = useBrands(category, initialBrands);
+  const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
   const tierGridRef = useRef<HTMLDivElement>(null);
 
   const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];

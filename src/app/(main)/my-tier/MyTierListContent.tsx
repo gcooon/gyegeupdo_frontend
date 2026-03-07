@@ -36,11 +36,15 @@ import { getMockUserTierCharts } from '@/lib/mockUserTierCharts';
 
 type SortOption = 'popular' | 'latest' | 'views';
 
-export function MyTierListContent() {
+interface MyTierListContentProps {
+  initialCharts?: UserTierChartListItem[];
+}
+
+export function MyTierListContent({ initialCharts }: MyTierListContentProps = {}) {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const [charts, setCharts] = useState<UserTierChartListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [charts, setCharts] = useState<UserTierChartListItem[]>(initialCharts || []);
+  const [isLoading, setIsLoading] = useState(!initialCharts?.length);
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
   const [totalCount, setTotalCount] = useState(0);

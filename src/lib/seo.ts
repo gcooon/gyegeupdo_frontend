@@ -19,13 +19,13 @@ export function generateSeoMeta({
   noIndex = false,
 }: SeoParams): Metadata {
   const url = `${SITE_URL}${path}`;
-  const fullTitle = `${title} | ${SITE_NAME}`;
+  const ogTitle = `${title} | ${SITE_NAME}`;
 
   return {
-    title: fullTitle,
+    title,
     description,
     openGraph: {
-      title: fullTitle,
+      title: ogTitle,
       description,
       url,
       siteName: SITE_NAME,
@@ -42,7 +42,7 @@ export function generateSeoMeta({
     },
     twitter: {
       card: 'summary_large_image',
-      title: fullTitle,
+      title: ogTitle,
       description,
       images: [image.startsWith('http') ? image : `${SITE_URL}${image}`],
     },

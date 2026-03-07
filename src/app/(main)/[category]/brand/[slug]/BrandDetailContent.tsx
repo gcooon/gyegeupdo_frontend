@@ -10,12 +10,14 @@ import { Button } from '@/components/ui/button';
 interface Props {
   category: string;
   slug: string;
+  initialBrand?: import('@/types/model').Brand;
+  initialCategory?: import('@/types/model').Category;
 }
 
-export function BrandDetailContent({ category, slug }: Props) {
-  const { data: brand, isLoading: brandLoading, error: brandError } = useBrand(slug);
+export function BrandDetailContent({ category, slug, initialBrand, initialCategory }: Props) {
+  const { data: brand = initialBrand, isLoading: brandLoading, error: brandError } = useBrand(slug, initialBrand);
   const { data: products, isLoading: productsLoading } = useBrandProducts(slug);
-  const { data: categoryData } = useCategory(category);
+  const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
 
   if (brandLoading) {
     return (

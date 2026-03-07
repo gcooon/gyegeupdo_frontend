@@ -44,6 +44,7 @@ import { ShareButtons } from '@/components/share/ShareButtons';
 interface Props {
   category: string;
   slug: string;
+  initialProduct?: import('@/types/model').ProductDetail;
 }
 
 // 리뷰 출처 타입
@@ -306,8 +307,8 @@ function StarRating({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md
   );
 }
 
-export function ModelDetailContent({ category, slug }: Props) {
-  const { data: product, isLoading, error } = useProduct(slug);
+export function ModelDetailContent({ category, slug, initialProduct }: Props) {
+  const { data: product = initialProduct, isLoading, error } = useProduct(slug, initialProduct);
   const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
 

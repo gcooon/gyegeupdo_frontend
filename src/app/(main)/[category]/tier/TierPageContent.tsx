@@ -28,6 +28,8 @@ import { ShareButtons } from '@/components/share/ShareButtons';
 
 interface TierPageContentProps {
   category: string;
+  initialBrands?: import('@/types/model').Brand[];
+  initialCategory?: import('@/types/model').Category;
 }
 
 // 카테고리별 필터 설정
@@ -453,9 +455,9 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export function TierPageContent({ category }: TierPageContentProps) {
-  const { data: brands, isLoading, error } = useBrands(category);
-  const { data: categoryData } = useCategory(category);
+export function TierPageContent({ category, initialBrands, initialCategory }: TierPageContentProps) {
+  const { data: brands = initialBrands, isLoading, error } = useBrands(category, initialBrands);
+  const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
   const tierGridRef = useRef<HTMLDivElement>(null);
 
   // 카테고리별 필터 가져오기

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { TierPageContent } from './TierPageContent';
 import { notFound } from 'next/navigation';
+import { getMockBrands, getMockCategory } from '@/lib/mockData';
 
 interface PageProps {
   params: Promise<{ category: string }>;
@@ -75,7 +76,11 @@ export default async function TierPage({ params }: PageProps) {
       </div>
 
       <Suspense fallback={<TierSkeleton />}>
-        <TierPageContent category={category} />
+        <TierPageContent
+          category={category}
+          initialBrands={getMockBrands(category) || undefined}
+          initialCategory={getMockCategory(category) || undefined}
+        />
       </Suspense>
     </div>
   );

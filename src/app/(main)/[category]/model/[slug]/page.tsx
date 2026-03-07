@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ModelDetailContent } from './ModelDetailContent';
+import { getMockProduct } from '@/lib/mockProducts';
 
 interface Props {
   params: Promise<{ category: string; slug: string }>;
@@ -8,17 +9,22 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, slug } = await params;
-  const modelName = slug
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  const mockProduct = getMockProduct(slug);
+
+  const modelName = mockProduct
+    ? `${mockProduct.brand.name} ${mockProduct.name}`
+    : slug.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+  const description = mockProduct
+    ? `${modelName} ${mockProduct.tier}티어 — ${mockProduct.review_count}개 후기 종합. 상세 스펙과 실제 리뷰.`
+    : `${modelName} 스펙, 성능, 종합 후기. 상세 정보와 나와 비슷한 사용자들의 실제 리뷰.`;
 
   return {
     title: `${modelName} 계급도 스펙 후기 — 2026`,
-    description: `${modelName} 스펙, 성능, 종합 후기. 상세 정보와 나와 비슷한 사용자들의 실제 리뷰.`,
+    description,
     openGraph: {
       title: `${modelName} — 계급도`,
-      description: `${modelName} 상세 스펙 및 후기 확인`,
+      description,
       images: [{ url: `/api/og?model=${slug}`, width: 1200, height: 630 }],
     },
   };
@@ -52,7 +58,11 @@ export default async function ModelDetailPage({ params }: Props) {
   return (
     <div className="container py-8">
       <Suspense fallback={<ModelSkeleton />}>
-        <ModelDetailContent category={category} slug={slug} />
+        <ModelDetailContent
+          category={category}
+          slug={slug}
+          initialProduct={getMockProduct(slug) || undefined}
+        />
       </Suspense>
     </div>
   );

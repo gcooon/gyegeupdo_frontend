@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const info = CATEGORY_INFO[category] || { name: '제품', description: '나만의 계급도를 만들어보세요!' };
 
   return {
-    title: `나의 ${info.name} 계급도 만들기 | 계급도`,
+    title: `나의 ${info.name} 계급도 만들기`,
     description: info.description,
     openGraph: {
       title: `나의 ${info.name} 계급도 만들기`,

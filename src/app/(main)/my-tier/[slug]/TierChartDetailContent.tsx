@@ -46,24 +46,25 @@ const TIERS: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
 
 interface TierChartDetailContentProps {
   slug: string;
+  initialChart?: import('@/types/tier').UserTierChart;
 }
 
-export function TierChartDetailContent({ slug }: TierChartDetailContentProps) {
+export function TierChartDetailContent({ slug, initialChart }: TierChartDetailContentProps) {
   const router = useRouter();
   const { isAuthenticated, user } = useAuth();
 
-  const [chart, setChart] = useState<UserTierChart | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [chart, setChart] = useState<UserTierChart | null>(initialChart || null);
+  const [isLoading, setIsLoading] = useState(!initialChart);
   const [error, setError] = useState<string | null>(null);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [isLiked, setIsLiked] = useState(initialChart?.is_liked || false);
+  const [likeCount, setLikeCount] = useState(initialChart?.like_count || 0);
   const [isLiking, setIsLiking] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // 댓글 상태
-  const [comments, setComments] = useState<TierChartComment[]>([]);
+  const [comments, setComments] = useState<TierChartComment[]>(initialChart?.comments || []);
   const [commentText, setCommentText] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [commentPage, setCommentPage] = useState(1);

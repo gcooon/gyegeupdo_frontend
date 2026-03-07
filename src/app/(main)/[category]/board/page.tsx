@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const meta = CATEGORY_META[category] || { name: '계급도' };
 
   return {
-    title: `${meta.name} 게시판 — 계급도`,
+    title: `${meta.name} 게시판`,
     description: `${meta.name}에 대한 자유로운 이야기와 리뷰를 나눠보세요.`,
   };
 }

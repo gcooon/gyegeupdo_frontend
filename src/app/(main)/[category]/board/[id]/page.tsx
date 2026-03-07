@@ -1,16 +1,31 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { BoardPostDetailContent } from './BoardPostDetailContent';
+import { getMockPostMeta } from './mockPosts';
 
 interface PageProps {
   params: Promise<{ category: string; id: string }>;
 }
 
+const CATEGORY_META: Record<string, { name: string }> = {
+  'running-shoes': { name: '러닝화' },
+  'chicken': { name: '치킨' },
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
+  const { category, id } = await params;
+  const postMeta = getMockPostMeta(category, id);
+  const categoryName = CATEGORY_META[category]?.name || '계급도';
+
+  if (postMeta) {
+    return {
+      title: `${postMeta.title} — ${categoryName} 게시판`,
+      description: postMeta.content.slice(0, 160),
+    };
+  }
 
   return {
-    title: `게시글 #${id} — 계급도 게시판`,
+    title: `게시글 #${id} — ${categoryName} 게시판`,
     description: '게시글 상세 내용을 확인하세요.',
   };
 }
