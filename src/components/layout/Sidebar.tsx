@@ -27,6 +27,12 @@ const CATEGORIES: Category[] = [
     icon: '🍗',
     enabled: true,
   },
+  {
+    slug: 'mens-watch',
+    name: '남자시계',
+    icon: '⌚',
+    enabled: true,
+  },
 ];
 
 const CATEGORY_MENUS = [

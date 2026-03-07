@@ -82,6 +82,21 @@ const CATEGORY_CONFIG: Record<string, {
       brandCount: '10',
     },
   },
+  'mens-watch': {
+    name: '남자시계',
+    icon: '⌚',
+    color: '#1E3A5F',
+    heroTitle: '남자시계 계급도',
+    heroDescription: '한눈에 비교하세요',
+    heroSubDescription: '커뮤니티 반응과 브랜드 가치를 바탕으로 S~D 티어로 분류된 시계 순위표',
+    itemLabel: '브랜드',
+    quizCTA: '나에게 맞는 시계 찾기',
+    stats: {
+      modelCount: '24',
+      reviewCount: '1,200+',
+      brandCount: '20',
+    },
+  },
 };
 
 // 카테고리별 용도 설정
@@ -98,6 +113,12 @@ const USAGE_CATEGORIES: Record<string, { key: string; label: string; description
     { key: 'soy', label: '간장/허니', description: '달짭 간장 소스', icon: '🍯' },
     { key: 'powder', label: '가루/시즈닝', description: '파우더 시즈닝', icon: '✨' },
     { key: 'roasted', label: '구이', description: '오븐 구이 치킨', icon: '🔥' },
+  ],
+  'mens-watch': [
+    { key: 'dress', label: '드레스워치', description: '격식있는 자리에', icon: '👔' },
+    { key: 'sport', label: '스포츠/다이버', description: '활동적인 스타일', icon: '🏊' },
+    { key: 'daily', label: '데일리', description: '매일 편하게', icon: '⌚' },
+    { key: 'investment', label: '투자/컬렉션', description: '리셀 가치 중시', icon: '💎' },
   ],
 };
 
@@ -410,6 +431,105 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
       ],
     },
   },
+  'mens-watch': {
+    dress: {
+      S: [
+        { name: '파텍 필립 칼라트라바', brand: '파텍 필립', slug: 'patek-philippe', score: 99, upVotes: 345, downVotes: 5 },
+        { name: '아 랑에 운트 죄네 삭소니아', brand: '아 랑에 운트 죄네', slug: 'a-lange-soehne', score: 98, upVotes: 312, downVotes: 8 },
+        { name: '바쉐론 콘스탄틴 파트리모니', brand: '바쉐론 콘스탄틴', slug: 'vacheron-constantin', score: 97, upVotes: 298, downVotes: 10 },
+      ],
+      A: [
+        { name: '예거 르쿨트르 마스터', brand: '예거 르쿨트르', slug: 'jaeger-lecoultre', score: 93, upVotes: 234, downVotes: 18 },
+        { name: '블랑팡 빌르레', brand: '블랑팡', slug: 'blancpain', score: 91, upVotes: 198, downVotes: 22 },
+      ],
+      B: [
+        { name: '오메가 드빌', brand: '오메가', slug: 'omega', score: 87, upVotes: 167, downVotes: 32 },
+        { name: '까르띠에 탱크', brand: '까르띠에', slug: 'cartier', score: 86, upVotes: 156, downVotes: 35 },
+        { name: '그랜드 세이코 엘레강스', brand: '그랜드 세이코', slug: 'grand-seiko', score: 84, upVotes: 145, downVotes: 38 },
+      ],
+      C: [
+        { name: '론진 마스터 컬렉션', brand: '론진', slug: 'longines', score: 75, upVotes: 112, downVotes: 65 },
+        { name: '노모스 탕고마트', brand: '노모스', slug: 'nomos', score: 73, upVotes: 98, downVotes: 72 },
+      ],
+      D: [
+        { name: '티쏘 르 로끌', brand: '티쏘', slug: 'tissot', score: 64, upVotes: 78, downVotes: 98 },
+        { name: '해밀턴 재즈마스터', brand: '해밀턴', slug: 'hamilton', score: 62, upVotes: 67, downVotes: 112 },
+      ],
+    },
+    sport: {
+      S: [
+        { name: '오데마 피게 로열 오크', brand: '오데마 피게', slug: 'audemars-piguet', score: 98, upVotes: 456, downVotes: 12 },
+        { name: '파텍 필립 노틸러스', brand: '파텍 필립', slug: 'patek-philippe', score: 97, upVotes: 423, downVotes: 15 },
+      ],
+      A: [
+        { name: '롤렉스 서브마리너', brand: '롤렉스', slug: 'rolex', score: 95, upVotes: 567, downVotes: 22 },
+        { name: '블랑팡 피프티 패덤스', brand: '블랑팡', slug: 'blancpain', score: 92, upVotes: 289, downVotes: 28 },
+      ],
+      B: [
+        { name: '오메가 씨마스터', brand: '오메가', slug: 'omega', score: 88, upVotes: 345, downVotes: 42 },
+        { name: 'IWC 아쿠아타이머', brand: 'IWC', slug: 'iwc', score: 85, upVotes: 198, downVotes: 48 },
+        { name: '파네라이 서브머시블', brand: '파네라이', slug: 'panerai', score: 84, upVotes: 178, downVotes: 52 },
+      ],
+      C: [
+        { name: '튜더 블랙베이', brand: '튜더', slug: 'tudor', score: 77, upVotes: 234, downVotes: 78 },
+        { name: '태그호이어 아쿠아레이서', brand: '태그호이어', slug: 'tag-heuer', score: 76, upVotes: 198, downVotes: 85 },
+        { name: '브라이틀링 슈퍼오션', brand: '브라이틀링', slug: 'breitling', score: 75, upVotes: 178, downVotes: 89 },
+      ],
+      D: [
+        { name: '세이코 프로스펙스', brand: '세이코', slug: 'seiko', score: 63, upVotes: 134, downVotes: 112 },
+        { name: '카시오 지샥', brand: '카시오', slug: 'casio-gshock', score: 60, upVotes: 156, downVotes: 134 },
+      ],
+    },
+    daily: {
+      S: [
+        { name: '롤렉스 데이트저스트', brand: '롤렉스', slug: 'rolex', score: 96, upVotes: 678, downVotes: 25 },
+        { name: '오메가 스피드마스터', brand: '오메가', slug: 'omega', score: 94, upVotes: 523, downVotes: 32 },
+      ],
+      A: [
+        { name: '까르띠에 산토스', brand: '까르띠에', slug: 'cartier', score: 90, upVotes: 345, downVotes: 42 },
+        { name: 'IWC 포르투기저', brand: 'IWC', slug: 'iwc', score: 88, upVotes: 267, downVotes: 48 },
+        { name: '그랜드 세이코 헤리티지', brand: '그랜드 세이코', slug: 'grand-seiko', score: 86, upVotes: 234, downVotes: 52 },
+      ],
+      B: [
+        { name: '튜더 블랙베이 58', brand: '튜더', slug: 'tudor', score: 82, upVotes: 298, downVotes: 72 },
+        { name: '태그호이어 카레라', brand: '태그호이어', slug: 'tag-heuer', score: 80, upVotes: 234, downVotes: 78 },
+        { name: '론진 스피릿', brand: '론진', slug: 'longines', score: 78, upVotes: 198, downVotes: 85 },
+      ],
+      C: [
+        { name: '티쏘 PRX', brand: '티쏘', slug: 'tissot', score: 72, upVotes: 312, downVotes: 112 },
+        { name: '해밀턴 카키필드', brand: '해밀턴', slug: 'hamilton', score: 70, upVotes: 267, downVotes: 125 },
+        { name: '세이코 프레사지', brand: '세이코', slug: 'seiko', score: 68, upVotes: 234, downVotes: 134 },
+      ],
+      D: [
+        { name: '카시오 지샥', brand: '카시오', slug: 'casio-gshock', score: 60, upVotes: 345, downVotes: 178 },
+        { name: '애플워치', brand: '애플', slug: 'smartwatch', score: 55, upVotes: 456, downVotes: 234 },
+      ],
+    },
+    investment: {
+      S: [
+        { name: '파텍 필립 노틸러스', brand: '파텍 필립', slug: 'patek-philippe', score: 99, upVotes: 567, downVotes: 8 },
+        { name: '롤렉스 데이토나', brand: '롤렉스', slug: 'rolex', score: 98, upVotes: 623, downVotes: 12 },
+        { name: '오데마 피게 로열 오크', brand: '오데마 피게', slug: 'audemars-piguet', score: 97, upVotes: 489, downVotes: 15 },
+      ],
+      A: [
+        { name: '바쉐론 콘스탄틴 오버시즈', brand: '바쉐론 콘스탄틴', slug: 'vacheron-constantin', score: 93, upVotes: 312, downVotes: 22 },
+        { name: '롤렉스 서브마리너', brand: '롤렉스', slug: 'rolex', score: 92, upVotes: 478, downVotes: 28 },
+      ],
+      B: [
+        { name: '오메가 스피드마스터 문워치', brand: '오메가', slug: 'omega', score: 85, upVotes: 234, downVotes: 52 },
+        { name: '까르띠에 산토스', brand: '까르띠에', slug: 'cartier', score: 83, upVotes: 198, downVotes: 58 },
+      ],
+      C: [
+        { name: '튜더 블랙베이', brand: '튜더', slug: 'tudor', score: 72, upVotes: 145, downVotes: 98 },
+        { name: '그랜드 세이코', brand: '그랜드 세이코', slug: 'grand-seiko', score: 68, upVotes: 112, downVotes: 112 },
+      ],
+      D: [
+        { name: '태그호이어', brand: '태그호이어', slug: 'tag-heuer', score: 55, upVotes: 67, downVotes: 178 },
+        { name: '티쏘', brand: '티쏘', slug: 'tissot', score: 45, upVotes: 45, downVotes: 234 },
+        { name: '스마트워치', brand: '애플/삼성', slug: 'smartwatch', score: 20, upVotes: 12, downVotes: 345 },
+      ],
+    },
+  },
 };
 
 // Mock 트렌딩 데이터
@@ -429,6 +549,14 @@ const TRENDING_DATA: Record<string, { name: string; brand: string; tier: TierLev
     { name: '교촌 레드', brand: '교촌', tier: 'A', change: '+9.5', slug: 'kyochon-red' },
     { name: '굽네 고추바사삭', brand: '굽네', tier: 'A', change: '+6.3', slug: 'goobne-gochu' },
     { name: '네네 스노윙', brand: '네네', tier: 'B', change: '+4.1', slug: 'nene-snowing' },
+  ],
+  'mens-watch': [
+    { name: '롤렉스', brand: '롤렉스', tier: 'A', change: '+22.3', slug: 'rolex' },
+    { name: '오데마 피게', brand: '오데마 피게', tier: 'S', change: '+15.8', slug: 'audemars-piguet' },
+    { name: '오메가', brand: '오메가', tier: 'B', change: '+12.1', slug: 'omega' },
+    { name: '튜더', brand: '튜더', tier: 'C', change: '+9.7', slug: 'tudor' },
+    { name: '그랜드 세이코', brand: '그랜드 세이코', tier: 'B', change: '+8.4', slug: 'grand-seiko' },
+    { name: '티쏘', brand: '티쏘', tier: 'D', change: '+7.2', slug: 'tissot' },
   ],
 };
 
@@ -532,6 +660,46 @@ const DISPUTE_DATA: Record<string, {
       daysLeft: 2,
     },
   ],
+  'mens-watch': [
+    {
+      productId: 301,
+      productName: '그랜드 세이코',
+      productSlug: 'grand-seiko',
+      brandName: '그랜드 세이코',
+      currentTier: 'B',
+      upVotes: 89,
+      downVotes: 15,
+      totalVotes: 104,
+      topComment: {
+        id: 5,
+        userName: '시계덕후',
+        voteType: 'up',
+        comment: '스프링 드라이브 기술력은 스위스도 못 따라옵니다. A티어 가치 충분!',
+        createdAt: '2시간 전',
+        likes: 28,
+      },
+      daysLeft: 3,
+    },
+    {
+      productId: 302,
+      productName: '튜더',
+      productSlug: 'tudor',
+      brandName: '튜더',
+      currentTier: 'C',
+      upVotes: 67,
+      downVotes: 45,
+      totalVotes: 112,
+      topComment: {
+        id: 6,
+        userName: '워치컬렉터',
+        voteType: 'up',
+        comment: '롤렉스 무브먼트 기반에 가격은 절반, B티어는 되어야죠.',
+        createdAt: '4시간 전',
+        likes: 19,
+      },
+      daysLeft: 5,
+    },
+  ],
 };
 
 // Mock 리뷰 데이터
@@ -626,6 +794,48 @@ const REVIEW_DATA: Record<string, {
       content: '오븐에 구워서 건강한 느낌이에요. 매콤한 맛이 좋고 살짝 덜 느끼해요.',
       likes: 15,
       comments: 2,
+      createdAt: '1일 전',
+    },
+  ],
+  'mens-watch': [
+    {
+      id: 301,
+      user: { name: '시계입문자', footType: '첫 명품시계' },
+      model: { name: '오메가 스피드마스터', brand: '오메가', tier: 'B', slug: 'omega' },
+      rating: 5,
+      content: '달에 간 시계라는 스토리가 매력적이에요. 디자인도 클래식하고 어디에나 잘 어울립니다.',
+      likes: 45,
+      comments: 12,
+      createdAt: '1시간 전',
+    },
+    {
+      id: 302,
+      user: { name: '워치매니아', footType: '컬렉터' },
+      model: { name: '롤렉스 서브마리너', brand: '롤렉스', tier: 'A', slug: 'rolex' },
+      rating: 5,
+      content: '결국 돌고 돌아 롤렉스입니다. 환금성도 최고, 내구성도 최고. 시계질의 끝.',
+      likes: 67,
+      comments: 18,
+      createdAt: '3시간 전',
+    },
+    {
+      id: 303,
+      user: { name: '직장인K', footType: '사회초년생' },
+      model: { name: '튜더 블랙베이', brand: '튜더', tier: 'C', slug: 'tudor' },
+      rating: 4,
+      content: '롤렉스의 동생답게 품질이 좋습니다. 가격 대비 만족도가 높아요.',
+      likes: 38,
+      comments: 8,
+      createdAt: '5시간 전',
+    },
+    {
+      id: 304,
+      user: { name: '가성비왕', footType: '입문자' },
+      model: { name: '티쏘 PRX', brand: '티쏘', tier: 'D', slug: 'tissot' },
+      rating: 5,
+      content: '50만원대에 이 정도 디자인이면 국밥급이죠. 출근용으로 완벽합니다.',
+      likes: 52,
+      comments: 14,
       createdAt: '1일 전',
     },
   ],

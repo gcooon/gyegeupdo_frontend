@@ -29,7 +29,7 @@ import type { TierLevel } from '@/lib/tier';
 const CATEGORY_TICKER = [
   { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560', enabled: true },
   { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00', enabled: true },
-  { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F', enabled: false },
+  { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F', enabled: true },
   { slug: 'perfume', name: '향수', icon: '🧴', color: '#9C27B0', enabled: false },
   { slug: 'luxury-bag', name: '명품백', icon: '👜', color: '#8B4513', enabled: false },
   { slug: 'camera', name: '카메라', icon: '📷', color: '#607D8B', enabled: false },
@@ -62,6 +62,19 @@ const CATEGORIES = [
       { name: '뿌링클', tier: 'S' as TierLevel, score: 92.5, domain: 'bhc.co.kr' },
     ],
     trending: '뿌링클',
+  },
+  {
+    slug: 'mens-watch',
+    name: '남자시계',
+    icon: '⌚',
+    description: '브랜드별 계급도',
+    color: '#1E3A5F',
+    topItems: [
+      { name: '파텍 필립', tier: 'S' as TierLevel, score: 99.0, domain: 'patek.com' },
+      { name: '롤렉스', tier: 'A' as TierLevel, score: 95.0, domain: 'rolex.com' },
+      { name: '오메가', tier: 'B' as TierLevel, score: 88.0, domain: 'omegawatches.com' },
+    ],
+    trending: '롤렉스',
   },
 ];
 

@@ -1098,6 +1098,553 @@ export const CHICKEN_RECOMMENDATIONS = {
   ],
 };
 
+// ==========================================
+// 남자시계 카테고리 데이터
+// ==========================================
+
+// 시계 브랜드 로고 URL
+const WATCH_BRAND_LOGOS: Record<string, string> = {
+  '파텍 필립': getFaviconUrl('patek.com'),
+  '바쉐론 콘스탄틴': getFaviconUrl('vacheron-constantin.com'),
+  '오데마 피게': getFaviconUrl('audemarspiguet.com'),
+  '아 랑에 운트 죄네': getFaviconUrl('alange-soehne.com'),
+  '브레게': getFaviconUrl('breguet.com'),
+  '롤렉스': getFaviconUrl('rolex.com'),
+  '예거 르쿨트르': getFaviconUrl('jaeger-lecoultre.com'),
+  '블랑팡': getFaviconUrl('blancpain.com'),
+  '피아제': getFaviconUrl('piaget.com'),
+  '오메가': getFaviconUrl('omegawatches.com'),
+  '까르띠에': getFaviconUrl('cartier.com'),
+  'IWC': getFaviconUrl('iwc.com'),
+  '파네라이': getFaviconUrl('panerai.com'),
+  '그랜드 세이코': getFaviconUrl('grand-seiko.com'),
+  '태그호이어': getFaviconUrl('tagheuer.com'),
+  '튜더': getFaviconUrl('tudorwatch.com'),
+  '론진': getFaviconUrl('longines.com'),
+  '브라이틀링': getFaviconUrl('breitling.com'),
+  '노모스': getFaviconUrl('nomos-glashuette.com'),
+  '티쏘': getFaviconUrl('tissotwatches.com'),
+  '해밀턴': getFaviconUrl('hamiltonwatch.com'),
+  '세이코': getFaviconUrl('seikowatches.com'),
+  '카시오': getFaviconUrl('casio.com'),
+  '애플': getFaviconUrl('apple.com'),
+};
+
+export const WATCH_BRANDS: Brand[] = [
+  // S티어 — 황제 (하이엔드 빅5)
+  {
+    id: 301,
+    name: '파텍 필립',
+    slug: 'patek-philippe',
+    logo_url: WATCH_BRAND_LOGOS['파텍 필립'],
+    tier: 'S' as TierLevel,
+    tier_score: 99.0,
+    description: '시계의 왕, 다음 세대를 위해 보관하는 시계',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 100 },
+      { key: 'craftsmanship', label: '기술력', value: 100 },
+      { key: 'resale', label: '환금성', value: 98 },
+      { key: 'prestige', label: '브랜드 가치', value: 100 },
+    ],
+  },
+  {
+    id: 302,
+    name: '바쉐론 콘스탄틴',
+    slug: 'vacheron-constantin',
+    logo_url: WATCH_BRAND_LOGOS['바쉐론 콘스탄틴'],
+    tier: 'S' as TierLevel,
+    tier_score: 98.0,
+    description: '1755년 창립, 세계에서 가장 오래된 시계 매뉴팩처',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 100 },
+      { key: 'craftsmanship', label: '기술력', value: 99 },
+      { key: 'resale', label: '환금성', value: 95 },
+      { key: 'prestige', label: '브랜드 가치', value: 98 },
+    ],
+  },
+  {
+    id: 303,
+    name: '오데마 피게',
+    slug: 'audemars-piguet',
+    logo_url: WATCH_BRAND_LOGOS['오데마 피게'],
+    tier: 'S' as TierLevel,
+    tier_score: 97.5,
+    description: '로열 오크의 전설, 럭셔리 스포츠워치의 시작',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 96 },
+      { key: 'craftsmanship', label: '기술력', value: 98 },
+      { key: 'resale', label: '환금성', value: 97 },
+      { key: 'prestige', label: '브랜드 가치', value: 99 },
+    ],
+  },
+  {
+    id: 304,
+    name: '아 랑에 운트 죄네',
+    slug: 'a-lange-soehne',
+    logo_url: WATCH_BRAND_LOGOS['아 랑에 운트 죄네'],
+    tier: 'S' as TierLevel,
+    tier_score: 97.0,
+    description: '독일 시계 제조의 정수, 완벽한 마감의 대명사',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 95 },
+      { key: 'craftsmanship', label: '기술력', value: 100 },
+      { key: 'resale', label: '환금성', value: 93 },
+      { key: 'prestige', label: '브랜드 가치', value: 97 },
+    ],
+  },
+  {
+    id: 305,
+    name: '브레게',
+    slug: 'breguet',
+    logo_url: WATCH_BRAND_LOGOS['브레게'],
+    tier: 'S' as TierLevel,
+    tier_score: 96.0,
+    description: '시계 역사의 아버지, 투르비용의 발명자',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 100 },
+      { key: 'craftsmanship', label: '기술력', value: 97 },
+      { key: 'resale', label: '환금성', value: 90 },
+      { key: 'prestige', label: '브랜드 가치', value: 96 },
+    ],
+  },
+  // A티어 — 왕 (탑클래스 럭셔리)
+  {
+    id: 306,
+    name: '롤렉스',
+    slug: 'rolex',
+    logo_url: WATCH_BRAND_LOGOS['롤렉스'],
+    tier: 'A' as TierLevel,
+    tier_score: 95.0,
+    description: '시계질의 끝은 결돌롤, 압도적 대중 인지도와 환금성',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 95 },
+      { key: 'craftsmanship', label: '기술력', value: 92 },
+      { key: 'resale', label: '환금성', value: 100 },
+      { key: 'prestige', label: '브랜드 가치', value: 98 },
+    ],
+  },
+  {
+    id: 307,
+    name: '예거 르쿨트르',
+    slug: 'jaeger-lecoultre',
+    logo_url: WATCH_BRAND_LOGOS['예거 르쿨트르'],
+    tier: 'A' as TierLevel,
+    tier_score: 93.0,
+    description: '시계 제조사들의 시계 제조사, 1,400개 이상의 칼리버',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 97 },
+      { key: 'craftsmanship', label: '기술력', value: 98 },
+      { key: 'resale', label: '환금성', value: 85 },
+      { key: 'prestige', label: '브랜드 가치', value: 93 },
+    ],
+  },
+  {
+    id: 308,
+    name: '블랑팡',
+    slug: 'blancpain',
+    logo_url: WATCH_BRAND_LOGOS['블랑팡'],
+    tier: 'A' as TierLevel,
+    tier_score: 92.0,
+    description: '1735년 창립, 세계 최초의 시계 브랜드',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 98 },
+      { key: 'craftsmanship', label: '기술력', value: 95 },
+      { key: 'resale', label: '환금성', value: 83 },
+      { key: 'prestige', label: '브랜드 가치', value: 91 },
+    ],
+  },
+  {
+    id: 309,
+    name: '피아제',
+    slug: 'piaget',
+    logo_url: WATCH_BRAND_LOGOS['피아제'],
+    tier: 'A' as TierLevel,
+    tier_score: 91.0,
+    description: '초박형 무브먼트의 선구자, 주얼리워치의 명가',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 92 },
+      { key: 'craftsmanship', label: '기술력', value: 94 },
+      { key: 'resale', label: '환금성', value: 82 },
+      { key: 'prestige', label: '브랜드 가치', value: 92 },
+    ],
+  },
+  // B티어 — 양반 (프리미엄 럭셔리)
+  {
+    id: 310,
+    name: '오메가',
+    slug: 'omega',
+    logo_url: WATCH_BRAND_LOGOS['오메가'],
+    tier: 'B' as TierLevel,
+    tier_score: 88.0,
+    description: '스피드마스터로 달에 간 시계, 호불호 없는 정답',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 95 },
+      { key: 'craftsmanship', label: '기술력', value: 90 },
+      { key: 'resale', label: '환금성', value: 80 },
+      { key: 'prestige', label: '브랜드 가치', value: 88 },
+    ],
+  },
+  {
+    id: 311,
+    name: '까르띠에',
+    slug: 'cartier',
+    logo_url: WATCH_BRAND_LOGOS['까르띠에'],
+    tier: 'B' as TierLevel,
+    tier_score: 87.5,
+    description: '왕의 보석상, 산토스와 탱크의 클래식',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 96 },
+      { key: 'craftsmanship', label: '기술력', value: 85 },
+      { key: 'resale', label: '환금성', value: 82 },
+      { key: 'prestige', label: '브랜드 가치', value: 90 },
+    ],
+  },
+  {
+    id: 312,
+    name: 'IWC',
+    slug: 'iwc',
+    logo_url: WATCH_BRAND_LOGOS['IWC'],
+    tier: 'B' as TierLevel,
+    tier_score: 86.0,
+    description: '파일럿 워치의 대명사, 엔지니어링의 정수',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 90 },
+      { key: 'craftsmanship', label: '기술력', value: 88 },
+      { key: 'resale', label: '환금성', value: 78 },
+      { key: 'prestige', label: '브랜드 가치', value: 86 },
+    ],
+  },
+  {
+    id: 313,
+    name: '파네라이',
+    slug: 'panerai',
+    logo_url: WATCH_BRAND_LOGOS['파네라이'],
+    tier: 'B' as TierLevel,
+    tier_score: 85.0,
+    description: '이탈리아 해군의 시계, 강렬한 존재감',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 88 },
+      { key: 'craftsmanship', label: '기술력', value: 85 },
+      { key: 'resale', label: '환금성', value: 75 },
+      { key: 'prestige', label: '브랜드 가치', value: 84 },
+    ],
+  },
+  {
+    id: 314,
+    name: '그랜드 세이코',
+    slug: 'grand-seiko',
+    logo_url: WATCH_BRAND_LOGOS['그랜드 세이코'],
+    tier: 'B' as TierLevel,
+    tier_score: 84.0,
+    description: '일본 장인 정신의 결정체, 스프링 드라이브의 혁신',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 85 },
+      { key: 'craftsmanship', label: '기술력', value: 92 },
+      { key: 'resale', label: '환금성', value: 70 },
+      { key: 'prestige', label: '브랜드 가치', value: 82 },
+    ],
+  },
+  // C티어 — 중인 (매스티지)
+  {
+    id: 315,
+    name: '태그호이어',
+    slug: 'tag-heuer',
+    logo_url: WATCH_BRAND_LOGOS['태그호이어'],
+    tier: 'C' as TierLevel,
+    tier_score: 78.0,
+    description: '사회초년생의 로망, 모터스포츠와 함께한 역사',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 82 },
+      { key: 'craftsmanship', label: '기술력', value: 78 },
+      { key: 'resale', label: '환금성', value: 65 },
+      { key: 'prestige', label: '브랜드 가치', value: 80 },
+    ],
+  },
+  {
+    id: 316,
+    name: '튜더',
+    slug: 'tudor',
+    logo_url: WATCH_BRAND_LOGOS['튜더'],
+    tier: 'C' as TierLevel,
+    tier_score: 77.0,
+    description: '롤렉스의 동생, 가성비 최고의 럭셔리',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 78 },
+      { key: 'craftsmanship', label: '기술력', value: 80 },
+      { key: 'resale', label: '환금성', value: 72 },
+      { key: 'prestige', label: '브랜드 가치', value: 78 },
+    ],
+  },
+  {
+    id: 317,
+    name: '론진',
+    slug: 'longines',
+    logo_url: WATCH_BRAND_LOGOS['론진'],
+    tier: 'C' as TierLevel,
+    tier_score: 75.0,
+    description: '190년 역사의 근본, 우아한 클래식 디자인',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 88 },
+      { key: 'craftsmanship', label: '기술력', value: 75 },
+      { key: 'resale', label: '환금성', value: 60 },
+      { key: 'prestige', label: '브랜드 가치', value: 75 },
+    ],
+  },
+  {
+    id: 318,
+    name: '브라이틀링',
+    slug: 'breitling',
+    logo_url: WATCH_BRAND_LOGOS['브라이틀링'],
+    tier: 'C' as TierLevel,
+    tier_score: 76.0,
+    description: '항공 크로노그래프의 선구자, 나비타이머의 전설',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 85 },
+      { key: 'craftsmanship', label: '기술력', value: 80 },
+      { key: 'resale', label: '환금성', value: 62 },
+      { key: 'prestige', label: '브랜드 가치', value: 76 },
+    ],
+  },
+  {
+    id: 319,
+    name: '노모스',
+    slug: 'nomos',
+    logo_url: WATCH_BRAND_LOGOS['노모스'],
+    tier: 'C' as TierLevel,
+    tier_score: 74.0,
+    description: '독일 바우하우스 디자인, 미니멀한 아름다움',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 70 },
+      { key: 'craftsmanship', label: '기술력', value: 82 },
+      { key: 'resale', label: '환금성', value: 58 },
+      { key: 'prestige', label: '브랜드 가치', value: 72 },
+    ],
+  },
+  // D티어 — 평민 (엔트리 & 툴워치)
+  {
+    id: 320,
+    name: '티쏘',
+    slug: 'tissot',
+    logo_url: WATCH_BRAND_LOGOS['티쏘'],
+    tier: 'D' as TierLevel,
+    tier_score: 65.0,
+    description: 'PRX로 부활, 국밥처럼 든든한 입문용 시계',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 72 },
+      { key: 'craftsmanship', label: '기술력', value: 68 },
+      { key: 'resale', label: '환금성', value: 45 },
+      { key: 'prestige', label: '브랜드 가치', value: 65 },
+    ],
+  },
+  {
+    id: 321,
+    name: '해밀턴',
+    slug: 'hamilton',
+    logo_url: WATCH_BRAND_LOGOS['해밀턴'],
+    tier: 'D' as TierLevel,
+    tier_score: 64.0,
+    description: '카키필드의 전설, 영화 속 단골 시계',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 75 },
+      { key: 'craftsmanship', label: '기술력', value: 65 },
+      { key: 'resale', label: '환금성', value: 42 },
+      { key: 'prestige', label: '브랜드 가치', value: 62 },
+    ],
+  },
+  {
+    id: 322,
+    name: '세이코',
+    slug: 'seiko',
+    logo_url: WATCH_BRAND_LOGOS['세이코'],
+    tier: 'D' as TierLevel,
+    tier_score: 62.0,
+    description: '쿼츠 혁명의 주역, 가성비 기계식의 대명사',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 80 },
+      { key: 'craftsmanship', label: '기술력', value: 70 },
+      { key: 'resale', label: '환금성', value: 40 },
+      { key: 'prestige', label: '브랜드 가치', value: 58 },
+    ],
+  },
+  {
+    id: 323,
+    name: '카시오 / 지샥',
+    slug: 'casio-gshock',
+    logo_url: WATCH_BRAND_LOGOS['카시오'],
+    tier: 'D' as TierLevel,
+    tier_score: 60.0,
+    description: '진정한 실용성과 내구성의 끝판왕, 툴워치의 정석',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 65 },
+      { key: 'craftsmanship', label: '기술력', value: 72 },
+      { key: 'resale', label: '환금성', value: 30 },
+      { key: 'prestige', label: '브랜드 가치', value: 50 },
+    ],
+  },
+  {
+    id: 324,
+    name: '애플워치 / 갤럭시워치',
+    slug: 'smartwatch',
+    logo_url: WATCH_BRAND_LOGOS['애플'],
+    tier: 'D' as TierLevel,
+    tier_score: 55.0,
+    description: '일상을 지배한 스마트워치, 기능성의 끝',
+    category: 'mens-watch',
+    scores: [
+      { key: 'heritage', label: '역사/전통', value: 20 },
+      { key: 'craftsmanship', label: '기술력', value: 85 },
+      { key: 'resale', label: '환금성', value: 25 },
+      { key: 'prestige', label: '브랜드 가치', value: 45 },
+    ],
+  },
+];
+
+export const WATCH_CATEGORY: Category = {
+  id: 3,
+  slug: 'mens-watch',
+  name: '남자시계',
+  description: '남자 시계 브랜드 계급도 - 커뮤니티 반응 기반',
+  icon: '⌚',
+  display_order: 3,
+  is_active: true,
+  spec_definitions: [
+    { key: 'price_range', label: '가격대', type: 'text' },
+    { key: 'movement', label: '무브먼트', type: 'select', options: [
+      { value: 'mechanical', label: '기계식' },
+      { value: 'automatic', label: '오토매틱' },
+      { value: 'quartz', label: '쿼츠' },
+      { value: 'smart', label: '스마트' },
+    ]},
+    { key: 'case_size', label: '케이스 크기', unit: 'mm', type: 'number' },
+    { key: 'water_resistance', label: '방수', unit: 'ATM', type: 'number' },
+  ],
+  score_definitions: [
+    { key: 'heritage', label: '역사/전통', weight: 25 },
+    { key: 'craftsmanship', label: '기술력', weight: 30 },
+    { key: 'resale', label: '환금성', weight: 20 },
+    { key: 'prestige', label: '브랜드 가치', weight: 25 },
+  ],
+  brand_score_definitions: [
+    { key: 'heritage', label: '역사/전통', weight: 25 },
+    { key: 'craftsmanship', label: '기술력', weight: 30 },
+    { key: 'resale', label: '환금성', weight: 20 },
+    { key: 'prestige', label: '브랜드 가치', weight: 25 },
+  ],
+  filter_definitions: {
+    product_type: [
+      { value: 'dress', label: '드레스워치' },
+      { value: 'sport', label: '스포츠워치' },
+      { value: 'diver', label: '다이버워치' },
+      { value: 'pilot', label: '파일럿워치' },
+      { value: 'chronograph', label: '크로노그래프' },
+    ],
+    usage: [
+      { value: 'formal', label: '격식/비즈니스' },
+      { value: 'casual', label: '캐주얼' },
+      { value: 'sport', label: '스포츠/활동' },
+      { value: 'collection', label: '컬렉션/투자' },
+    ],
+  },
+  quiz_definitions: [
+    {
+      key: 'budget',
+      question: '예산은 어느 정도인가요?',
+      emoji: '💰',
+      options: [
+        { value: 'entry', label: '100만원 이하', description: '입문용 가성비 시계' },
+        { value: 'mid', label: '100~500만원', description: '첫 명품 시계' },
+        { value: 'premium', label: '500~1500만원', description: '프리미엄 럭셔리' },
+        { value: 'luxury', label: '1500만원 이상', description: '하이엔드 컬렉션' },
+      ],
+    },
+    {
+      key: 'style',
+      question: '선호하는 스타일은?',
+      emoji: '🎨',
+      options: [
+        { value: 'classic', label: '클래식/드레스', description: '우아하고 격식있는' },
+        { value: 'sport', label: '스포티/다이버', description: '활동적이고 견고한' },
+        { value: 'minimal', label: '미니멀/모던', description: '깔끔하고 심플한' },
+        { value: 'bold', label: '존재감/볼드', description: '강렬한 디자인' },
+      ],
+    },
+    {
+      key: 'occasion',
+      question: '주로 어떤 상황에서 착용하나요?',
+      emoji: '👔',
+      options: [
+        { value: 'office', label: '출근/비즈니스', description: '정장에 어울리는' },
+        { value: 'daily', label: '일상/캐주얼', description: '매일 편하게' },
+        { value: 'special', label: '특별한 날', description: '기념일/행사용' },
+        { value: 'outdoor', label: '아웃도어/스포츠', description: '활동적인 상황' },
+      ],
+    },
+    {
+      key: 'priority',
+      question: '가장 중요하게 생각하는 것은?',
+      emoji: '⭐',
+      options: [
+        { value: 'brand', label: '브랜드 가치', description: '남들이 알아보는' },
+        { value: 'movement', label: '무브먼트/기술력', description: '시계의 심장' },
+        { value: 'design', label: '디자인', description: '보는 즐거움' },
+        { value: 'investment', label: '투자/리셀 가치', description: '가치 상승 기대' },
+      ],
+    },
+  ],
+};
+
+// 시계 퀴즈 추천 결과
+export const WATCH_RECOMMENDATIONS = {
+  'entry_classic_office': [
+    { slug: 'tissot', name: '티쏘 PRX', brand: '티쏘', match: 95, reason: '클래식한 디자인에 합리적인 가격, 출근용 완벽' },
+    { slug: 'longines', name: '론진 마스터 컬렉션', brand: '론진', match: 88, reason: '190년 역사의 격식있는 드레스워치' },
+    { slug: 'hamilton', name: '해밀턴 재즈마스터', brand: '해밀턴', match: 82, reason: '가성비 좋은 우아한 드레스워치' },
+  ],
+  'mid_sport_daily': [
+    { slug: 'tudor', name: '튜더 블랙베이', brand: '튜더', match: 96, reason: '롤렉스의 동생, 매일 착용하기 좋은 스포츠워치' },
+    { slug: 'tag-heuer', name: '태그호이어 아쿠아레이서', brand: '태그호이어', match: 90, reason: '모터스포츠 감성의 데일리 워치' },
+    { slug: 'breitling', name: '브라이틀링 슈퍼오션', brand: '브라이틀링', match: 85, reason: '항공 DNA의 견고한 다이버' },
+  ],
+  'premium_classic_special': [
+    { slug: 'omega', name: '오메가 스피드마스터', brand: '오메가', match: 97, reason: '달에 간 시계, 특별한 날의 동반자' },
+    { slug: 'cartier', name: '까르띠에 산토스', brand: '까르띠에', match: 92, reason: '세계 최초의 파일럿 워치, 클래식의 정수' },
+    { slug: 'iwc', name: 'IWC 포르투기저', brand: 'IWC', match: 88, reason: '우아한 대형 드레스워치의 명작' },
+  ],
+  'luxury_bold_special': [
+    { slug: 'rolex', name: '롤렉스 서브마리너', brand: '롤렉스', match: 98, reason: '시계의 왕, 최고의 환금성과 인지도' },
+    { slug: 'audemars-piguet', name: '오데마 피게 로열 오크', brand: '오데마 피게', match: 95, reason: '럭셔리 스포츠워치의 전설' },
+    { slug: 'patek-philippe', name: '파텍 필립 노틸러스', brand: '파텍 필립', match: 92, reason: '시계 컬렉터의 최종 목표' },
+  ],
+  'default': [
+    { slug: 'rolex', name: '롤렉스', brand: '롤렉스', match: 95, reason: '시계질의 끝은 결돌롤, 대체 불가능한 브랜드' },
+    { slug: 'omega', name: '오메가 스피드마스터', brand: '오메가', match: 90, reason: '호불호 없는 정답, 달에 간 시계' },
+    { slug: 'tudor', name: '튜더 블랙베이', brand: '튜더', match: 85, reason: '가성비 최고의 럭셔리 스포츠워치' },
+  ],
+};
+
 // Mock 데이터 함수
 export function getMockBrands(category: string): Brand[] | null {
   if (category === 'chicken') {
@@ -1105,6 +1652,9 @@ export function getMockBrands(category: string): Brand[] | null {
   }
   if (category === 'running-shoes') {
     return RUNNING_SHOES_BRANDS;
+  }
+  if (category === 'mens-watch') {
+    return WATCH_BRANDS;
   }
   return null;
 }
@@ -1115,6 +1665,9 @@ export function getMockCategory(slug: string): Category | null {
   }
   if (slug === 'running-shoes') {
     return RUNNING_SHOES_CATEGORY;
+  }
+  if (slug === 'mens-watch') {
+    return WATCH_CATEGORY;
   }
   return null;
 }

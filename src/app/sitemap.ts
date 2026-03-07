@@ -86,6 +86,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.6,
     },
+    // 남자시계 카테고리
+    {
+      url: `${SITE_URL}/mens-watch`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/mens-watch/tier`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/mens-watch/quiz`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/mens-watch/board`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
   ];
 
   // 게시글 상세 페이지
