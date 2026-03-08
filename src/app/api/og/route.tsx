@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
   // 파라미터 추출
   const type = searchParams.get('type') || 'default';
-  const title = searchParams.get('title') || '계급도';
+  const title = searchParams.get('title') || '티어차트 계급도';
   const subtitle = searchParams.get('subtitle') || '';
   const tier = searchParams.get('tier') || '';
   const category = searchParams.get('category') || '';
@@ -82,7 +82,7 @@ function generateDefaultOG({
               color: '#1E3A5F',
             }}
           >
-            계급도
+            티어차트 계급도
           </span>
         </div>
 

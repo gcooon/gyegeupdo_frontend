@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tier-chart.com';
-const SITE_NAME = '계급도';
+const SITE_NAME = '티어차트 계급도';
 
 interface SeoParams {
   title: string;

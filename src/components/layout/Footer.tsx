@@ -8,9 +8,9 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-                계
+                티
               </div>
-              <span className="font-bold text-lg">계급도</span>
+              <span className="font-bold text-lg">티어차트 계급도</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               모든 제품의 계급도 큐레이션 플랫폼
@@ -83,7 +83,7 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            &copy; 2026 계급도. All rights reserved.
+            &copy; 2026 티어차트 계급도. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.

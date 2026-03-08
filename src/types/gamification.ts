@@ -172,7 +172,7 @@ export const BADGES: Badge[] = [
   {
     id: 'early-adopter',
     name: '얼리어답터',
-    description: '계급도 서비스 초기 사용자입니다',
+    description: '티어차트 계급도 서비스 초기 사용자입니다',
     emoji: '🚀',
     category: 'special',
     requirement: { type: 'visits', value: 1 },

@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${brandName} 계급도 — 2026 브랜드 리뷰`,
     description,
     openGraph: {
-      title: `${brandName} — 계급도`,
+      title: `${brandName} — 티어차트 계급도`,
       description,
       images: [{ url: `/api/og?brand=${slug}`, width: 1200, height: 630 }],
     },

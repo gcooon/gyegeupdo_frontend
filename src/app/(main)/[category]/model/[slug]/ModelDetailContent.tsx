@@ -462,7 +462,7 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
               {/* Share & Compare Buttons */}
               <div className="flex gap-2 pt-2">
                 <ShareButtons
-                  title={`${product.name} - ${product.brand.name} | 계급도`}
+                  title={`${product.name} - ${product.brand.name} | 티어차트 계급도`}
                   description={`${product.brand.name} ${product.name} ${product.tier}티어 - 커뮤니티 리뷰 기반 평가`}
                   variant="compact"
                   className="flex-1"

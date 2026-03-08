@@ -60,7 +60,7 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl font-bold">로그인</CardTitle>
           <CardDescription>
-            계급도에 로그인하고 투표에 참여하세요
+            티어차트 계급도에 로그인하고 투표에 참여하세요
           </CardDescription>
         </CardHeader>
 

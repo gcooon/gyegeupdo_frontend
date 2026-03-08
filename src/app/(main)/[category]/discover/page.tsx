@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const info = CATEGORY_INFO[category] || { name: '제품', description: '스와이프로 제품을 탐색하세요!' };
 
   return {
-    title: `${info.name} 발견하기 | 계급도`,
+    title: `${info.name} 발견하기 | 티어차트 계급도`,
     description: info.description,
   };
 }

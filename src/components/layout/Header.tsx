@@ -59,9 +59,9 @@ export function Header() {
 
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground font-bold">
-              계
+              티
             </div>
-            <span className="font-bold text-lg">계급도</span>
+            <span className="font-bold text-lg">티어차트 계급도</span>
           </Link>
 
           {/* Category Navigation */}

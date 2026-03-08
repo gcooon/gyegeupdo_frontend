@@ -94,7 +94,7 @@ export default function SignupPage() {
           </div>
           <CardTitle className="text-2xl font-bold">회원가입</CardTitle>
           <CardDescription>
-            계급도에 가입하고 투표에 참여하세요
+            티어차트 계급도에 가입하고 투표에 참여하세요
           </CardDescription>
         </CardHeader>
 

@@ -356,7 +356,7 @@ export function QuizContent({ category }: QuizContentProps) {
           {/* Share & Reset */}
           <div className="flex flex-col items-center gap-4">
             <ShareButtons
-              title={`${config.resultTitle} 퀴즈 결과 - 계급도`}
+              title={`${config.resultTitle} 퀴즈 결과 - 티어차트 계급도`}
               description={`나에게 맞는 ${categoryName} TOP 3를 확인해보세요!`}
               variant="full"
             />
