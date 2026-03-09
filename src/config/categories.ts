@@ -145,8 +145,8 @@ export const CATEGORY_CONFIGS: CategoryConfig[] = [
     icon: '👟',
     color: '#E94560',
     tierChart: {
-      brandTiers: DEFAULT_BRAND_TIERS,
-      usageTiers: DEFAULT_BRAND_TIERS,
+      brandTiers: EXTENDED_TIERS, // 모든 티어 표시 (S~D)
+      usageTiers: EXTENDED_TIERS,
       brandLinkType: 'brand',
       brandLabel: '브랜드',
       productLabel: '모델',
@@ -158,8 +158,8 @@ export const CATEGORY_CONFIGS: CategoryConfig[] = [
     icon: '🍗',
     color: '#FF6B00',
     tierChart: {
-      brandTiers: DEFAULT_BRAND_TIERS,
-      usageTiers: DEFAULT_BRAND_TIERS,
+      brandTiers: EXTENDED_TIERS, // 모든 티어 표시 (S~D)
+      usageTiers: EXTENDED_TIERS,
       brandLinkType: 'brand', // 프랜차이즈 페이지로 이동
       brandLabel: '프랜차이즈',
       productLabel: '메뉴',
@@ -171,8 +171,8 @@ export const CATEGORY_CONFIGS: CategoryConfig[] = [
     icon: '⌚',
     color: '#1E3A5F',
     tierChart: {
-      brandTiers: EXTENDED_TIERS, // 시계는 평민까지 표시
-      usageTiers: DEFAULT_BRAND_TIERS,
+      brandTiers: EXTENDED_TIERS, // 모든 티어 표시 (S~D)
+      usageTiers: EXTENDED_TIERS,
       brandLinkType: 'brand',
       brandLabel: '브랜드',
       productLabel: '모델',

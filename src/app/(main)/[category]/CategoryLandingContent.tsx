@@ -95,17 +95,18 @@ function getCategoryConfig(categoryData: Category | undefined): ResolvedCategory
   };
 }
 
-// filter_definitions에서 usage 탭 데이터 추출
+// filter_definitions에서 용도별 탭 데이터 추출 (product_type 필드 사용)
 function getUsageCategories(categoryData: Category | undefined) {
-  if (!categoryData?.filter_definitions?.usage) {
+  // product_type 필드에서 데이터를 가져옴 (백엔드와 일치)
+  if (!categoryData?.filter_definitions?.product_type) {
     return [];
   }
 
-  return categoryData.filter_definitions.usage.map((usage) => ({
-    key: usage.value,
-    label: usage.label,
-    description: usage.description || '',
-    icon: usage.icon || '',
+  return categoryData.filter_definitions.product_type.map((pt) => ({
+    key: pt.value,
+    label: pt.label,
+    description: pt.description || '',
+    icon: pt.icon || '',
   }));
 }
 
