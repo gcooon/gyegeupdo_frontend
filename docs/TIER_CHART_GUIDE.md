@@ -226,11 +226,86 @@ Category의 `filter_definitions.usage`에 정의:
 
 ---
 
-## 8. 변경 이력
+## 8. Mock 데이터 구조 (프론트엔드)
+
+### 8.1 파일 위치
+**`src/lib/mockData.ts`**
+
+### 8.2 브랜드 vs 제품 데이터 분리
+
+```typescript
+// 브랜드(프랜차이즈) 데이터 - 브랜드 계급도용
+export const CHICKEN_BRANDS: Brand[] = [
+  { name: 'BBQ', slug: 'bbq', tier: 'S', ... },
+  { name: 'BHC', slug: 'bhc', tier: 'S', ... },
+];
+
+// 제품(메뉴) 데이터 - 용도별 계급도용
+export const CHICKEN_MENUS: Brand[] = [
+  { name: '황금올리브치킨', slug: 'bbq-golden-olive', brand_name: 'BBQ', ... },
+  { name: '뿌링클', slug: 'bhc-puringkle', brand_name: 'BHC', ... },
+];
+
+// 브랜드 데이터 반환 함수
+export function getMockBrands(category: string): Brand[] | null {
+  if (category === 'chicken') return CHICKEN_BRANDS;  // ✅ 프랜차이즈 반환
+  // ...
+}
+
+// 제품 데이터 반환 함수
+export function getMockProducts(category: string): Brand[] | null {
+  if (category === 'chicken') return CHICKEN_MENUS;  // ✅ 메뉴 반환
+  // ...
+}
+```
+
+### 8.3 주의사항
+
+- **브랜드 계급도**: `getMockBrands()` 사용 (프랜차이즈/브랜드)
+- **용도별 계급도**: `getMockProducts()` 사용 (메뉴/모델)
+- 백엔드 `seed_categories.py`의 브랜드 목록과 동기화 필요
+
+---
+
+## 9. UI 스타일 가이드
+
+### 9.1 TierMaker 스타일 통일
+
+브랜드 계급도와 용도별 계급도는 동일한 UI 스타일을 사용합니다:
+
+```
+┌─────────┬────────────────────────────────────────┐
+│  황제   │ [BBQ] [BHC] [교촌치킨]                   │
+├─────────┼────────────────────────────────────────┤
+│   왕    │ [굽네치킨] [네네치킨] [푸라닭]           │
+├─────────┼────────────────────────────────────────┤
+│  양반   │ [호식이] [처갓집] [60계치킨] [KFC]      │
+└─────────┴────────────────────────────────────────┘
+```
+
+### 9.2 티어 색상 (단색)
+
+| 티어 | 라벨 | 색상 코드 |
+|------|------|-----------|
+| S | 황제 | `#FFD700` (Gold) |
+| A | 왕 | `#9370DB` (Purple) |
+| B | 양반 | `#4169E1` (Royal Blue) |
+| C | 중인 | `#3CB371` (Green) |
+| D | 평민 | `#8B7355` (Brown) |
+
+### 9.3 텍스트 색상
+
+- **S티어 (황제)**: `text-black` (골드 배경)
+- **A~D티어**: `text-white` (어두운 배경)
+
+---
+
+## 10. 변경 이력
 
 | 날짜 | 변경 내용 |
 |------|----------|
 | 2026-03-09 | 초안 작성, 중앙 설정 파일 도입 |
+| 2026-03-09 | Mock 데이터 구조 추가 (브랜드/제품 분리), UI 스타일 가이드 추가 |
 
 ---
 

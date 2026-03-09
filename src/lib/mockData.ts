@@ -496,7 +496,174 @@ const CHICKEN_BRAND_LOGOS: Record<string, string> = {
   '멕시카나': getFaviconUrl('mexicana.co.kr'),
 };
 
-// 치킨 메뉴 Mock 데이터 (브랜드별 대표 메뉴)
+// 치킨 프랜차이즈(브랜드) Mock 데이터
+export const CHICKEN_BRANDS: Brand[] = [
+  // S티어 — 황제 (프랜차이즈)
+  {
+    id: 201,
+    name: 'BBQ',
+    slug: 'bbq',
+    logo_url: CHICKEN_BRAND_LOGOS['BBQ'],
+    tier: 'S' as TierLevel,
+    tier_score: 94.5,
+    description: '황금올리브치킨의 BBQ, 올리브유 치킨의 원조',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 95 },
+      { key: 'price', label: '가성비', value: 82 },
+      { key: 'variety', label: '메뉴 다양성', value: 92 },
+      { key: 'accessibility', label: '접근성', value: 95 },
+    ],
+  },
+  {
+    id: 202,
+    name: 'BHC',
+    slug: 'bhc',
+    logo_url: CHICKEN_BRAND_LOGOS['BHC'],
+    tier: 'S' as TierLevel,
+    tier_score: 93.0,
+    description: '뿌링클, 맛초킹의 BHC, MZ세대 인기 1위',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 93 },
+      { key: 'price', label: '가성비', value: 80 },
+      { key: 'variety', label: '메뉴 다양성', value: 95 },
+      { key: 'accessibility', label: '접근성', value: 92 },
+    ],
+  },
+  {
+    id: 203,
+    name: '교촌치킨',
+    slug: 'kyochon',
+    logo_url: CHICKEN_BRAND_LOGOS['교촌'],
+    tier: 'S' as TierLevel,
+    tier_score: 92.5,
+    description: '간장 치킨의 명가, 프리미엄 치킨의 대명사',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 94 },
+      { key: 'price', label: '가성비', value: 78 },
+      { key: 'variety', label: '메뉴 다양성', value: 88 },
+      { key: 'accessibility', label: '접근성', value: 90 },
+    ],
+  },
+  // A티어 — 왕
+  {
+    id: 204,
+    name: '굽네치킨',
+    slug: 'goobne',
+    logo_url: CHICKEN_BRAND_LOGOS['굽네'],
+    tier: 'A' as TierLevel,
+    tier_score: 87.5,
+    description: '오븐구이 치킨의 선두주자, 건강한 치킨',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 88 },
+      { key: 'price', label: '가성비', value: 80 },
+      { key: 'variety', label: '메뉴 다양성', value: 85 },
+      { key: 'accessibility', label: '접근성', value: 88 },
+    ],
+  },
+  {
+    id: 205,
+    name: '네네치킨',
+    slug: 'nene',
+    logo_url: CHICKEN_BRAND_LOGOS['네네'],
+    tier: 'A' as TierLevel,
+    tier_score: 86.5,
+    description: '스노윙 치킨의 네네, 다양한 시즈닝',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 85 },
+      { key: 'price', label: '가성비', value: 82 },
+      { key: 'variety', label: '메뉴 다양성', value: 90 },
+      { key: 'accessibility', label: '접근성', value: 85 },
+    ],
+  },
+  {
+    id: 206,
+    name: '푸라닭',
+    slug: 'puradak',
+    logo_url: CHICKEN_BRAND_LOGOS['푸라닭'],
+    tier: 'A' as TierLevel,
+    tier_score: 85.0,
+    description: '블랙알리오의 푸라닭, 프리미엄 마늘 치킨',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 90 },
+      { key: 'price', label: '가성비', value: 72 },
+      { key: 'variety', label: '메뉴 다양성', value: 78 },
+      { key: 'accessibility', label: '접근성', value: 80 },
+    ],
+  },
+  // B티어 — 양반
+  {
+    id: 207,
+    name: '호식이두마리치킨',
+    slug: 'hosigi',
+    logo_url: CHICKEN_BRAND_LOGOS['호식이'],
+    tier: 'B' as TierLevel,
+    tier_score: 82.0,
+    description: '두마리 치킨의 원조, 가성비 최강',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 78 },
+      { key: 'price', label: '가성비', value: 95 },
+      { key: 'variety', label: '메뉴 다양성', value: 75 },
+      { key: 'accessibility', label: '접근성', value: 82 },
+    ],
+  },
+  {
+    id: 208,
+    name: '처갓집양념치킨',
+    slug: 'cheogajip',
+    logo_url: CHICKEN_BRAND_LOGOS['처갓집'],
+    tier: 'B' as TierLevel,
+    tier_score: 80.5,
+    description: '전통 양념 치킨의 명가',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 82 },
+      { key: 'price', label: '가성비', value: 78 },
+      { key: 'variety', label: '메뉴 다양성', value: 72 },
+      { key: 'accessibility', label: '접근성', value: 78 },
+    ],
+  },
+  {
+    id: 209,
+    name: '60계치킨',
+    slug: '60gye',
+    logo_url: getFaviconUrl('60gye.co.kr'),
+    tier: 'B' as TierLevel,
+    tier_score: 79.0,
+    description: '6천원대 치킨의 시작, 가성비 치킨',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 75 },
+      { key: 'price', label: '가성비', value: 98 },
+      { key: 'variety', label: '메뉴 다양성', value: 70 },
+      { key: 'accessibility', label: '접근성', value: 85 },
+    ],
+  },
+  {
+    id: 210,
+    name: 'KFC',
+    slug: 'kfc',
+    logo_url: getFaviconUrl('kfc.co.kr'),
+    tier: 'B' as TierLevel,
+    tier_score: 78.0,
+    description: '오리지널 레시피의 KFC, 글로벌 치킨 브랜드',
+    category: 'chicken',
+    scores: [
+      { key: 'taste', label: '맛 평균', value: 80 },
+      { key: 'price', label: '가성비', value: 70 },
+      { key: 'variety', label: '메뉴 다양성', value: 80 },
+      { key: 'accessibility', label: '접근성', value: 92 },
+    ],
+  },
+];
+
+// 치킨 메뉴(제품) Mock 데이터 (브랜드별 대표 메뉴)
 export const CHICKEN_MENUS: Brand[] = [
   // S티어 - 최고 인기 메뉴
   {
@@ -1648,7 +1815,7 @@ export const WATCH_RECOMMENDATIONS = {
 // Mock 데이터 함수
 export function getMockBrands(category: string): Brand[] | null {
   if (category === 'chicken') {
-    return CHICKEN_MENUS;
+    return CHICKEN_BRANDS;
   }
   if (category === 'running-shoes') {
     return RUNNING_SHOES_BRANDS;
@@ -1656,6 +1823,15 @@ export function getMockBrands(category: string): Brand[] | null {
   if (category === 'mens-watch') {
     return WATCH_BRANDS;
   }
+  return null;
+}
+
+// 제품(메뉴) 데이터 반환 함수
+export function getMockProducts(category: string): Brand[] | null {
+  if (category === 'chicken') {
+    return CHICKEN_MENUS;
+  }
+  // 다른 카테고리의 제품 데이터는 필요시 추가
   return null;
 }
 
