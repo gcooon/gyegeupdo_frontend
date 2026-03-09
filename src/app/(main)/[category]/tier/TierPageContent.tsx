@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useBrands, useCategory } from '@/hooks/useBrands';
+import { useCategoryProducts } from '@/hooks/useModels';
 import { TierGrid } from '@/components/tier/TierGrid';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -550,13 +551,70 @@ function StarRating({ rating }: { rating: number }) {
 export function TierPageContent({ category, initialBrands, initialCategory }: TierPageContentProps) {
   const { data: brands = initialBrands, isLoading, error } = useBrands(category, initialBrands);
   const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
+  const { data: products = [] } = useCategoryProducts(category);
   const tierGridRef = useRef<HTMLDivElement>(null);
 
   // 카테고리별 필터 가져오기
   const filters = CATEGORY_FILTERS[category] || DEFAULT_FILTERS;
   const BUDGET_FILTERS = filters.budget;
   const TYPE_FILTERS = filters.type;
-  const USAGE_CATEGORIES = filters.usage;
+
+  // 용도별 카테고리: API의 filter_definitions에서 가져오거나, 폴백으로 하드코딩 데이터 사용
+  const USAGE_CATEGORIES = useMemo(() => {
+    const apiProductTypes = categoryData?.filter_definitions?.product_type;
+    if (apiProductTypes && apiProductTypes.length > 0) {
+      return apiProductTypes.map((pt: { value: string; label: string; description?: string; icon?: string }) => ({
+        key: pt.value,
+        label: pt.label,
+        description: pt.description || '',
+        icon: pt.icon || '📦',
+      }));
+    }
+    // 폴백: 하드코딩 데이터
+    return filters.usage;
+  }, [categoryData, filters.usage]);
+
+  // 제품을 product_type과 tier별로 그룹화
+  const usageTierData = useMemo(() => {
+    const grouped: Record<string, Partial<Record<TierLevel, Array<{
+      name: string;
+      brand: string;
+      slug: string;
+      score: number;
+      upVotes: number;
+      downVotes: number;
+    }>>>> = {};
+
+    for (const product of products) {
+      const productType = product.product_type || 'other';
+      const tier = product.tier as TierLevel;
+
+      if (!grouped[productType]) {
+        grouped[productType] = {};
+      }
+      if (!grouped[productType][tier]) {
+        grouped[productType][tier] = [];
+      }
+
+      grouped[productType][tier]!.push({
+        name: product.name,
+        brand: product.brand?.name || '',
+        slug: product.slug,
+        score: product.tier_score || 0,
+        upVotes: Math.floor(Math.random() * 200) + 50, // 임시 데이터
+        downVotes: Math.floor(Math.random() * 50) + 10,
+      });
+    }
+
+    // 각 티어 내에서 점수순 정렬
+    for (const productType in grouped) {
+      for (const tier in grouped[productType]) {
+        grouped[productType][tier as TierLevel]?.sort((a, b) => b.score - a.score);
+      }
+    }
+
+    return grouped;
+  }, [products]);
 
   // Filter states
   const [budgetFilter, setBudgetFilter] = useState('all');
@@ -745,8 +803,8 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
 
         <TabsContent value="usage">
           <div className="space-y-8">
-            {USAGE_CATEGORIES.map((usage) => {
-              const usageTiers = USAGE_TIER_DATA[category]?.[usage.key] || {};
+            {USAGE_CATEGORIES.map((usage: { key: string; label: string; description: string; icon: string }) => {
+              const usageTiers = usageTierData[usage.key] || {};
 
               return (
                 <Card key={usage.key} className="card-base overflow-hidden">
