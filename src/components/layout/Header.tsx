@@ -14,13 +14,10 @@ import {
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useBrands';
+import { NAV_CATEGORIES } from '@/config/categories';
 
-// API 실패 시 폴백용
-const FALLBACK_CATEGORIES = [
-  { slug: 'running-shoes', name: '러닝화', icon: '👟' },
-  { slug: 'chicken', name: '치킨', icon: '🍗' },
-  { slug: 'mens-watch', name: '남자시계', icon: '⌚' },
-];
+// API 실패 시 폴백용 (중앙 설정에서 가져옴)
+const FALLBACK_CATEGORIES = NAV_CATEGORIES;
 
 const CATEGORY_MENUS = [
   { key: 'tier', label: '계급도 보기', icon: Trophy },

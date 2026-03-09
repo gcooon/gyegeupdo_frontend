@@ -5,6 +5,7 @@ import { Brand } from '@/types/model';
 import { Crown, Medal, Award, Star, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getCategoryConfig, getBrandHref, DEFAULT_BRAND_TIERS } from '@/config/categories';
 
 interface TierGridProps {
   brands: Brand[];
@@ -21,8 +22,9 @@ const TIER_ICONS: Record<TierLevel, React.ElementType | null> = {
 };
 
 export function TierGrid({ brands, category }: TierGridProps) {
-  // S~B 티어만 표시 (커뮤니티 리뷰 기반이므로)
-  const tiers: TierLevel[] = ['S', 'A', 'B'];
+  // 카테고리 설정에서 티어 범위 가져오기 (기본: S~B)
+  const categoryConfig = category ? getCategoryConfig(category) : undefined;
+  const tiers: TierLevel[] = categoryConfig?.tierChart.brandTiers ?? DEFAULT_BRAND_TIERS;
 
   const brandsByTier = tiers.reduce(
     (acc, tier) => {
@@ -155,12 +157,10 @@ function TierItem({ brand, category, tier, rank }: TierItemProps) {
   const isSTier = tier === 'S';
   const isATier = tier === 'A';
 
-  // 카테고리에 따른 링크 경로 결정
-  const href = category === 'chicken'
-    ? `/${category}/model/${brand.slug}`
-    : category
-      ? `/${category}/brand/${brand.slug}`
-      : `/brand/${brand.slug}`;
+  // 중앙 설정에서 링크 경로 결정 (하드코딩 제거)
+  const href = category
+    ? getBrandHref(category, brand.slug)
+    : `/brand/${brand.slug}`;
 
   return (
     <Link href={href} className="group">
