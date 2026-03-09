@@ -3,15 +3,16 @@
 import { useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useBrands, useCategory } from '@/hooks/useBrands';
-import type { Brand, Category, CategoryDisplayConfig } from '@/types/model';
+import { useCategoryProducts } from '@/hooks/useModels';
+import type { Brand, Category, Product } from '@/types/model';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TierBadge } from '@/components/tier/TierBadge';
 import { TierGrid } from '@/components/tier/TierGrid';
-import { UsageTierSection } from '@/components/tier/UsageTierSection';
 import { ShareButtons } from '@/components/share/ShareButtons';
+import { TIER_CONFIG } from '@/lib/tier';
 import type { TierLevel } from '@/lib/tier';
 import {
   ArrowRight,
@@ -435,11 +436,40 @@ function StarRating({ rating }: { rating: number }) {
 export function CategoryLandingContent({ category, initialBrands, initialCategory }: CategoryLandingContentProps) {
   const { data: brands = initialBrands, isLoading } = useBrands(category, initialBrands);
   const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
+  const { data: products = [], isLoading: isProductsLoading } = useCategoryProducts(category);
   const tierGridRef = useRef<HTMLDivElement>(null);
 
   // API 데이터 기반으로 설정 추출
   const config = useMemo(() => getCategoryConfig(categoryData), [categoryData]);
   const usageCategories = useMemo(() => getUsageCategories(categoryData), [categoryData]);
+
+  // 제품을 product_type과 tier별로 그룹화 (TierPageContent와 동일한 로직)
+  const usageTierData = useMemo(() => {
+    const grouped: Record<string, Partial<Record<TierLevel, Product[]>>> = {};
+
+    for (const product of products) {
+      const productType = product.product_type || 'other';
+      const tier = product.tier as TierLevel;
+
+      if (!grouped[productType]) {
+        grouped[productType] = {};
+      }
+      if (!grouped[productType][tier]) {
+        grouped[productType][tier] = [];
+      }
+
+      grouped[productType][tier]!.push(product);
+    }
+
+    // 각 티어 내에서 점수순 정렬
+    for (const productType in grouped) {
+      for (const tier in grouped[productType]) {
+        grouped[productType][tier as TierLevel]?.sort((a, b) => b.tier_score - a.tier_score);
+      }
+    }
+
+    return grouped;
+  }, [products]);
 
   // Mock 데이터 (추후 API 연동 필요)
   const trending = TRENDING_DATA[category] || [];
@@ -478,7 +508,7 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isProductsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
@@ -622,13 +652,73 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
 
           <TabsContent value="usage">
             <div className="space-y-8">
-              {usageCategories.map((usage) => (
-                <UsageTierSection
-                  key={usage.key}
-                  category={category}
-                  usage={usage}
-                />
-              ))}
+              {usageCategories.map((usage) => {
+                const usageTiers = usageTierData[usage.key] || {};
+                const tiers: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
+
+                return (
+                  <Card key={usage.key} className="card-base overflow-hidden">
+                    {/* 용도 헤더 */}
+                    <div className="bg-gradient-to-r from-accent/10 to-primary/5 px-5 py-4 border-b">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl">
+                          {usage.icon}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold">{usage.label}</h3>
+                          <p className="text-sm text-muted-foreground">{usage.description}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <CardContent className="p-0">
+                      {/* TierMaker 스타일 티어 행 */}
+                      {tiers.map((tier) => {
+                        const items = usageTiers[tier] || [];
+                        const tierConfig = TIER_CONFIG[tier];
+
+                        return (
+                          <div key={tier} className="flex border-b last:border-b-0">
+                            {/* 티어 라벨 */}
+                            <div
+                              className="w-16 shrink-0 flex items-center justify-center"
+                              style={{ backgroundColor: tierConfig.color }}
+                            >
+                              <span className={`text-lg font-black ${tier === 'S' ? 'text-black' : 'text-white'}`}>
+                                {tierConfig.label}
+                              </span>
+                            </div>
+
+                            {/* 제품 목록 */}
+                            <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
+                              {items.length === 0 ? (
+                                <span className="text-sm text-muted-foreground italic">-</span>
+                              ) : (
+                                items.map((product) => (
+                                  <Link
+                                    key={product.slug}
+                                    href={`/${category}/model/${product.slug}`}
+                                    className="group"
+                                  >
+                                    <div className="bg-card border rounded-lg px-3 py-2 hover:border-accent hover:shadow-md transition-all">
+                                      <p className="text-[10px] text-muted-foreground">
+                                        {product.brand?.name || ''}
+                                      </p>
+                                      <p className="font-medium text-sm group-hover:text-accent transition-colors line-clamp-1">
+                                        {product.name}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </TabsContent>
 
