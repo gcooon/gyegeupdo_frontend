@@ -24,6 +24,7 @@ import {
   Plus,
 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
+import { useHomeSummary, HomeCategory, HomeDispute, HomeReview, HomeUserChart } from '@/hooks/useHome';
 
 // 카테고리 티커 데이터
 const CATEGORY_TICKER = [
@@ -224,6 +225,79 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function AllCategoriesOverview() {
+  const { data: homeSummary, isLoading } = useHomeSummary();
+
+  // API 데이터 또는 폴백 데이터
+  const categories: HomeCategory[] = homeSummary?.categories?.length
+    ? homeSummary.categories
+    : CATEGORIES.map(c => ({
+        slug: c.slug,
+        name: c.name,
+        icon: c.icon,
+        description: c.description,
+        color: c.color,
+        top_items: c.topItems.map(item => ({
+          name: item.name,
+          slug: item.name.toLowerCase().replace(/\s+/g, '-'),
+          tier: item.tier,
+          score: item.score,
+          brand_name: '',
+          brand_slug: '',
+          image_url: '',
+          usage: 'usage' in item ? (item.usage as string) : '',
+        })),
+        trending: c.trending,
+      }));
+
+  const disputes: HomeDispute[] = homeSummary?.disputes?.length
+    ? homeSummary.disputes
+    : ALL_HOT_DISPUTES.map(d => ({
+        id: d.productId,
+        category: d.category,
+        category_name: d.categoryName,
+        category_icon: d.categoryIcon,
+        product_id: d.productId,
+        product_name: d.productName,
+        product_slug: d.productSlug,
+        brand_name: d.brandName,
+        current_tier: d.currentTier,
+        proposed_tier: 'S' as TierLevel,
+        up_votes: d.upVotes,
+        down_votes: d.downVotes,
+        total_votes: d.totalVotes,
+        reason: d.topComment?.comment || '',
+        days_left: d.daysLeft,
+      }));
+
+  const reviews: HomeReview[] = homeSummary?.reviews?.length
+    ? homeSummary.reviews
+    : ALL_RECENT_REVIEWS.map(r => ({
+        id: r.id,
+        category: r.category,
+        category_icon: r.categoryIcon,
+        user: r.user,
+        product: {
+          name: r.model.name,
+          brand: r.model.brand,
+          tier: r.model.tier,
+          slug: r.model.slug,
+        },
+        rating: r.rating,
+        content: r.content,
+        likes: r.likes,
+        comments: r.comments,
+        created_at: r.createdAt,
+      }));
+
+  const userCharts: HomeUserChart[] = homeSummary?.user_charts?.length
+    ? homeSummary.user_charts
+    : [
+        { slug: 'ramen-tier', title: '라면 계급도', author: '라면러버', likes: 128, views: 1420, items: 14 },
+        { slug: 'coffee-franchise-tier', title: '커피 프랜차이즈 순위', author: '카페인중독', likes: 95, views: 890, items: 11 },
+        { slug: 'delivery-app-tier', title: '배달앱 순위', author: '야식킹', likes: 67, views: 654, items: 8 },
+        { slug: 'convenience-store-dosirak-tier', title: '편의점 도시락 티어', author: '혼밥러', likes: 54, views: 432, items: 9 },
+      ];
+
   return (
     <div className="space-y-12">
       {/* 히어로 섹션 */}
@@ -275,7 +349,7 @@ export function AllCategoriesOverview() {
 
       {/* 카테고리별 계급도 미리보기 */}
       <section className="space-y-8">
-        {CATEGORIES.map((category) => (
+        {categories.map((category) => (
           <Card key={category.slug} className="card-base overflow-hidden">
             <CardContent className="p-0">
               {/* 카테고리 헤더 */}
@@ -305,9 +379,10 @@ export function AllCategoriesOverview() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
-                  {category.topItems.map((item, index) => (
-                    <div
+                  {category.top_items.map((item, index) => (
+                    <Link
                       key={item.name}
+                      href={`/${category.slug}/model/${item.slug}`}
                       className="relative flex flex-col items-center p-3 md:p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
                     >
                       {/* 순위 뱃지 */}
@@ -321,24 +396,31 @@ export function AllCategoriesOverview() {
                         {index + 1}
                       </div>
 
-                      {/* 로고 */}
-                      <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mb-2">
-                        <Image
-                          src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=128`}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                        />
+                      {/* 로고/이미지 */}
+                      <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mb-2 bg-muted flex items-center justify-center">
+                        {item.image_url ? (
+                          <Image
+                            src={item.image_url}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span className="text-2xl">{category.icon}</span>
+                        )}
                       </div>
 
                       {/* 용도 라벨 (있는 경우) */}
-                      {'usage' in item && item.usage && (
+                      {item.usage && (
                         <p className="text-[10px] text-muted-foreground mb-0.5">
                           {item.usage}
                         </p>
                       )}
 
-                      {/* 이름 */}
+                      {/* 브랜드 + 이름 */}
+                      {item.brand_name && (
+                        <p className="text-[10px] text-muted-foreground">{item.brand_name}</p>
+                      )}
                       <p className="text-xs md:text-sm font-medium text-center line-clamp-1">
                         {item.name}
                       </p>
@@ -347,7 +429,7 @@ export function AllCategoriesOverview() {
                       <p className="text-xs text-amber-600 font-bold">
                         {item.score}점
                       </p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
 
@@ -406,14 +488,9 @@ export function AllCategoriesOverview() {
           </div>
         </div>
 
-        {/* 인기 계급도 미리보기 (정적 데이터로 시작) */}
+        {/* 인기 계급도 미리보기 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { slug: 'ramen-tier', title: '라면 계급도', author: '라면러버', likes: 128, views: 1420, items: 14 },
-            { slug: 'coffee-franchise-tier', title: '커피 프랜차이즈 순위', author: '카페인중독', likes: 95, views: 890, items: 11 },
-            { slug: 'delivery-app-tier', title: '배달앱 순위', author: '야식킹', likes: 67, views: 654, items: 8 },
-            { slug: 'convenience-store-dosirak-tier', title: '편의점 도시락 티어', author: '혼밥러', likes: 54, views: 432, items: 9 },
-          ].map((chart, index) => (
+          {userCharts.map((chart, index) => (
             <Link key={index} href={`/my-tier/${chart.slug}`}>
               <Card className="card-base h-full hover:border-accent/50 transition-all hover:shadow-lg group cursor-pointer">
                 <CardContent className="p-4">
@@ -472,20 +549,20 @@ export function AllCategoriesOverview() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {ALL_HOT_DISPUTES.map((dispute) => {
-            const upPercent = Math.round((dispute.upVotes / dispute.totalVotes) * 100);
+          {disputes.map((dispute) => {
+            const upPercent = dispute.total_votes > 0 ? Math.round((dispute.up_votes / dispute.total_votes) * 100) : 50;
             const downPercent = 100 - upPercent;
-            const isUpTrending = dispute.upVotes > dispute.downVotes;
+            const isUpTrending = dispute.up_votes > dispute.down_votes;
 
             return (
-              <Link key={`${dispute.category}-${dispute.productId}`} href={`/${dispute.category}/model/${dispute.productSlug}`}>
+              <Link key={`${dispute.category}-${dispute.product_id}`} href={`/${dispute.category}/model/${dispute.product_slug}`}>
                 <Card className="card-base h-full hover:border-accent/50 transition-colors">
                   <CardContent className="p-5">
                     {/* 카테고리 + 헤더 */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">{dispute.categoryIcon}</span>
-                        <TierBadge tier={dispute.currentTier} size="sm" />
+                        <span className="text-lg">{dispute.category_icon}</span>
+                        <TierBadge tier={dispute.current_tier} size="sm" />
                         <Badge
                           variant="outline"
                           className={isUpTrending
@@ -502,14 +579,14 @@ export function AllCategoriesOverview() {
                       </div>
                       <Badge variant="secondary" className="text-xs">
                         <Clock className="h-3 w-3 mr-1" />
-                        {dispute.daysLeft}일
+                        {dispute.days_left}일
                       </Badge>
                     </div>
 
                     {/* 제품 정보 */}
                     <div className="mb-3">
-                      <p className="text-xs text-muted-foreground">{dispute.brandName}</p>
-                      <h3 className="font-semibold">{dispute.productName}</h3>
+                      <p className="text-xs text-muted-foreground">{dispute.brand_name}</p>
+                      <h3 className="font-semibold">{dispute.product_name}</h3>
                     </div>
 
                     {/* 투표 바 */}
@@ -524,30 +601,20 @@ export function AllCategoriesOverview() {
                       </div>
                     </div>
 
-                    {/* Top Comment */}
-                    <div className="p-2 bg-muted/50 rounded-lg mb-3">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <Badge
-                          variant="outline"
-                          className={`text-[10px] px-1 py-0 ${dispute.topComment.voteType === 'up'
-                            ? 'text-emerald-600 border-emerald-300'
-                            : 'text-red-600 border-red-300'
-                          }`}
-                        >
-                          {dispute.topComment.voteType === 'up' ? 'UP' : 'DOWN'}
-                        </Badge>
-                        <span className="text-[10px] text-muted-foreground">{dispute.topComment.userName}</span>
+                    {/* 이유 */}
+                    {dispute.reason && (
+                      <div className="p-2 bg-muted/50 rounded-lg mb-3">
+                        <p className="text-xs text-foreground/80 line-clamp-2">
+                          &quot;{dispute.reason}&quot;
+                        </p>
                       </div>
-                      <p className="text-xs text-foreground/80 line-clamp-1">
-                        &quot;{dispute.topComment.comment}&quot;
-                      </p>
-                    </div>
+                    )}
 
                     {/* Stats */}
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Users className="h-3 w-3" />
-                        <span>{dispute.totalVotes}명</span>
+                        <span>{dispute.total_votes}명</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <MessageCircle className="h-3 w-3" />
@@ -602,13 +669,13 @@ export function AllCategoriesOverview() {
 
         {/* 리뷰 그리드 */}
         <div className="grid md:grid-cols-2 gap-4">
-          {ALL_RECENT_REVIEWS.map((review) => (
+          {reviews.map((review) => (
             <Card key={review.id} className="card-base">
               <CardContent className="p-4">
                 {/* 헤더 */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{review.categoryIcon}</span>
+                    <span className="text-base">{review.category_icon}</span>
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-xs font-medium text-primary">{review.user.name[0]}</span>
                     </div>
@@ -617,16 +684,16 @@ export function AllCategoriesOverview() {
                       <p className="text-[10px] text-muted-foreground">{review.user.type}</p>
                     </div>
                   </div>
-                  <span className="text-[10px] text-muted-foreground">{review.createdAt}</span>
+                  <span className="text-[10px] text-muted-foreground">{review.created_at}</span>
                 </div>
 
                 {/* 제품 링크 */}
                 <Link
-                  href={`/${review.category}/model/${review.model.slug}`}
+                  href={`/${review.category}/model/${review.product.slug}`}
                   className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground hover:text-accent transition-colors"
                 >
-                  <span>{review.model.brand} {review.model.name}</span>
-                  <TierBadge tier={review.model.tier} size="sm" showLabel={false} />
+                  <span>{review.product.brand} {review.product.name}</span>
+                  <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
                 </Link>
 
                 {/* 별점 */}
