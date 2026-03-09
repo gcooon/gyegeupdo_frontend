@@ -83,6 +83,28 @@ const CATEGORY_FILTERS: Record<string, {
       { key: 'roasted', label: '구이', description: '오븐 구이 치킨', icon: '🔥' },
     ],
   },
+  'mens-watch': {
+    budget: [
+      { value: 'all', label: '전체' },
+      { value: 'under500', label: '50만원 이하' },
+      { value: '500to1000', label: '50-100만원' },
+      { value: '1000to5000', label: '100-500만원' },
+      { value: 'over5000', label: '500만원 이상' },
+    ],
+    type: [
+      { value: 'all', label: '전체' },
+      { value: 'dress', label: '드레스' },
+      { value: 'sport', label: '스포츠' },
+      { value: 'diver', label: '다이버' },
+      { value: 'chronograph', label: '크로노그래프' },
+    ],
+    usage: [
+      { key: 'collection', label: '컬렉션/투자', description: '가치 상승 기대', icon: '💎' },
+      { key: 'daily', label: '데일리', description: '일상 착용용', icon: '⌚' },
+      { key: 'formal', label: '포멀/비즈니스', description: '정장 매칭용', icon: '👔' },
+      { key: 'sport', label: '스포츠/아웃도어', description: '활동적 사용', icon: '🏃' },
+    ],
+  },
 };
 
 // 용도별 계급도 실제 데이터 (커뮤니티 기반)
@@ -246,6 +268,76 @@ const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, U
       B: [
         { name: '훈제치킨', brand: '네네', slug: 'nene-smoked', score: 84, upVotes: 218, downVotes: 72 },
         { name: '마늘바게트', brand: '굽네', slug: 'goobne-garlic-baguette', score: 82, upVotes: 192, downVotes: 78 },
+      ],
+    },
+  },
+  'mens-watch': {
+    // 💎 컬렉션/투자 계급도
+    collection: {
+      S: [
+        { name: '노틸러스 5711/1A', brand: '파텍 필립', slug: 'patek-nautilus-5711-1a', score: 100, upVotes: 892, downVotes: 12 },
+        { name: '로열오크 15500ST', brand: '오데마 피게', slug: 'ap-royal-oak-15500st', score: 99, upVotes: 845, downVotes: 18 },
+        { name: '서브마리너 데이트', brand: '롤렉스', slug: 'rolex-submariner-date', score: 98, upVotes: 812, downVotes: 22 },
+      ],
+      A: [
+        { name: '데이토나 116500LN', brand: '롤렉스', slug: 'rolex-daytona-116500ln', score: 95, upVotes: 678, downVotes: 35 },
+        { name: 'GMT 마스터 II', brand: '롤렉스', slug: 'rolex-gmt-master-ii', score: 93, upVotes: 612, downVotes: 42 },
+        { name: '스피드마스터 문워치', brand: '오메가', slug: 'omega-speedmaster-moonwatch-pro', score: 91, upVotes: 556, downVotes: 48 },
+      ],
+      B: [
+        { name: '블랙베이 58', brand: '튜더', slug: 'tudor-black-bay-58', score: 85, upVotes: 425, downVotes: 62 },
+        { name: '스노우플레이크', brand: '그랜드 세이코', slug: 'grand-seiko-snowflake', score: 84, upVotes: 398, downVotes: 68 },
+      ],
+    },
+    // ⌚ 데일리 계급도
+    daily: {
+      S: [
+        { name: 'PRX 파워매틱 80', brand: '티쏘', slug: 'tissot-prx-powermatic-80', score: 95, upVotes: 756, downVotes: 25 },
+        { name: '카키 필드 오토', brand: '해밀턴', slug: 'hamilton-khaki-field-auto', score: 93, upVotes: 698, downVotes: 32 },
+        { name: '프레사지 칵테일타임', brand: '세이코', slug: 'seiko-presage-cocktail', score: 92, upVotes: 645, downVotes: 38 },
+      ],
+      A: [
+        { name: '블랙베이 58', brand: '튜더', slug: 'tudor-black-bay-58', score: 89, upVotes: 534, downVotes: 52 },
+        { name: '아쿠아레이서', brand: '태그호이어', slug: 'tag-aquaracer-professional', score: 87, upVotes: 478, downVotes: 58 },
+        { name: '시마스터 다이버 300M', brand: '오메가', slug: 'omega-seamaster-diver-300m', score: 86, upVotes: 445, downVotes: 62 },
+      ],
+      B: [
+        { name: '지샥 카시오크', brand: '카시오', slug: 'casio-gshock-casioak', score: 82, upVotes: 356, downVotes: 75 },
+        { name: '프로스펙스 다이버', brand: '세이코', slug: 'seiko-prospex-diver', score: 80, upVotes: 312, downVotes: 82 },
+      ],
+    },
+    // 👔 포멀/비즈니스 계급도
+    formal: {
+      S: [
+        { name: '칼라트라바', brand: '파텍 필립', slug: 'patek-calatrava-5227g', score: 99, upVotes: 678, downVotes: 15 },
+        { name: '스노우플레이크', brand: '그랜드 세이코', slug: 'grand-seiko-snowflake', score: 96, upVotes: 612, downVotes: 22 },
+        { name: '포르투기저 오토', brand: 'IWC', slug: 'iwc-portugieser-automatic', score: 94, upVotes: 556, downVotes: 28 },
+      ],
+      A: [
+        { name: '카레라', brand: '태그호이어', slug: 'tag-carrera-chronograph', score: 90, upVotes: 445, downVotes: 45 },
+        { name: '데빌 프레스티지', brand: '오메가', slug: 'omega-deville-prestige', score: 88, upVotes: 398, downVotes: 52 },
+        { name: '파일럿 마크 XX', brand: 'IWC', slug: 'iwc-pilot-mark-xx', score: 86, upVotes: 356, downVotes: 58 },
+      ],
+      B: [
+        { name: '르 로클 파워매틱', brand: '티쏘', slug: 'tissot-le-locle-powermatic', score: 82, upVotes: 278, downVotes: 72 },
+        { name: '재즈마스터', brand: '해밀턴', slug: 'hamilton-jazzmaster-auto', score: 80, upVotes: 245, downVotes: 78 },
+      ],
+    },
+    // 🏃 스포츠/아웃도어 계급도
+    sport: {
+      S: [
+        { name: '서브마리너 데이트', brand: '롤렉스', slug: 'rolex-submariner-date', score: 98, upVotes: 789, downVotes: 18 },
+        { name: '시마스터 다이버 300M', brand: '오메가', slug: 'omega-seamaster-diver-300m', score: 95, upVotes: 698, downVotes: 28 },
+        { name: '아쿠아테라', brand: '오메가', slug: 'omega-seamaster-aqua-terra', score: 93, upVotes: 634, downVotes: 35 },
+      ],
+      A: [
+        { name: '페라고스', brand: '튜더', slug: 'tudor-pelagos-39', score: 90, upVotes: 512, downVotes: 48 },
+        { name: '지샥 MR-G', brand: '카시오', slug: 'casio-gshock-mrg', score: 88, upVotes: 456, downVotes: 55 },
+        { name: '아쿠아레이서', brand: '태그호이어', slug: 'tag-aquaracer-professional', score: 86, upVotes: 398, downVotes: 62 },
+      ],
+      B: [
+        { name: '지샥 카시오크', brand: '카시오', slug: 'casio-gshock-casioak', score: 83, upVotes: 312, downVotes: 72 },
+        { name: '프로스펙스 다이버', brand: '세이코', slug: 'seiko-prospex-diver', score: 81, upVotes: 278, downVotes: 78 },
       ],
     },
   },

@@ -551,12 +551,12 @@ const TRENDING_DATA: Record<string, { name: string; brand: string; tier: TierLev
     { name: '네네 스노윙', brand: '네네', tier: 'B', change: '+4.1', slug: 'nene-snowing' },
   ],
   'mens-watch': [
-    { name: '롤렉스', brand: '롤렉스', tier: 'A', change: '+22.3', slug: 'rolex' },
-    { name: '오데마 피게', brand: '오데마 피게', tier: 'S', change: '+15.8', slug: 'audemars-piguet' },
-    { name: '오메가', brand: '오메가', tier: 'B', change: '+12.1', slug: 'omega' },
-    { name: '튜더', brand: '튜더', tier: 'C', change: '+9.7', slug: 'tudor' },
-    { name: '그랜드 세이코', brand: '그랜드 세이코', tier: 'B', change: '+8.4', slug: 'grand-seiko' },
-    { name: '티쏘', brand: '티쏘', tier: 'D', change: '+7.2', slug: 'tissot' },
+    { name: '노틸러스 5711/1A', brand: '파텍 필립', tier: 'S', change: '+22.3', slug: 'patek-nautilus-5711-1a' },
+    { name: '로열오크 15500ST', brand: '오데마 피게', tier: 'S', change: '+15.8', slug: 'ap-royal-oak-15500st' },
+    { name: '스피드마스터 문워치', brand: '오메가', tier: 'S', change: '+12.1', slug: 'omega-speedmaster-moonwatch-pro' },
+    { name: '서브마리너 데이트', brand: '롤렉스', tier: 'S', change: '+9.7', slug: 'rolex-submariner-date' },
+    { name: '블랙베이 58', brand: '튜더', tier: 'A', change: '+8.4', slug: 'tudor-black-bay-58' },
+    { name: '스노우플레이크', brand: '그랜드 세이코', tier: 'A', change: '+7.2', slug: 'grand-seiko-snowflake' },
   ],
 };
 
