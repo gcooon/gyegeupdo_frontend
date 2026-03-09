@@ -1,23 +1,20 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { BoardContent } from './BoardContent';
+import { fetchCategory } from '@/lib/category-config';
 
 interface PageProps {
   params: Promise<{ category: string }>;
 }
 
-const CATEGORY_META: Record<string, { name: string }> = {
-  'running-shoes': { name: '러닝화' },
-  'chicken': { name: '치킨' },
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category } = await params;
-  const meta = CATEGORY_META[category] || { name: '계급도' };
+  const categoryData = await fetchCategory(category);
+  const name = categoryData?.name || '계급도';
 
   return {
-    title: `${meta.name} 게시판`,
-    description: `${meta.name}에 대한 자유로운 이야기와 리뷰를 나눠보세요.`,
+    title: `${name} 게시판`,
+    description: `${name}에 대한 자유로운 이야기와 리뷰를 나눠보세요.`,
   };
 }
 

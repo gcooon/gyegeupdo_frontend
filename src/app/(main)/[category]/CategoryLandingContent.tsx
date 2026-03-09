@@ -1,21 +1,20 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useBrands, useCategory } from '@/hooks/useBrands';
-import type { Brand, Category } from '@/types/model';
+import type { Brand, Category, CategoryDisplayConfig } from '@/types/model';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TierBadge } from '@/components/tier/TierBadge';
 import { TierGrid } from '@/components/tier/TierGrid';
+import { UsageTierSection } from '@/components/tier/UsageTierSection';
 import { ShareButtons } from '@/components/share/ShareButtons';
-import { TIER_CONFIG } from '@/lib/tier';
 import type { TierLevel } from '@/lib/tier';
 import {
   ArrowRight,
-  TrendingUp,
   Sparkles,
   GitCompare,
   ChevronUp,
@@ -32,12 +31,20 @@ import {
 
 interface CategoryLandingContentProps {
   category: string;
-  initialBrands?: import('@/types/model').Brand[];
-  initialCategory?: import('@/types/model').Category;
+  initialBrands?: Brand[];
+  initialCategory?: Category;
 }
 
-// 카테고리별 설정
-const CATEGORY_CONFIG: Record<string, {
+// 기본 설정 (API에서 데이터가 없을 경우 폴백)
+const DEFAULT_COLOR = '#3B82F6';
+const DEFAULT_STATS = {
+  modelCount: '0',
+  reviewCount: '0',
+  brandCount: '0',
+};
+
+// 항상 stats를 포함하는 설정 타입
+interface ResolvedCategoryConfig {
   name: string;
   icon: string;
   color: string;
@@ -51,486 +58,56 @@ const CATEGORY_CONFIG: Record<string, {
     reviewCount: string;
     brandCount: string;
   };
-}> = {
-  'running-shoes': {
-    name: '러닝화',
-    icon: '👟',
-    color: '#E94560',
-    heroTitle: '러닝화 계급도',
-    heroDescription: '한눈에 비교하세요',
-    heroSubDescription: '커뮤니티 리뷰를 바탕으로 S~B 티어로 분류된 러닝화 순위표',
-    itemLabel: '브랜드',
-    quizCTA: '나에게 맞는 러닝화 찾기',
-    stats: {
-      modelCount: '40+',
-      reviewCount: '2,500+',
-      brandCount: '15',
-    },
-  },
-  'chicken': {
-    name: '치킨',
-    icon: '🍗',
-    color: '#FF6B00',
-    heroTitle: '치킨 계급도',
-    heroDescription: '한눈에 비교하세요',
-    heroSubDescription: '커뮤니티 리뷰를 바탕으로 S~B 티어로 분류된 치킨 메뉴 순위표',
-    itemLabel: '메뉴',
-    quizCTA: '나에게 맞는 치킨 찾기',
-    stats: {
-      modelCount: '30+',
-      reviewCount: '1,800+',
-      brandCount: '10',
-    },
-  },
-  'mens-watch': {
-    name: '남자시계',
-    icon: '⌚',
-    color: '#1E3A5F',
-    heroTitle: '남자시계 계급도',
-    heroDescription: '한눈에 비교하세요',
-    heroSubDescription: '커뮤니티 반응과 브랜드 가치를 바탕으로 S~D 티어로 분류된 시계 순위표',
-    itemLabel: '브랜드',
-    quizCTA: '나에게 맞는 시계 찾기',
-    stats: {
-      modelCount: '24',
-      reviewCount: '1,200+',
-      brandCount: '20',
-    },
-  },
-};
-
-// 카테고리별 용도 설정
-const USAGE_CATEGORIES: Record<string, { key: string; label: string; description: string; icon: string }[]> = {
-  'running-shoes': [
-    { key: 'race', label: '레이스/대회', description: '기록 도전용 최상급', icon: '🏆' },
-    { key: 'daily', label: '데일리 트레이너', description: '일상 훈련용', icon: '🏃' },
-    { key: 'beginner', label: '입문/초보', description: '처음 시작하는 러너', icon: '👟' },
-    { key: 'long', label: '장거리/마라톤', description: '풀코스 마라톤용', icon: '🛤️' },
-  ],
-  'chicken': [
-    { key: 'fried', label: '후라이드', description: '바삭한 기본의 정석', icon: '🍗' },
-    { key: 'yangnyum', label: '양념', description: '달콤 매콤한 소스', icon: '🌶️' },
-    { key: 'soy', label: '간장/허니', description: '달짭 간장 소스', icon: '🍯' },
-    { key: 'powder', label: '가루/시즈닝', description: '파우더 시즈닝', icon: '✨' },
-    { key: 'roasted', label: '구이', description: '오븐 구이 치킨', icon: '🔥' },
-  ],
-  'mens-watch': [
-    { key: 'dress', label: '드레스워치', description: '격식있는 자리에', icon: '👔' },
-    { key: 'sport', label: '스포츠/다이버', description: '활동적인 스타일', icon: '🏊' },
-    { key: 'daily', label: '데일리', description: '매일 편하게', icon: '⌚' },
-    { key: 'investment', label: '투자/컬렉션', description: '리셀 가치 중시', icon: '💎' },
-  ],
-};
-
-// 용도별 계급도 데이터
-interface UsageTierItem {
-  name: string;
-  brand: string;
-  slug: string;
-  score: number;
-  upVotes: number;
-  downVotes: number;
 }
 
-const USAGE_TIER_DATA: Record<string, Record<string, Partial<Record<TierLevel, UsageTierItem[]>>>> = {
-  'running-shoes': {
-    race: {
-      S: [
-        { name: '메타스피드 스카이 도쿄', brand: '아식스', slug: 'metaspeed-sky-tokyo', score: 98, upVotes: 234, downVotes: 12 },
-        { name: '알파플라이 3', brand: '나이키', slug: 'alphafly-3', score: 97, upVotes: 198, downVotes: 15 },
-        { name: '패스트-R 3', brand: '푸마', slug: 'fast-r-3', score: 97, upVotes: 178, downVotes: 14 },
-        { name: '베이퍼플라이 3', brand: '나이키', slug: 'vaporfly-3', score: 96, upVotes: 165, downVotes: 18 },
-      ],
-      A: [
-        { name: '메타스피드 스카이 파리', brand: '아식스', slug: 'metaspeed-sky-paris', score: 94, upVotes: 142, downVotes: 22 },
-        { name: '아디오스 프로 3', brand: '아디다스', slug: 'adizero-adios-pro-3', score: 93, upVotes: 128, downVotes: 25 },
-        { name: '슈퍼컴프 엘리트 v4', brand: '뉴발란스', slug: 'supercomp-elite-v4', score: 92, upVotes: 115, downVotes: 21 },
-      ],
-      B: [
-        { name: '로켓 X 2', brand: '호카', slug: 'rocket-x-2', score: 88, upVotes: 95, downVotes: 28 },
-        { name: '엔돌핀 프로 4', brand: '써코니', slug: 'endorphin-pro-4', score: 86, upVotes: 85, downVotes: 25 },
-      ],
-      C: [
-        { name: '킵런 KD900X', brand: '데카트론', slug: 'kiprun-kd900x', score: 72, upVotes: 45, downVotes: 38 },
-        { name: '플로트라이드 에너지 5', brand: '리복', slug: 'floatride-energy-5', score: 70, upVotes: 38, downVotes: 42 },
-      ],
-      D: [
-        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 42, upVotes: 12, downVotes: 78 },
-      ],
+// 카테고리 데이터에서 설정 추출하는 헬퍼 함수
+function getCategoryConfig(categoryData: Category | undefined): ResolvedCategoryConfig {
+  if (!categoryData) {
+    return {
+      name: '제품',
+      icon: '📦',
+      color: DEFAULT_COLOR,
+      heroTitle: '계급도',
+      heroDescription: '한눈에 비교하세요',
+      heroSubDescription: '커뮤니티 리뷰를 바탕으로 티어로 분류된 순위표',
+      itemLabel: '제품',
+      quizCTA: '나에게 맞는 제품 찾기',
+      stats: DEFAULT_STATS,
+    };
+  }
+
+  const config = categoryData.display_config || {};
+
+  return {
+    name: categoryData.name,
+    icon: categoryData.icon || '📦',
+    color: config.color || DEFAULT_COLOR,
+    heroTitle: config.heroTitle || `${categoryData.name} 계급도`,
+    heroDescription: config.heroDescription || '한눈에 비교하세요',
+    heroSubDescription: config.heroSubDescription || `커뮤니티 리뷰를 바탕으로 티어로 분류된 ${categoryData.name} 순위표`,
+    itemLabel: config.itemLabel || categoryData.name,
+    quizCTA: config.quizCTA || `나에게 맞는 ${categoryData.name} 찾기`,
+    stats: {
+      modelCount: config.stats?.modelCount || String(categoryData.product_count || 0),
+      reviewCount: config.stats?.reviewCount || '0',
+      brandCount: config.stats?.brandCount || String(categoryData.brand_count || 0),
     },
-    daily: {
-      S: [
-        { name: '노바블라스트 5', brand: '아식스', slug: 'novablast-5', score: 96, upVotes: 1245, downVotes: 45 },
-        { name: '마하 X', brand: '호카', slug: 'mach-x', score: 94, upVotes: 423, downVotes: 32 },
-        { name: '슈퍼블라스트 2', brand: '아식스', slug: 'superblast-2', score: 93, upVotes: 312, downVotes: 28 },
-        { name: '매그니파이 니트로 3', brand: '푸마', slug: 'magnify-nitro-3', score: 92, upVotes: 289, downVotes: 25 },
-      ],
-      A: [
-        { name: '페가수스 41', brand: '나이키', slug: 'pegasus-41', score: 88, upVotes: 425, downVotes: 55 },
-        { name: '퓨얼셀 레벨 v4', brand: '뉴발란스', slug: 'fuelcell-rebel-v4', score: 89, upVotes: 198, downVotes: 32 },
-        { name: '보스턴 12', brand: '아디다스', slug: 'boston-12', score: 87, upVotes: 189, downVotes: 35 },
-        { name: '클라우드몬스터', brand: '온러닝', slug: 'cloudmonster', score: 86, upVotes: 234, downVotes: 42 },
-      ],
-      B: [
-        { name: '마하 6', brand: '호카', slug: 'mach-6', score: 84, upVotes: 167, downVotes: 48 },
-        { name: '킨바라 15', brand: '써코니', slug: 'kinvara-15', score: 82, upVotes: 145, downVotes: 45 },
-      ],
-      C: [
-        { name: '고런 맥스로드 6', brand: '스케쳐스', slug: 'gorun-maxroad-6', score: 72, upVotes: 89, downVotes: 65 },
-        { name: '킵런 KS500', brand: '데카트론', slug: 'kiprun-ks500', score: 70, upVotes: 78, downVotes: 72 },
-        { name: '레볼루션 7', brand: '나이키', slug: 'revolution-7', score: 68, upVotes: 125, downVotes: 98 },
-        { name: '갤럭시 7', brand: '아디다스', slug: 'galaxy-7', score: 66, upVotes: 112, downVotes: 105 },
-        { name: '플로트 맥스 2', brand: '필라', slug: 'float-max-2', score: 64, upVotes: 67, downVotes: 88 },
-      ],
-      D: [
-        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 45, upVotes: 34, downVotes: 156 },
-        { name: '스파오 스니커즈', brand: '스파오', slug: 'spao-sneakers', score: 38, upVotes: 23, downVotes: 187 },
-        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 35, upVotes: 18, downVotes: 212 },
-      ],
-    },
-    beginner: {
-      S: [
-        { name: '클리프톤 10', brand: '호카', slug: 'clifton-10', score: 96, upVotes: 892, downVotes: 35 },
-        { name: '노바블라스트 5', brand: '아식스', slug: 'novablast-5', score: 96, upVotes: 756, downVotes: 28 },
-        { name: '젤 님버스 27', brand: '아식스', slug: 'gel-nimbus-27', score: 94, upVotes: 523, downVotes: 32 },
-        { name: '본디 9', brand: '호카', slug: 'bondi-9', score: 94, upVotes: 567, downVotes: 38 },
-      ],
-      A: [
-        { name: '프레시폼 1080 v14', brand: '뉴발란스', slug: 'fresh-foam-1080-v14', score: 91, upVotes: 412, downVotes: 45 },
-        { name: '라이드 18', brand: '써코니', slug: 'ride-18', score: 90, upVotes: 456, downVotes: 52 },
-        { name: '페가수스 41', brand: '나이키', slug: 'pegasus-41', score: 88, upVotes: 385, downVotes: 48 },
-      ],
-      B: [
-        { name: '고스트 17', brand: '브룩스', slug: 'ghost-17', score: 85, upVotes: 285, downVotes: 55 },
-        { name: '클라우드서퍼', brand: '온러닝', slug: 'cloudsurfer', score: 83, upVotes: 178, downVotes: 52 },
-      ],
-      C: [
-        { name: '젤 컨텐드 8', brand: '아식스', slug: 'gel-contend-8', score: 72, upVotes: 178, downVotes: 125 },
-        { name: '졸트 4', brand: '아식스', slug: 'jolt-4', score: 70, upVotes: 156, downVotes: 138 },
-        { name: '에어로 버스트', brand: '스케쳐스', slug: 'aero-burst', score: 68, upVotes: 89, downVotes: 112 },
-        { name: '레볼루션 7', brand: '나이키', slug: 'revolution-7', score: 66, upVotes: 145, downVotes: 167 },
-        { name: '스피드러쉬', brand: '프로스펙스', slug: 'speedrush', score: 64, upVotes: 78, downVotes: 134 },
-      ],
-      D: [
-        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 48, upVotes: 56, downVotes: 234 },
-        { name: '스파오 스니커즈', brand: '스파오', slug: 'spao-sneakers', score: 42, upVotes: 34, downVotes: 267 },
-        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 38, upVotes: 23, downVotes: 298 },
-        { name: '다이소 운동화', brand: '다이소', slug: 'daiso-running', score: 32, upVotes: 12, downVotes: 345 },
-      ],
-    },
-    long: {
-      S: [
-        { name: '젤 님버스 27', brand: '아식스', slug: 'gel-nimbus-27', score: 96, upVotes: 523, downVotes: 25 },
-        { name: '본디 9', brand: '호카', slug: 'bondi-9', score: 95, upVotes: 485, downVotes: 28 },
-        { name: '젤 카야노 31', brand: '아식스', slug: 'gel-kayano-31', score: 95, upVotes: 412, downVotes: 22 },
-      ],
-      A: [
-        { name: '프레시폼 1080 v14', brand: '뉴발란스', slug: 'fresh-foam-1080-v14', score: 91, upVotes: 342, downVotes: 38 },
-        { name: '클리프톤 10', brand: '호카', slug: 'clifton-10', score: 90, upVotes: 328, downVotes: 42 },
-        { name: '트라이엄프 22', brand: '써코니', slug: 'triumph-22', score: 88, upVotes: 267, downVotes: 45 },
-      ],
-      B: [
-        { name: '글리세린 21', brand: '브룩스', slug: 'glycerin-21', score: 85, upVotes: 198, downVotes: 52 },
-        { name: '인빈서블 3', brand: '나이키', slug: 'invincible-3', score: 84, upVotes: 178, downVotes: 48 },
-      ],
-      C: [
-        { name: '웨이브 라이더 27', brand: '미즈노', slug: 'wave-rider-27', score: 74, upVotes: 134, downVotes: 98 },
-        { name: '고런 맥스로드 6', brand: '스케쳐스', slug: 'gorun-maxroad-6', score: 70, upVotes: 112, downVotes: 125 },
-        { name: '킵런 KD900X', brand: '데카트론', slug: 'kiprun-kd900x', score: 68, upVotes: 89, downVotes: 134 },
-        { name: '에너지 부스트', brand: '데상트', slug: 'energy-boost', score: 65, upVotes: 67, downVotes: 156 },
-      ],
-      D: [
-        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 40, upVotes: 23, downVotes: 289 },
-        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 35, upVotes: 12, downVotes: 334 },
-      ],
-    },
-    stability: {
-      S: [
-        { name: '젤 카야노 31', brand: '아식스', slug: 'gel-kayano-31', score: 96, upVotes: 412, downVotes: 18 },
-        { name: '아라히 8', brand: '호카', slug: 'arahi-8', score: 94, upVotes: 345, downVotes: 22 },
-      ],
-      A: [
-        { name: '스트럭처 25', brand: '나이키', slug: 'structure-25', score: 90, upVotes: 245, downVotes: 35 },
-        { name: '아라히 7', brand: '호카', slug: 'arahi-7', score: 88, upVotes: 178, downVotes: 32 },
-        { name: 'GT-2000 13', brand: '아식스', slug: 'gt-2000-13', score: 87, upVotes: 156, downVotes: 38 },
-      ],
-      B: [
-        { name: '가이드 17', brand: '써코니', slug: 'guide-17', score: 84, upVotes: 125, downVotes: 42 },
-        { name: '아드레날린 GTS 24', brand: '브룩스', slug: 'adrenaline-gts-24', score: 83, upVotes: 112, downVotes: 45 },
-      ],
-      C: [
-        { name: '젤 컨텐드 8', brand: '아식스', slug: 'gel-contend-8', score: 70, upVotes: 89, downVotes: 98 },
-        { name: '웨이브 라이더 27', brand: '미즈노', slug: 'wave-rider-27', score: 68, upVotes: 78, downVotes: 112 },
-        { name: '스피드러쉬', brand: '프로스펙스', slug: 'speedrush', score: 62, upVotes: 56, downVotes: 145 },
-      ],
-      D: [
-        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 38, upVotes: 18, downVotes: 267 },
-        { name: '스파오 스니커즈', brand: '스파오', slug: 'spao-sneakers', score: 32, upVotes: 12, downVotes: 312 },
-      ],
-    },
-    tempo: {
-      S: [
-        { name: '엔돌핀 스피드 5', brand: '써코니', slug: 'endorphin-speed-5', score: 96, upVotes: 378, downVotes: 22 },
-        { name: '마하 X', brand: '호카', slug: 'mach-x', score: 95, upVotes: 356, downVotes: 25 },
-        { name: '매직 스피드 4', brand: '아식스', slug: 'magic-speed-4', score: 93, upVotes: 312, downVotes: 28 },
-      ],
-      A: [
-        { name: '퓨얼셀 레벨 v4', brand: '뉴발란스', slug: 'fuelcell-rebel-v4', score: 90, upVotes: 245, downVotes: 35 },
-        { name: '보스턴 12', brand: '아디다스', slug: 'boston-12', score: 89, upVotes: 198, downVotes: 32 },
-        { name: '줌 플라이 6', brand: '나이키', slug: 'zoom-fly-6', score: 88, upVotes: 178, downVotes: 38 },
-      ],
-      B: [
-        { name: '킨바라 15', brand: '써코니', slug: 'kinvara-15', score: 85, upVotes: 145, downVotes: 42 },
-        { name: '디비에이트 니트로 3', brand: '푸마', slug: 'deviate-nitro-3', score: 83, upVotes: 134, downVotes: 45 },
-      ],
-      C: [
-        { name: '플로트라이드 에너지 5', brand: '리복', slug: 'floatride-energy-5', score: 72, upVotes: 89, downVotes: 78 },
-        { name: '킵런 KS500', brand: '데카트론', slug: 'kiprun-ks500', score: 68, upVotes: 67, downVotes: 98 },
-        { name: '에어로 버스트', brand: '스케쳐스', slug: 'aero-burst', score: 65, upVotes: 56, downVotes: 112 },
-        { name: '르까프 러너', brand: '르까프', slug: 'lecoq-runner', score: 60, upVotes: 45, downVotes: 134 },
-      ],
-      D: [
-        { name: '탑텐 러닝화', brand: '탑텐', slug: 'topten-running', score: 42, upVotes: 23, downVotes: 245 },
-        { name: '노브랜드 러닝화', brand: '노브랜드', slug: 'nobrand-running', score: 35, upVotes: 15, downVotes: 289 },
-      ],
-    },
-  },
-  'chicken': {
-    fried: {
-      S: [
-        { name: '황금올리브치킨', brand: 'BBQ', slug: 'bbq-golden-olive', score: 97, upVotes: 524, downVotes: 28 },
-        { name: '해바라기 후라이드', brand: 'BHC', slug: 'bhc-sunflower', score: 95, upVotes: 478, downVotes: 35 },
-        { name: '오리지날 후라이드', brand: '호식이', slug: 'hosik-original', score: 94, upVotes: 445, downVotes: 38 },
-      ],
-      A: [
-        { name: '후라이드치킨', brand: 'BHC', slug: 'bhc-fried', score: 91, upVotes: 358, downVotes: 52 },
-        { name: '크리스피치킨', brand: 'KFC', slug: 'kfc-crispy', score: 89, upVotes: 312, downVotes: 58 },
-        { name: '후라이드', brand: '노랑통닭', slug: 'norang-fried', score: 87, upVotes: 285, downVotes: 62 },
-      ],
-      B: [
-        { name: '후라이드', brand: '60계', slug: '60gye-fried', score: 84, upVotes: 225, downVotes: 72 },
-        { name: '후라이드', brand: '맘스터치', slug: 'moms-fried', score: 82, upVotes: 198, downVotes: 78 },
-      ],
-      C: [
-        { name: '후라이드', brand: '또래오래', slug: 'ttorae-fried', score: 72, upVotes: 134, downVotes: 112 },
-        { name: '후라이드', brand: '가마치통닭', slug: 'gamachi-fried', score: 70, upVotes: 112, downVotes: 125 },
-        { name: '후라이드', brand: '자담치킨', slug: 'jadam-fried', score: 68, upVotes: 98, downVotes: 134 },
-        { name: '후라이드', brand: '피자나라치킨공주', slug: 'pizzanara-fried', score: 65, upVotes: 78, downVotes: 156 },
-      ],
-      D: [
-        { name: '편의점 치킨', brand: 'CU/GS25', slug: 'convenience-fried', score: 42, upVotes: 34, downVotes: 245 },
-        { name: '마트 치킨', brand: '이마트/홈플러스', slug: 'mart-fried', score: 38, upVotes: 45, downVotes: 267 },
-        { name: '냉동 치킨', brand: '비비고/풀무원', slug: 'frozen-fried', score: 35, upVotes: 23, downVotes: 298 },
-      ],
-    },
-    yangnyum: {
-      S: [
-        { name: '양념치킨', brand: '페리카나', slug: 'pericana-yangnyum', score: 96, upVotes: 498, downVotes: 32 },
-        { name: '양념치킨', brand: 'BHC', slug: 'bhc-yangnyum', score: 95, upVotes: 465, downVotes: 38 },
-        { name: '레드콤보', brand: '교촌', slug: 'kyochon-red', score: 94, upVotes: 432, downVotes: 42 },
-      ],
-      A: [
-        { name: '슈프림양념', brand: '처갓집', slug: 'cheogajip-supreme', score: 91, upVotes: 368, downVotes: 55 },
-        { name: '양념치킨', brand: '60계', slug: '60gye-yangnyum', score: 89, upVotes: 325, downVotes: 62 },
-        { name: '매운양념', brand: '또래오래', slug: 'ttorae-hot', score: 87, upVotes: 285, downVotes: 68 },
-      ],
-      B: [
-        { name: '양념치킨', brand: '노랑통닭', slug: 'norang-yangnyum', score: 84, upVotes: 218, downVotes: 75 },
-        { name: '양념치킨', brand: '네네', slug: 'nene-yangnyum', score: 82, upVotes: 192, downVotes: 82 },
-      ],
-      C: [
-        { name: '양념치킨', brand: '자담치킨', slug: 'jadam-yangnyum', score: 72, upVotes: 112, downVotes: 134 },
-        { name: '양념치킨', brand: '가마치통닭', slug: 'gamachi-yangnyum', score: 70, upVotes: 98, downVotes: 145 },
-        { name: '양념치킨', brand: '피자나라치킨공주', slug: 'pizzanara-yangnyum', score: 68, upVotes: 78, downVotes: 167 },
-        { name: '양념치킨', brand: '땅땅치킨', slug: 'ddangddang-yangnyum', score: 65, upVotes: 67, downVotes: 178 },
-      ],
-      D: [
-        { name: '양념 편의점 치킨', brand: 'CU/GS25', slug: 'convenience-yangnyum', score: 40, upVotes: 28, downVotes: 256 },
-        { name: '양념 마트 치킨', brand: '이마트/홈플러스', slug: 'mart-yangnyum', score: 36, upVotes: 34, downVotes: 278 },
-        { name: '양념 냉동 치킨', brand: '비비고/풀무원', score: 32, slug: 'frozen-yangnyum', upVotes: 18, downVotes: 312 },
-      ],
-    },
-    soy: {
-      S: [
-        { name: '교촌 오리지날', brand: '교촌', slug: 'kyochon-original', score: 97, upVotes: 545, downVotes: 25 },
-        { name: '간장치킨', brand: '호식이', slug: 'hosik-soy', score: 95, upVotes: 498, downVotes: 32 },
-        { name: '맛초킹', brand: 'BHC', slug: 'bhc-matchoking', score: 94, upVotes: 468, downVotes: 38 },
-      ],
-      A: [
-        { name: '허니콤보', brand: '교촌', slug: 'kyochon-honey', score: 91, upVotes: 378, downVotes: 52 },
-        { name: '소이갈릭', brand: 'BBQ', slug: 'bbq-soy-garlic', score: 89, upVotes: 328, downVotes: 58 },
-        { name: '간장치킨', brand: '네네', slug: 'nene-soy', score: 87, upVotes: 292, downVotes: 65 },
-      ],
-      B: [
-        { name: '간장치킨', brand: '자담', slug: 'jadam-soy', score: 84, upVotes: 225, downVotes: 72 },
-        { name: '간장치킨', brand: '60계', slug: '60gye-soy', score: 82, upVotes: 198, downVotes: 78 },
-      ],
-      C: [
-        { name: '간장치킨', brand: '노랑통닭', slug: 'norang-soy', score: 72, upVotes: 134, downVotes: 112 },
-        { name: '허니간장', brand: '또래오래', slug: 'ttorae-honey', score: 70, upVotes: 112, downVotes: 134 },
-        { name: '간장치킨', brand: '가마치통닭', slug: 'gamachi-soy', score: 68, upVotes: 89, downVotes: 145 },
-        { name: '간장치킨', brand: '땅땅치킨', slug: 'ddangddang-soy', score: 65, upVotes: 67, downVotes: 167 },
-      ],
-      D: [
-        { name: '간장 편의점 치킨', brand: 'CU/GS25', slug: 'convenience-soy', score: 38, upVotes: 23, downVotes: 267 },
-        { name: '간장 마트 치킨', brand: '이마트/홈플러스', slug: 'mart-soy', score: 35, upVotes: 28, downVotes: 289 },
-        { name: '냉동 간장치킨', brand: '비비고/풀무원', slug: 'frozen-soy', score: 30, upVotes: 15, downVotes: 312 },
-      ],
-    },
-    powder: {
-      S: [
-        { name: '뿌링클', brand: 'BHC', slug: 'bhc-puringkle', score: 98, upVotes: 612, downVotes: 22 },
-        { name: '치토스치킨', brand: 'KFC', slug: 'kfc-cheetos', score: 94, upVotes: 445, downVotes: 42 },
-        { name: '스노윙치즈', brand: '네네', slug: 'nene-snowing', score: 93, upVotes: 418, downVotes: 45 },
-      ],
-      A: [
-        { name: '크크크치킨', brand: '60계', slug: '60gye-kkk', score: 90, upVotes: 358, downVotes: 55 },
-        { name: '치즈볼', brand: 'BBQ', slug: 'bbq-cheeseball', score: 88, upVotes: 312, downVotes: 62 },
-        { name: '마라크치킨', brand: 'BHC', slug: 'bhc-marak', score: 86, upVotes: 278, downVotes: 68 },
-      ],
-      B: [
-        { name: '뿌링핫', brand: 'BHC', slug: 'bhc-puringhot', score: 83, upVotes: 215, downVotes: 75 },
-        { name: '갈릭파우더', brand: '굽네', slug: 'goobne-garlic', score: 81, upVotes: 188, downVotes: 82 },
-      ],
-      C: [
-        { name: '양파치킨', brand: '노랑통닭', slug: 'norang-onion', score: 72, upVotes: 112, downVotes: 134 },
-        { name: '마늘치킨', brand: '또래오래', slug: 'ttorae-garlic', score: 70, upVotes: 98, downVotes: 145 },
-        { name: '시즈닝치킨', brand: '자담치킨', slug: 'jadam-seasoning', score: 68, upVotes: 78, downVotes: 156 },
-        { name: '파우더치킨', brand: '가마치통닭', slug: 'gamachi-powder', score: 65, upVotes: 67, downVotes: 178 },
-      ],
-      D: [
-        { name: '시즈닝 편의점 치킨', brand: 'CU/GS25', slug: 'convenience-powder', score: 40, upVotes: 23, downVotes: 267 },
-        { name: '냉동 시즈닝치킨', brand: '비비고/풀무원', slug: 'frozen-powder', score: 35, upVotes: 18, downVotes: 289 },
-      ],
-    },
-    roasted: {
-      S: [
-        { name: '고추바사삭', brand: '굽네', slug: 'goobne-gochu', score: 96, upVotes: 512, downVotes: 28 },
-        { name: '굽네 오리지날', brand: '굽네', slug: 'goobne-original', score: 95, upVotes: 478, downVotes: 32 },
-        { name: '자메이카통다리', brand: 'BBQ', slug: 'bbq-jamaica', score: 94, upVotes: 445, downVotes: 38 },
-      ],
-      A: [
-        { name: '볼케이노', brand: '굽네', slug: 'goobne-volcano', score: 91, upVotes: 368, downVotes: 52 },
-        { name: '블랙알리오', brand: '푸라닭', slug: 'puradak-black-allio', score: 89, upVotes: 325, downVotes: 58 },
-        { name: '갈비치킨', brand: 'BHC', slug: 'bhc-galbi', score: 87, upVotes: 285, downVotes: 65 },
-      ],
-      B: [
-        { name: '훈제치킨', brand: '네네', slug: 'nene-smoked', score: 84, upVotes: 218, downVotes: 72 },
-        { name: '마늘바게트', brand: '굽네', slug: 'goobne-garlic-baguette', score: 82, upVotes: 192, downVotes: 78 },
-      ],
-      C: [
-        { name: '숯불구이', brand: '지코바', slug: 'zicoba-charcoal', score: 74, upVotes: 145, downVotes: 112 },
-        { name: '오븐구이', brand: '또래오래', slug: 'ttorae-oven', score: 70, upVotes: 112, downVotes: 134 },
-        { name: '로스트치킨', brand: '자담치킨', slug: 'jadam-roast', score: 68, upVotes: 89, downVotes: 145 },
-        { name: '오븐치킨', brand: '땅땅치킨', slug: 'ddangddang-oven', score: 65, upVotes: 67, downVotes: 167 },
-      ],
-      D: [
-        { name: '마트 로티세리', brand: '코스트코/이마트', slug: 'mart-rotisserie', score: 45, upVotes: 56, downVotes: 234 },
-        { name: '편의점 구이치킨', brand: 'CU/GS25', slug: 'convenience-roasted', score: 38, upVotes: 28, downVotes: 267 },
-        { name: '냉동 오븐치킨', brand: '비비고/풀무원', slug: 'frozen-roasted', score: 32, upVotes: 18, downVotes: 298 },
-      ],
-    },
-  },
-  'mens-watch': {
-    dress: {
-      S: [
-        { name: '파텍 필립 칼라트라바', brand: '파텍 필립', slug: 'patek-philippe', score: 99, upVotes: 345, downVotes: 5 },
-        { name: '아 랑에 운트 죄네 삭소니아', brand: '아 랑에 운트 죄네', slug: 'a-lange-soehne', score: 98, upVotes: 312, downVotes: 8 },
-        { name: '바쉐론 콘스탄틴 파트리모니', brand: '바쉐론 콘스탄틴', slug: 'vacheron-constantin', score: 97, upVotes: 298, downVotes: 10 },
-      ],
-      A: [
-        { name: '예거 르쿨트르 마스터', brand: '예거 르쿨트르', slug: 'jaeger-lecoultre', score: 93, upVotes: 234, downVotes: 18 },
-        { name: '블랑팡 빌르레', brand: '블랑팡', slug: 'blancpain', score: 91, upVotes: 198, downVotes: 22 },
-      ],
-      B: [
-        { name: '오메가 드빌', brand: '오메가', slug: 'omega', score: 87, upVotes: 167, downVotes: 32 },
-        { name: '까르띠에 탱크', brand: '까르띠에', slug: 'cartier', score: 86, upVotes: 156, downVotes: 35 },
-        { name: '그랜드 세이코 엘레강스', brand: '그랜드 세이코', slug: 'grand-seiko', score: 84, upVotes: 145, downVotes: 38 },
-      ],
-      C: [
-        { name: '론진 마스터 컬렉션', brand: '론진', slug: 'longines', score: 75, upVotes: 112, downVotes: 65 },
-        { name: '노모스 탕고마트', brand: '노모스', slug: 'nomos', score: 73, upVotes: 98, downVotes: 72 },
-      ],
-      D: [
-        { name: '티쏘 르 로끌', brand: '티쏘', slug: 'tissot', score: 64, upVotes: 78, downVotes: 98 },
-        { name: '해밀턴 재즈마스터', brand: '해밀턴', slug: 'hamilton', score: 62, upVotes: 67, downVotes: 112 },
-      ],
-    },
-    sport: {
-      S: [
-        { name: '오데마 피게 로열 오크', brand: '오데마 피게', slug: 'audemars-piguet', score: 98, upVotes: 456, downVotes: 12 },
-        { name: '파텍 필립 노틸러스', brand: '파텍 필립', slug: 'patek-philippe', score: 97, upVotes: 423, downVotes: 15 },
-      ],
-      A: [
-        { name: '롤렉스 서브마리너', brand: '롤렉스', slug: 'rolex', score: 95, upVotes: 567, downVotes: 22 },
-        { name: '블랑팡 피프티 패덤스', brand: '블랑팡', slug: 'blancpain', score: 92, upVotes: 289, downVotes: 28 },
-      ],
-      B: [
-        { name: '오메가 씨마스터', brand: '오메가', slug: 'omega', score: 88, upVotes: 345, downVotes: 42 },
-        { name: 'IWC 아쿠아타이머', brand: 'IWC', slug: 'iwc', score: 85, upVotes: 198, downVotes: 48 },
-        { name: '파네라이 서브머시블', brand: '파네라이', slug: 'panerai', score: 84, upVotes: 178, downVotes: 52 },
-      ],
-      C: [
-        { name: '튜더 블랙베이', brand: '튜더', slug: 'tudor', score: 77, upVotes: 234, downVotes: 78 },
-        { name: '태그호이어 아쿠아레이서', brand: '태그호이어', slug: 'tag-heuer', score: 76, upVotes: 198, downVotes: 85 },
-        { name: '브라이틀링 슈퍼오션', brand: '브라이틀링', slug: 'breitling', score: 75, upVotes: 178, downVotes: 89 },
-      ],
-      D: [
-        { name: '세이코 프로스펙스', brand: '세이코', slug: 'seiko', score: 63, upVotes: 134, downVotes: 112 },
-        { name: '카시오 지샥', brand: '카시오', slug: 'casio-gshock', score: 60, upVotes: 156, downVotes: 134 },
-      ],
-    },
-    daily: {
-      S: [
-        { name: '롤렉스 데이트저스트', brand: '롤렉스', slug: 'rolex', score: 96, upVotes: 678, downVotes: 25 },
-        { name: '오메가 스피드마스터', brand: '오메가', slug: 'omega', score: 94, upVotes: 523, downVotes: 32 },
-      ],
-      A: [
-        { name: '까르띠에 산토스', brand: '까르띠에', slug: 'cartier', score: 90, upVotes: 345, downVotes: 42 },
-        { name: 'IWC 포르투기저', brand: 'IWC', slug: 'iwc', score: 88, upVotes: 267, downVotes: 48 },
-        { name: '그랜드 세이코 헤리티지', brand: '그랜드 세이코', slug: 'grand-seiko', score: 86, upVotes: 234, downVotes: 52 },
-      ],
-      B: [
-        { name: '튜더 블랙베이 58', brand: '튜더', slug: 'tudor', score: 82, upVotes: 298, downVotes: 72 },
-        { name: '태그호이어 카레라', brand: '태그호이어', slug: 'tag-heuer', score: 80, upVotes: 234, downVotes: 78 },
-        { name: '론진 스피릿', brand: '론진', slug: 'longines', score: 78, upVotes: 198, downVotes: 85 },
-      ],
-      C: [
-        { name: '티쏘 PRX', brand: '티쏘', slug: 'tissot', score: 72, upVotes: 312, downVotes: 112 },
-        { name: '해밀턴 카키필드', brand: '해밀턴', slug: 'hamilton', score: 70, upVotes: 267, downVotes: 125 },
-        { name: '세이코 프레사지', brand: '세이코', slug: 'seiko', score: 68, upVotes: 234, downVotes: 134 },
-      ],
-      D: [
-        { name: '카시오 지샥', brand: '카시오', slug: 'casio-gshock', score: 60, upVotes: 345, downVotes: 178 },
-        { name: '애플워치', brand: '애플', slug: 'smartwatch', score: 55, upVotes: 456, downVotes: 234 },
-      ],
-    },
-    investment: {
-      S: [
-        { name: '파텍 필립 노틸러스', brand: '파텍 필립', slug: 'patek-philippe', score: 99, upVotes: 567, downVotes: 8 },
-        { name: '롤렉스 데이토나', brand: '롤렉스', slug: 'rolex', score: 98, upVotes: 623, downVotes: 12 },
-        { name: '오데마 피게 로열 오크', brand: '오데마 피게', slug: 'audemars-piguet', score: 97, upVotes: 489, downVotes: 15 },
-      ],
-      A: [
-        { name: '바쉐론 콘스탄틴 오버시즈', brand: '바쉐론 콘스탄틴', slug: 'vacheron-constantin', score: 93, upVotes: 312, downVotes: 22 },
-        { name: '롤렉스 서브마리너', brand: '롤렉스', slug: 'rolex', score: 92, upVotes: 478, downVotes: 28 },
-      ],
-      B: [
-        { name: '오메가 스피드마스터 문워치', brand: '오메가', slug: 'omega', score: 85, upVotes: 234, downVotes: 52 },
-        { name: '까르띠에 산토스', brand: '까르띠에', slug: 'cartier', score: 83, upVotes: 198, downVotes: 58 },
-      ],
-      C: [
-        { name: '튜더 블랙베이', brand: '튜더', slug: 'tudor', score: 72, upVotes: 145, downVotes: 98 },
-        { name: '그랜드 세이코', brand: '그랜드 세이코', slug: 'grand-seiko', score: 68, upVotes: 112, downVotes: 112 },
-      ],
-      D: [
-        { name: '태그호이어', brand: '태그호이어', slug: 'tag-heuer', score: 55, upVotes: 67, downVotes: 178 },
-        { name: '티쏘', brand: '티쏘', slug: 'tissot', score: 45, upVotes: 45, downVotes: 234 },
-        { name: '스마트워치', brand: '애플/삼성', slug: 'smartwatch', score: 20, upVotes: 12, downVotes: 345 },
-      ],
-    },
-  },
-};
+  };
+}
+
+// filter_definitions에서 usage 탭 데이터 추출
+function getUsageCategories(categoryData: Category | undefined) {
+  if (!categoryData?.filter_definitions?.usage) {
+    return [];
+  }
+
+  return categoryData.filter_definitions.usage.map((usage) => ({
+    key: usage.value,
+    label: usage.label,
+    description: usage.description || '',
+    icon: usage.icon || '',
+  }));
+}
 
 // Mock 트렌딩 데이터
 const TRENDING_DATA: Record<string, { name: string; brand: string; tier: TierLevel; change: string; slug: string }[]> = {
@@ -859,11 +436,14 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
   const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
   const tierGridRef = useRef<HTMLDivElement>(null);
 
-  const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];
+  // API 데이터 기반으로 설정 추출
+  const config = useMemo(() => getCategoryConfig(categoryData), [categoryData]);
+  const usageCategories = useMemo(() => getUsageCategories(categoryData), [categoryData]);
+
+  // Mock 데이터 (추후 API 연동 필요)
   const trending = TRENDING_DATA[category] || [];
   const disputes = DISPUTE_DATA[category] || [];
   const reviews = REVIEW_DATA[category] || [];
-  const usageCategories = USAGE_CATEGORIES[category] || [];
 
   const handleDownloadImage = async () => {
     if (!tierGridRef.current) return;
@@ -1041,84 +621,13 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
 
           <TabsContent value="usage">
             <div className="space-y-8">
-              {usageCategories.map((usage) => {
-                const usageTiers = USAGE_TIER_DATA[category]?.[usage.key] || {};
-
-                return (
-                  <Card key={usage.key} className="card-base overflow-hidden">
-                    {/* 용도 헤더 */}
-                    <div className="bg-gradient-to-r from-accent/10 to-primary/5 px-5 py-4 border-b">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl">
-                          {usage.icon}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold">{usage.label}</h3>
-                          <p className="text-sm text-muted-foreground">{usage.description}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <CardContent className="p-0">
-                      {/* TierMaker 스타일 티어 행 */}
-                      {(['S', 'A', 'B', 'C', 'D'] as TierLevel[]).map((tier) => {
-                        const items = usageTiers[tier] || [];
-                        const tierColors: Record<TierLevel, string> = {
-                          S: '#FFD700',  // 황제 - Gold
-                          A: '#9370DB',  // 왕 - Purple
-                          B: '#4169E1',  // 양반 - Royal Blue
-                          C: '#3CB371',  // 중인 - Green
-                          D: '#8B7355',  // 평민 - Brown
-                        };
-                        const tierLabels: Record<TierLevel, string> = {
-                          S: '황제',
-                          A: '왕',
-                          B: '양반',
-                          C: '중인',
-                          D: '평민',
-                        };
-                        return (
-                          <div key={tier} className="flex border-b last:border-b-0">
-                            {/* 티어 라벨 */}
-                            <div
-                              className="w-16 shrink-0 flex items-center justify-center"
-                              style={{
-                                backgroundColor: tierColors[tier],
-                              }}
-                            >
-                              <span className={`text-lg font-black ${tier === 'S' ? 'text-black' : 'text-white'}`}>
-                                {tierLabels[tier]}
-                              </span>
-                            </div>
-
-                            {/* 제품 목록 */}
-                            <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
-                              {items.length === 0 ? (
-                                <span className="text-sm text-muted-foreground italic">아직 데이터가 없습니다</span>
-                              ) : (
-                                items.map((item) => (
-                                  <Link
-                                    key={item.slug}
-                                    href={`/${category}/model/${item.slug}`}
-                                    className="group"
-                                  >
-                                    <div className="bg-card border rounded-lg px-3 py-2 hover:border-accent hover:shadow-md transition-all">
-                                      <p className="text-[10px] text-muted-foreground">{item.brand}</p>
-                                      <p className="font-medium text-sm group-hover:text-accent transition-colors line-clamp-1">
-                                        {item.name}
-                                      </p>
-                                    </div>
-                                  </Link>
-                                ))
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              {usageCategories.map((usage) => (
+                <UsageTierSection
+                  key={usage.key}
+                  category={category}
+                  usage={usage}
+                />
+              ))}
             </div>
           </TabsContent>
 

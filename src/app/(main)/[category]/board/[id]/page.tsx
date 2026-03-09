@@ -2,20 +2,19 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { BoardPostDetailContent } from './BoardPostDetailContent';
 import { getMockPostMeta } from './mockPosts';
+import { fetchCategory } from '@/lib/category-config';
 
 interface PageProps {
   params: Promise<{ category: string; id: string }>;
 }
 
-const CATEGORY_META: Record<string, { name: string }> = {
-  'running-shoes': { name: '러닝화' },
-  'chicken': { name: '치킨' },
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category, id } = await params;
-  const postMeta = getMockPostMeta(category, id);
-  const categoryName = CATEGORY_META[category]?.name || '계급도';
+  const [postMeta, categoryData] = await Promise.all([
+    Promise.resolve(getMockPostMeta(category, id)),
+    fetchCategory(category),
+  ]);
+  const categoryName = categoryData?.name || '계급도';
 
   if (postMeta) {
     return {

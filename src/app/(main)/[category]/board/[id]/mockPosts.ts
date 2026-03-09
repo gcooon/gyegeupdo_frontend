@@ -27,10 +27,8 @@ export interface Post {
   comments: Comment[];
 }
 
-export const CATEGORY_CONFIG: Record<string, { name: string; icon: string }> = {
-  'running-shoes': { name: '러닝화', icon: '👟' },
-  'chicken': { name: '치킨', icon: '🍗' },
-};
+// CATEGORY_CONFIG는 더 이상 사용되지 않습니다.
+// 대신 @/config/categories의 getCategoryInfo 또는 useCategory 훅을 사용하세요.
 
 // Mock 데이터
 export const MOCK_POSTS: Record<string, Record<string, Post>> = {

@@ -36,25 +36,12 @@ import {
   HelpCircle,
   MessageCircle,
 } from 'lucide-react';
+import { useCategory } from '@/hooks/useBrands';
+import { getCategoryInfo } from '@/config/categories';
 
 interface BoardContentProps {
   category: string;
 }
-
-// 카테고리별 설정
-const CATEGORY_CONFIG: Record<string, {
-  name: string;
-  icon: string;
-}> = {
-  'running-shoes': {
-    name: '러닝화',
-    icon: '👟',
-  },
-  'chicken': {
-    name: '치킨',
-    icon: '🍗',
-  },
-};
 
 // 게시글 타입
 type PostTag = 'review' | 'question' | 'discussion' | 'tip' | 'news';
@@ -244,7 +231,8 @@ const MOCK_POSTS: Record<string, Post[]> = {
 };
 
 export function BoardContent({ category }: BoardContentProps) {
-  const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];
+  const { data: categoryData } = useCategory(category);
+  const config = getCategoryInfo(categoryData || category);
   const posts = MOCK_POSTS[category] || [];
 
   const [searchQuery, setSearchQuery] = useState('');

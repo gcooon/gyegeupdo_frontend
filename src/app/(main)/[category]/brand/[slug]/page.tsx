@@ -1,21 +1,23 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { BrandDetailContent } from './BrandDetailContent';
-import { getMockBrands, getMockCategory } from '@/lib/mockData';
 
 interface Props {
   params: Promise<{ category: string; slug: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category, slug } = await params;
-  const brands = getMockBrands(category);
-  const brand = brands?.find((b) => b.slug === slug);
+// slug를 읽기 좋은 이름으로 변환
+function slugToName(slug: string): string {
+  return slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
-  const brandName = brand?.name || slug.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  const description = brand
-    ? `${brandName} ${brand.tier}티어 (${brand.tier_score}점) — ${brand.description || '전 모델 계급도 및 리뷰'}`
-    : `${brandName} 전 모델 계급도 및 리뷰. 라인업, 기술력, 내구성, 커뮤니티 평가 종합 점수.`;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const brandName = slugToName(slug);
+  const description = `${brandName} 전 모델 계급도 및 리뷰. 라인업, 기술력, 내구성, 커뮤니티 평가 종합 점수.`;
 
   return {
     title: `${brandName} 계급도 — 2026 브랜드 리뷰`,
@@ -54,9 +56,6 @@ function BrandSkeleton() {
 
 export default async function BrandDetailPage({ params }: Props) {
   const { category, slug } = await params;
-  const brands = getMockBrands(category);
-  const initialBrand = brands?.find((b) => b.slug === slug) || undefined;
-  const initialCategory = getMockCategory(category) || undefined;
 
   return (
     <div className="container py-8">
@@ -64,8 +63,6 @@ export default async function BrandDetailPage({ params }: Props) {
         <BrandDetailContent
           category={category}
           slug={slug}
-          initialBrand={initialBrand}
-          initialCategory={initialCategory}
         />
       </Suspense>
     </div>

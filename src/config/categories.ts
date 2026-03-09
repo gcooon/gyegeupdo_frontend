@@ -1,13 +1,18 @@
 /**
  * 중앙 집중식 카테고리 설정
  *
- * 모든 카테고리 관련 설정은 이 파일에서 관리합니다.
- * 새 카테고리 추가 시 이 파일만 수정하면 됩니다.
+ * 이 파일은 API 우선 구조를 위한 폴백 설정을 제공합니다.
+ * 실제 데이터는 백엔드 API의 Category 모델에서 가져옵니다.
+ *
+ * 사용 우선순위:
+ * 1. useCategory() 훅으로 API에서 가져온 데이터
+ * 2. 이 파일의 CATEGORY_FALLBACKS (API 실패 시 폴백)
  *
  * @see docs/TIER_CHART_GUIDE.md 계급도 데이터 가이드라인
  */
 
 import { TierLevel } from '@/lib/tier';
+import type { Category, CategoryDisplayConfig } from '@/types/model';
 
 /**
  * 카테고리 설정 인터페이스
@@ -43,6 +48,67 @@ export interface CategoryConfig {
    * 기본값: { S: '황제', A: '왕', B: '양반', C: '중인', D: '평민' }
    */
   tierLabels?: Partial<Record<TierLevel, string>>;
+}
+
+/**
+ * API Category에서 CategoryConfig로 변환
+ */
+export function categoryToConfig(category: Category): CategoryConfig {
+  const displayConfig = category.display_config || {};
+
+  return {
+    slug: category.slug,
+    name: category.name,
+    icon: category.icon || '📦',
+    color: displayConfig.color || '#3B82F6',
+    tierChart: {
+      brandTiers: DEFAULT_BRAND_TIERS,
+      usageTiers: DEFAULT_BRAND_TIERS,
+      brandLinkType: 'brand',
+      brandLabel: displayConfig.itemLabel || '브랜드',
+      productLabel: displayConfig.itemLabel || '제품',
+    },
+  };
+}
+
+/**
+ * API Category 또는 폴백에서 간단한 정보 추출
+ */
+export function getCategoryInfo(categoryOrSlug: Category | string): {
+  name: string;
+  icon: string;
+  color: string;
+  itemLabel: string;
+} {
+  // API Category 객체가 전달된 경우
+  if (typeof categoryOrSlug !== 'string') {
+    const config = categoryOrSlug.display_config || {};
+    return {
+      name: categoryOrSlug.name,
+      icon: categoryOrSlug.icon || '📦',
+      color: config.color || '#3B82F6',
+      itemLabel: config.itemLabel || categoryOrSlug.name,
+    };
+  }
+
+  // slug가 전달된 경우 폴백 사용
+  const fallback = CATEGORY_MAP[categoryOrSlug];
+  if (fallback) {
+    return {
+      name: fallback.name,
+      icon: fallback.icon,
+      color: fallback.color,
+      itemLabel: fallback.tierChart.productLabel,
+    };
+  }
+
+  // 기본값
+  return {
+    name: '제품',
+    icon: '📦',
+    color: '#3B82F6',
+    itemLabel: '제품',
+  };
 }
 
 /**

@@ -13,7 +13,7 @@ import { TierBadge } from '@/components/tier/TierBadge';
 import { Confetti } from '@/components/effects/Confetti';
 import { RotateCcw, ChevronLeft, Users, Trophy, Check } from 'lucide-react';
 import { ShareButtons } from '@/components/share/ShareButtons';
-import { CHICKEN_MENUS, CHICKEN_RECOMMENDATIONS } from '@/lib/mockData';
+import { CHICKEN_MENUS, CHICKEN_RECOMMENDATIONS } from '@/lib/quizMockData';
 import { POINT_ACTIONS } from '@/types/gamification';
 import type { TierLevel } from '@/lib/tier';
 
@@ -65,26 +65,16 @@ const RUNNING_SHOES_QUESTIONS = [
   },
 ];
 
-// 카테고리별 설정
-const CATEGORY_CONFIG: Record<string, {
-  title: string;
-  resultTitle: string;
-  userLabel: string;
-  repurchaseLabel: string;
-}> = {
-  'running-shoes': {
-    title: '나에게 맞는 러닝화 찾기',
-    resultTitle: '추천 러닝화',
-    userLabel: '러너',
-    repurchaseLabel: '재구매',
-  },
-  'chicken': {
-    title: '나에게 맞는 치킨 찾기',
-    resultTitle: '추천 치킨',
-    userLabel: '치킨러버',
-    repurchaseLabel: '재주문',
-  },
-};
+// 카테고리별 설정 (카테고리 데이터에서 동적으로 생성)
+function getQuizConfig(categoryData: import('@/types/model').Category | undefined) {
+  const name = categoryData?.name || '제품';
+  return {
+    title: `나에게 맞는 ${name} 찾기`,
+    resultTitle: `추천 ${name}`,
+    userLabel: name === '러닝화' ? '러너' : name === '치킨' ? '치킨러버' : '사용자',
+    repurchaseLabel: name === '치킨' ? '재주문' : '재구매',
+  };
+}
 
 interface Recommendation {
   id: number;
@@ -169,8 +159,8 @@ export function QuizContent({ category }: QuizContentProps) {
   const { setQuizData } = useQuizStore();
   const { addPoints, incrementStat } = useGamificationStore();
 
-  // 카테고리별 설정
-  const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];
+  // 카테고리별 설정 (API 데이터 기반)
+  const config = useMemo(() => getQuizConfig(categoryData), [categoryData]);
 
   const questions = useMemo(() => {
     if (categoryData?.quiz_definitions && categoryData.quiz_definitions.length > 0) {

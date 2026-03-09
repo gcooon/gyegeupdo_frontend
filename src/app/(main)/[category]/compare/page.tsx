@@ -1,33 +1,35 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { CompareContent } from './CompareContent';
-import { getMockProduct } from '@/lib/mockProducts';
+import { fetchCategory } from '@/lib/category-config';
 
 interface PageProps {
   params: Promise<{ category: string }>;
   searchParams: Promise<{ models?: string }>;
 }
 
-const CATEGORY_META: Record<string, { name: string }> = {
-  'running-shoes': { name: '러닝화' },
-  'chicken': { name: '치킨' },
-};
+// slug를 읽기 좋은 이름으로 변환
+function slugToName(slug: string): string {
+  return slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { category } = await params;
   const { models } = await searchParams;
-  const categoryName = CATEGORY_META[category]?.name || '제품';
+  const categoryData = await fetchCategory(category);
+  const categoryName = categoryData?.name || '제품';
   const slugs = models?.split(',') || [];
 
   if (slugs.length === 2) {
-    const productA = getMockProduct(slugs[0]);
-    const productB = getMockProduct(slugs[1]);
-    if (productA && productB) {
-      return {
-        title: `${productA.name} vs ${productB.name} 비교 — ${categoryName}`,
-        description: `${productA.brand.name} ${productA.name}(${productA.tier}티어)과 ${productB.brand.name} ${productB.name}(${productB.tier}티어)의 상세 스펙, 점수, 가격 비교.`,
-      };
-    }
+    const nameA = slugToName(slugs[0]);
+    const nameB = slugToName(slugs[1]);
+    return {
+      title: `${nameA} vs ${nameB} 비교 — ${categoryName}`,
+      description: `${nameA}과 ${nameB}의 상세 스펙, 점수, 가격 비교.`,
+    };
   }
 
   return {

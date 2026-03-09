@@ -5,28 +5,25 @@ import Link from 'next/link';
 import { SwipeCard } from '@/components/swipe/SwipeCard';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Sparkles } from 'lucide-react';
-import { RUNNING_SHOES_PRODUCTS, CHICKEN_PRODUCTS } from '@/lib/mockProducts';
+import { useCategoryProducts } from '@/hooks/useModels';
+import { useCategory } from '@/hooks/useBrands';
+import { getCategoryInfo } from '@/config/categories';
 import type { TierLevel } from '@/lib/tier';
 
 interface DiscoverContentProps {
   category: string;
 }
 
-const CATEGORY_INFO: Record<string, { name: string; emoji: string }> = {
-  'running-shoes': { name: '러닝화', emoji: '👟' },
-  'chicken': { name: '치킨', emoji: '🍗' },
-};
-
 export function DiscoverContent({ category }: DiscoverContentProps) {
-  const info = CATEGORY_INFO[category] || { name: '제품', emoji: '🏆' };
+  const { data: categoryData } = useCategory(category);
+  const info = getCategoryInfo(categoryData || category);
+
+  // API에서 카테고리별 제품 가져오기
+  const { data: products = [], isLoading } = useCategoryProducts(category);
 
   // 카테고리별 아이템 로드
   const items = useMemo(() => {
-    const products = category === 'running-shoes'
-      ? Object.values(RUNNING_SHOES_PRODUCTS)
-      : category === 'chicken'
-        ? Object.values(CHICKEN_PRODUCTS)
-        : [];
+    if (products.length === 0) return [];
 
     // 랜덤 셔플
     const shuffled = [...products].sort(() => Math.random() - 0.5);
@@ -34,14 +31,14 @@ export function DiscoverContent({ category }: DiscoverContentProps) {
     return shuffled.slice(0, 10).map((item) => ({
       id: item.slug,
       name: item.name,
-      brand: item.brand.name,
+      brand: item.brand?.name || '',
       imageUrl: item.image_url || undefined,
       tier: item.tier as TierLevel,
       tierScore: item.tier_score,
-      description: item.description,
+      description: '',
       slug: item.slug,
     }));
-  }, [category]);
+  }, [products]);
 
   const handleComplete = (
     liked: Array<{ id: string; name: string }>,

@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
-import { useProductComparison } from '@/hooks/useModels';
+import { useProductComparison, useCategoryProducts } from '@/hooks/useModels';
+import { useCategory } from '@/hooks/useBrands';
+import { getCategoryInfo } from '@/config/categories';
 import { TierBadge } from '@/components/tier/TierBadge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,20 +25,13 @@ import {
   Minus,
   Plus,
 } from 'lucide-react';
-import { getMockProductsByCategory } from '@/lib/mockProducts';
-import { ProductDetail } from '@/types/model';
+import { Product, ProductDetail } from '@/types/model';
 import { TierLevel } from '@/lib/tier';
 
 interface CompareContentProps {
   category: string;
   slugs: string[];
 }
-
-// 카테고리별 아이콘 및 라벨
-const CATEGORY_INFO: Record<string, { icon: string; name: string }> = {
-  'running-shoes': { icon: '👟', name: '러닝화' },
-  'chicken': { icon: '🍗', name: '치킨' },
-};
 
 export function CompareContent({ category, slugs }: CompareContentProps) {
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>(slugs.slice(0, 2));
@@ -45,12 +40,11 @@ export function CompareContent({ category, slugs }: CompareContentProps) {
   const [selectingSlot, setSelectingSlot] = useState<0 | 1>(0);
   const [tierFilter, setTierFilter] = useState<TierLevel | 'all'>('all');
 
-  // Mock 데이터에서 모든 제품 가져오기
-  const allProducts = useMemo(() => {
-    return getMockProductsByCategory(category);
-  }, [category]);
+  // API에서 카테고리별 전체 제품 가져오기
+  const { data: allProducts = [], isLoading: isLoadingProducts } = useCategoryProducts(category);
+  const { data: categoryData } = useCategory(category);
 
-  const categoryInfo = CATEGORY_INFO[category] || { icon: '📦', name: '제품' };
+  const categoryInfo = getCategoryInfo(categoryData || category);
 
   const {
     data: comparison,
@@ -82,7 +76,7 @@ export function CompareContent({ category, slugs }: CompareContentProps) {
 
   // 티어별 제품 그룹
   const productsByTier = useMemo(() => {
-    const grouped: Record<TierLevel, ProductDetail[]> = {
+    const grouped: Record<TierLevel, Product[]> = {
       S: [],
       A: [],
       B: [],

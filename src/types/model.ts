@@ -1,5 +1,20 @@
 import { TierLevel } from '@/lib/tier';
 
+// 카테고리 표시 설정
+export interface CategoryDisplayConfig {
+  color?: string;
+  heroTitle?: string;
+  heroDescription?: string;
+  heroSubDescription?: string;  // 서브 설명 (예: "커뮤니티 리뷰를 바탕으로 티어로 분류된...")
+  itemLabel?: string;
+  quizCTA?: string;
+  stats?: {
+    modelCount?: string;
+    reviewCount?: string;
+    brandCount?: string;
+  };
+}
+
 // 카테고리 (동적 정의 포함)
 export interface Category {
   id: number;
@@ -12,18 +27,36 @@ export interface Category {
   brand_score_definitions: ScoreDefinition[];
   quiz_definitions: QuizDefinition[];
   filter_definitions: FilterDefinitions;
-  display_config?: Record<string, unknown>;
+  display_config: CategoryDisplayConfig;
   display_order: number;
   is_active: boolean;
   product_count?: number;
   brand_count?: number;
 }
 
+// 카테고리 목록용 (간략)
+export interface CategoryListItem {
+  id: number;
+  name: string;
+  slug: string;
+  icon: string;
+  description: string;
+  display_config: CategoryDisplayConfig;
+  product_count?: number;
+  brand_count?: number;
+}
+
+// 카테고리 목록 응답
+export interface CategoryListResponse {
+  results: CategoryListItem[];
+  count: number;
+}
+
 export interface SpecDefinition {
   key: string;
   label: string;
   unit?: string;
-  type: 'number' | 'text' | 'select';
+  type?: 'number' | 'text' | 'select' | 'boolean';
   options?: { value: string; label: string }[];
 }
 
@@ -40,9 +73,16 @@ export interface QuizDefinition {
   options: { value: string; label: string; description?: string }[];
 }
 
+export interface FilterOption {
+  value: string;
+  label: string;
+  description?: string;
+  icon?: string;
+}
+
 export interface FilterDefinitions {
-  product_type?: { value: string; label: string }[];
-  usage?: { value: string; label: string }[];
+  product_type?: FilterOption[];
+  usage?: FilterOption[];
 }
 
 // 브랜드

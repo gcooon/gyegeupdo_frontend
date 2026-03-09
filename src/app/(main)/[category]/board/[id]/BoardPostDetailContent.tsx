@@ -24,7 +24,9 @@ import {
   MoreHorizontal,
   Send,
 } from 'lucide-react';
-import { MOCK_POSTS, CATEGORY_CONFIG, type PostTag, type Comment } from './mockPosts';
+import { useCategory } from '@/hooks/useBrands';
+import { getCategoryInfo } from '@/config/categories';
+import { MOCK_POSTS, type PostTag, type Comment } from './mockPosts';
 
 interface BoardPostDetailContentProps {
   category: string;
@@ -41,7 +43,8 @@ const TAG_CONFIG: Record<PostTag, { label: string; color: string; icon: React.El
 
 export function BoardPostDetailContent({ category, postId }: BoardPostDetailContentProps) {
   const router = useRouter();
-  const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG['running-shoes'];
+  const { data: categoryData } = useCategory(category);
+  const config = getCategoryInfo(categoryData || category);
   const post = MOCK_POSTS[category]?.[postId];
 
   const [newComment, setNewComment] = useState('');
