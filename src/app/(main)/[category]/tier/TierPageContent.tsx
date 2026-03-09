@@ -550,8 +550,8 @@ function StarRating({ rating }: { rating: number }) {
 
 export function TierPageContent({ category, initialBrands, initialCategory }: TierPageContentProps) {
   const { data: brands = initialBrands, isLoading, error } = useBrands(category, initialBrands);
-  const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
-  const { data: products = [] } = useCategoryProducts(category);
+  const { data: categoryData = initialCategory, isLoading: isCategoryLoading } = useCategory(category, initialCategory);
+  const { data: products = [], isLoading: isProductsLoading } = useCategoryProducts(category);
   const tierGridRef = useRef<HTMLDivElement>(null);
 
   // 카테고리별 필터 가져오기
@@ -621,10 +621,10 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
   const [typeFilter, setTypeFilter] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
 
-  if (isLoading) {
+  if (isLoading || isCategoryLoading || isProductsLoading) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">브랜드 정보를 불러오는 중...</p>
+        <p className="text-muted-foreground">데이터를 불러오는 중...</p>
       </div>
     );
   }
