@@ -38,9 +38,10 @@ type SortOption = 'popular' | 'latest' | 'views';
 
 interface MyTierListContentProps {
   initialCharts?: UserTierChartListItem[];
+  initialTab?: 'all' | 'featured' | 'mine';
 }
 
-export function MyTierListContent({ initialCharts }: MyTierListContentProps = {}) {
+export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierListContentProps = {}) {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [charts, setCharts] = useState<UserTierChartListItem[]>(initialCharts || []);
@@ -51,7 +52,7 @@ export function MyTierListContent({ initialCharts }: MyTierListContentProps = {}
   const [sort, setSort] = useState<SortOption>('popular');
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'mine'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'mine'>(initialTab);
 
   const fetchCharts = useCallback(async (resetPage = false) => {
     setIsLoading(true);
