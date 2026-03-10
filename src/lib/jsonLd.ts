@@ -55,7 +55,7 @@ export function generateArticleJsonLd(chart: {
     '@type': 'Article',
     headline: chart.title,
     description: chart.description,
-    url: `${SITE_URL}/my-tier/${chart.slug}`,
+    url: `${SITE_URL}/open/${chart.slug}`,
     author: {
       '@type': 'Person',
       name: chart.author,
@@ -69,7 +69,7 @@ export function generateArticleJsonLd(chart: {
     dateModified: chart.updatedAt || new Date().toISOString(),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${SITE_URL}/my-tier/${chart.slug}`,
+      '@id': `${SITE_URL}/open/${chart.slug}`,
     },
   };
 }

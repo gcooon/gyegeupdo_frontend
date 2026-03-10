@@ -135,10 +135,10 @@ export function MyTierListContent({ initialCharts }: MyTierListContentProps = {}
 
   const handleCreateClick = () => {
     if (!isAuthenticated) {
-      router.push('/login?redirect=/my-tier/create');
+      router.push('/login?redirect=/open/create');
       return;
     }
-    router.push('/my-tier/create');
+    router.push('/open/create');
   };
 
   const sortOptions: { value: SortOption; label: string; icon: React.ReactNode }[] = [
@@ -154,10 +154,10 @@ export function MyTierListContent({ initialCharts }: MyTierListContentProps = {}
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
             <Sparkles className="h-7 w-7 text-accent" />
-            내가 만든 계급도
+            오픈 계급도
           </h1>
           <p className="text-muted-foreground mt-1">
-            {totalCount > 0 ? `${totalCount}개의 계급도` : '사용자들이 만든 계급도를 둘러보세요'}
+            {totalCount > 0 ? `${totalCount}개의 계급도` : '누구나 만들고 공유하는 계급도'}
           </p>
         </div>
         <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90">
@@ -281,7 +281,7 @@ function TierChartCard({ chart, index }: TierChartCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
     >
-      <Link href={`/my-tier/${chart.slug}`}>
+      <Link href={`/open/${chart.slug}`}>
         <Card className="overflow-hidden hover:ring-2 ring-accent/50 transition-all cursor-pointer group">
           {/* 티어 미니 프리뷰 */}
           <div className="h-8 flex">

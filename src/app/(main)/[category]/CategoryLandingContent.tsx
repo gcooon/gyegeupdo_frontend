@@ -8,9 +8,7 @@ import type { Brand, Category, Product } from '@/types/model';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TierBadge } from '@/components/tier/TierBadge';
-import { TierGrid } from '@/components/tier/TierGrid';
 import { ShareButtons } from '@/components/share/ShareButtons';
 import { TIER_CONFIG } from '@/lib/tier';
 import type { TierLevel } from '@/lib/tier';
@@ -633,101 +631,76 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
           </div>
         </div>
 
-        {/* View Tabs */}
-        <Tabs defaultValue="usage" className="w-full">
-          <TabsList className="mb-6 w-full grid grid-cols-2 h-14 p-1 bg-muted/80 rounded-xl">
-            <TabsTrigger
-              value="usage"
-              className="h-full text-base font-semibold rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
-            >
-              🎯 용도별 계급도
-            </TabsTrigger>
-            <TabsTrigger
-              value="brand"
-              className="h-full text-base font-semibold rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
-            >
-              🏆 브랜드 계급도
-            </TabsTrigger>
-          </TabsList>
+        {/* 용도별 계급도 (브랜드 계급도 탭 제거됨) */}
+        <div ref={tierGridRef} className="space-y-8">
+          {usageCategories.map((usage) => {
+            const usageTiers = usageTierData[usage.key] || {};
+            const tiers: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
 
-          <TabsContent value="usage">
-            <div className="space-y-8">
-              {usageCategories.map((usage) => {
-                const usageTiers = usageTierData[usage.key] || {};
-                const tiers: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
+            return (
+              <Card key={usage.key} className="card-base overflow-hidden">
+                {/* 용도 헤더 */}
+                <div className="bg-gradient-to-r from-accent/10 to-primary/5 px-5 py-4 border-b">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl">
+                      {usage.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold">{usage.label}</h3>
+                      <p className="text-sm text-muted-foreground">{usage.description}</p>
+                    </div>
+                  </div>
+                </div>
 
-                return (
-                  <Card key={usage.key} className="card-base overflow-hidden">
-                    {/* 용도 헤더 */}
-                    <div className="bg-gradient-to-r from-accent/10 to-primary/5 px-5 py-4 border-b">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl">
-                          {usage.icon}
+                <CardContent className="p-0">
+                  {/* TierMaker 스타일 티어 행 */}
+                  {tiers.map((tier) => {
+                    const items = usageTiers[tier] || [];
+                    const tierConfig = TIER_CONFIG[tier];
+
+                    return (
+                      <div key={tier} className="flex border-b last:border-b-0">
+                        {/* 티어 라벨 */}
+                        <div
+                          className="w-16 shrink-0 flex items-center justify-center"
+                          style={{ backgroundColor: tierConfig.color }}
+                        >
+                          <span className={`text-lg font-black ${tier === 'S' ? 'text-black' : 'text-white'}`}>
+                            {tierConfig.label}
+                          </span>
                         </div>
-                        <div>
-                          <h3 className="text-lg font-bold">{usage.label}</h3>
-                          <p className="text-sm text-muted-foreground">{usage.description}</p>
+
+                        {/* 제품 목록 */}
+                        <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
+                          {items.length === 0 ? (
+                            <span className="text-sm text-muted-foreground italic">-</span>
+                          ) : (
+                            items.map((product) => (
+                              <Link
+                                key={product.slug}
+                                href={`/${category}/model/${product.slug}`}
+                                className="group"
+                              >
+                                <div className="bg-card border rounded-lg px-3 py-2 hover:border-accent hover:shadow-md transition-all">
+                                  <p className="text-[10px] text-muted-foreground">
+                                    {product.brand?.name || ''}
+                                  </p>
+                                  <p className="font-medium text-sm group-hover:text-accent transition-colors line-clamp-1">
+                                    {product.name}
+                                  </p>
+                                </div>
+                              </Link>
+                            ))
+                          )}
                         </div>
                       </div>
-                    </div>
-
-                    <CardContent className="p-0">
-                      {/* TierMaker 스타일 티어 행 */}
-                      {tiers.map((tier) => {
-                        const items = usageTiers[tier] || [];
-                        const tierConfig = TIER_CONFIG[tier];
-
-                        return (
-                          <div key={tier} className="flex border-b last:border-b-0">
-                            {/* 티어 라벨 */}
-                            <div
-                              className="w-16 shrink-0 flex items-center justify-center"
-                              style={{ backgroundColor: tierConfig.color }}
-                            >
-                              <span className={`text-lg font-black ${tier === 'S' ? 'text-black' : 'text-white'}`}>
-                                {tierConfig.label}
-                              </span>
-                            </div>
-
-                            {/* 제품 목록 */}
-                            <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
-                              {items.length === 0 ? (
-                                <span className="text-sm text-muted-foreground italic">-</span>
-                              ) : (
-                                items.map((product) => (
-                                  <Link
-                                    key={product.slug}
-                                    href={`/${category}/model/${product.slug}`}
-                                    className="group"
-                                  >
-                                    <div className="bg-card border rounded-lg px-3 py-2 hover:border-accent hover:shadow-md transition-all">
-                                      <p className="text-[10px] text-muted-foreground">
-                                        {product.brand?.name || ''}
-                                      </p>
-                                      <p className="font-medium text-sm group-hover:text-accent transition-colors line-clamp-1">
-                                        {product.name}
-                                      </p>
-                                    </div>
-                                  </Link>
-                                ))
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="brand">
-            <div ref={tierGridRef} className="bg-card p-4 rounded-2xl">
-              {brands && <TierGrid brands={brands} category={category} />}
-            </div>
-          </TabsContent>
-        </Tabs>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </section>
 
       {/* Interactive Features CTAs */}

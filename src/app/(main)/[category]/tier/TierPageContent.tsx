@@ -922,7 +922,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
               드래그로 나만의 계급도를 만들고 친구들과 공유하세요
             </p>
             <Button variant="outline" className="w-full border-purple-300 hover:bg-purple-50" asChild>
-              <Link href={`/${category}/my-tier`}>만들기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              <Link href={`/${category}/open`}>만들기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
           </CardContent>
         </Card> */}

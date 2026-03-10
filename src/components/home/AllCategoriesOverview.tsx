@@ -474,13 +474,13 @@ export function AllCategoriesOverview() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" asChild>
-              <Link href="/my-tier">
+              <Link href="/open">
                 전체 보기
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
             <Button className="bg-accent hover:bg-accent/90" asChild>
-              <Link href="/my-tier/create">
+              <Link href="/open/create">
                 <Plus className="h-4 w-4 mr-1" />
                 계급도 만들기
               </Link>
@@ -491,7 +491,7 @@ export function AllCategoriesOverview() {
         {/* 인기 계급도 미리보기 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {userCharts.map((chart, index) => (
-            <Link key={index} href={`/my-tier/${chart.slug}`}>
+            <Link key={index} href={`/open/${chart.slug}`}>
               <Card className="card-base h-full hover:border-accent/50 transition-all hover:shadow-lg group cursor-pointer">
                 <CardContent className="p-4">
                   {/* 티어 미니 프리뷰 */}

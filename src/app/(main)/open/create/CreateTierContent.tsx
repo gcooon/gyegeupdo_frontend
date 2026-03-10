@@ -82,7 +82,7 @@ export function CreateTierContent() {
   // 인증 체크
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push('/login?redirect=/my-tier/create');
+      router.push('/login?redirect=/open/create');
     }
   }, [authLoading, isAuthenticated, router]);
 
@@ -268,12 +268,12 @@ export function CreateTierContent() {
 
             <div className="flex justify-center gap-4 pt-4">
               <Button variant="outline" asChild>
-                <Link href="/my-tier">
+                <Link href="/open">
                   목록으로
                 </Link>
               </Button>
               <Button asChild className="bg-accent hover:bg-accent/90">
-                <Link href={`/my-tier/${createdChart.slug}`}>
+                <Link href={`/open/${createdChart.slug}`}>
                   <Eye className="h-4 w-4 mr-2" />
                   계급도 보기
                 </Link>
@@ -290,7 +290,7 @@ export function CreateTierContent() {
       {/* 헤더 */}
       <div className="mb-6">
         <Button variant="ghost" size="sm" asChild className="mb-4">
-          <Link href="/my-tier">
+          <Link href="/open">
             <ChevronLeft className="h-4 w-4 mr-1" />
             목록으로
           </Link>
@@ -390,7 +390,7 @@ export function CreateTierContent() {
         {/* 제출 버튼 */}
         <div className="flex justify-end gap-3">
           <Button variant="outline" asChild>
-            <Link href="/my-tier">취소</Link>
+            <Link href="/open">취소</Link>
           </Button>
           <Button
             onClick={handleSubmit}

@@ -50,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     {
-      url: `${SITE_URL}/my-tier`,
+      url: `${SITE_URL}/open`,
       lastModified: now,
       changeFrequency: 'daily',
       priority: 0.7,
@@ -138,7 +138,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const tierChartPages: MetadataRoute.Sitemap = tierChartSlugs.map((slug) => ({
-    url: `${SITE_URL}/my-tier/${slug}`,
+    url: `${SITE_URL}/open/${slug}`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.6,

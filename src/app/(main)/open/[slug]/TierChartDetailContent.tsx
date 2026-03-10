@@ -124,7 +124,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
   // 좋아요 토글
   const handleLike = async () => {
     if (!isAuthenticated) {
-      router.push('/login?redirect=/my-tier/' + slug);
+      router.push('/login?redirect=/open/' + slug);
       return;
     }
 
@@ -206,7 +206,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       }>(`/tiers/user-charts/${slug}/`);
 
       if (response.data.success) {
-        router.push('/my-tier');
+        router.push('/open');
       }
     } catch {
       alert('삭제에 실패했습니다.');
@@ -255,7 +255,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           <AlertDescription>{error || '계급도를 찾을 수 없습니다.'}</AlertDescription>
         </Alert>
         <Button asChild className="mt-4">
-          <Link href="/my-tier">목록으로</Link>
+          <Link href="/open">목록으로</Link>
         </Button>
       </div>
     );
@@ -265,7 +265,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
     <div className="container py-6 max-w-4xl">
       {/* 뒤로가기 */}
       <Button variant="ghost" size="sm" asChild className="mb-4">
-        <Link href="/my-tier">
+        <Link href="/open">
           <ChevronLeft className="h-4 w-4 mr-1" />
           목록으로
         </Link>
@@ -384,7 +384,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         {chart.is_owner && (
           <>
             <Button variant="outline" asChild>
-              <Link href={`/my-tier/${slug}/edit`}>
+              <Link href={`/open/${slug}/edit`}>
                 <Edit className="h-4 w-4 mr-2" />
                 수정
               </Link>
@@ -436,7 +436,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
             <Alert>
               <AlertDescription>
                 댓글을 작성하려면{' '}
-                <Link href={`/login?redirect=/my-tier/${slug}`} className="text-accent underline">
+                <Link href={`/login?redirect=/open/${slug}`} className="text-accent underline">
                   로그인
                 </Link>
                 이 필요합니다.

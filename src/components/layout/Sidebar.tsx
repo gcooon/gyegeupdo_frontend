@@ -101,29 +101,29 @@ export function Sidebar({ className = '' }: SidebarProps) {
           onTouchMove={(e) => e.stopPropagation()}
         >
           <div className="px-2">
-            {/* 내가 만든 계급도 */}
+            {/* 오픈 계급도 */}
             <div className="mb-4">
               <Link
-                href="/my-tier"
+                href="/open"
                 className={`
                   w-full flex items-center gap-2 px-3 py-3 rounded-lg
                   text-sm font-semibold transition-colors
-                  ${pathname.startsWith('/my-tier')
+                  ${pathname.startsWith('/open')
                     ? 'bg-accent/10 text-accent'
                     : 'hover:bg-muted'
                   }
                 `}
               >
                 <Sparkles className="h-5 w-5 text-accent" />
-                <span>내가 만든 계급도</span>
+                <span>오픈 계급도</span>
               </Link>
-              {pathname.startsWith('/my-tier') && (
+              {pathname.startsWith('/open') && (
                 <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
                   <Link
-                    href="/my-tier"
+                    href="/open"
                     className={`
                       flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                      ${pathname === '/my-tier'
+                      ${pathname === '/open'
                         ? 'bg-accent text-accent-foreground font-medium'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }
@@ -133,10 +133,10 @@ export function Sidebar({ className = '' }: SidebarProps) {
                     전체 보기
                   </Link>
                   <Link
-                    href="/my-tier/create"
+                    href="/open/create"
                     className={`
                       flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                      ${pathname === '/my-tier/create'
+                      ${pathname === '/open/create'
                         ? 'bg-accent text-accent-foreground font-medium'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }

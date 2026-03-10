@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus } from 'lucide-react';
+import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,11 +19,19 @@ import { NAV_CATEGORIES } from '@/config/categories';
 // API 실패 시 폴백용 (중앙 설정에서 가져옴)
 const FALLBACK_CATEGORIES = NAV_CATEGORIES;
 
-const CATEGORY_MENUS = [
+// 공식 계급도 서브메뉴 (카테고리 선택 후)
+const OFFICIAL_SUBMENUS = [
   { key: 'tier', label: '계급도 보기', icon: Trophy },
   { key: 'quiz', label: '3분 진단', icon: Sparkles },
   { key: 'compare', label: 'VS 비교', icon: GitCompare },
   { key: 'board', label: '게시판', icon: MessageSquare },
+];
+
+// 오픈 계급도 메뉴
+const OPEN_TIER_MENUS = [
+  { key: 'popular', label: '🔥 인기 계급도', href: '/open?sort=popular' },
+  { key: 'latest', label: '⏰ 최신 계급도', href: '/open?sort=latest' },
+  { key: 'my', label: '📝 내 계급도', href: '/open/my' },
 ];
 
 export function Header() {
@@ -61,61 +69,88 @@ export function Header() {
             <span className="font-bold text-lg">티어차트 계급도</span>
           </Link>
 
-          {/* Category Navigation */}
+          {/* Main Navigation */}
           <nav className="hidden lg:flex items-center gap-1 ml-4">
-            {categories.map((category) => (
-              <div
-                key={category.slug}
-                className="relative"
-                onMouseEnter={() => setOpenCategory(category.slug)}
-                onMouseLeave={() => setOpenCategory(null)}
-              >
-                <button
-                  className={`
-                    flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    ${openCategory === category.slug
-                      ? 'bg-muted text-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                    }
-                  `}
-                >
-                  <span>{category.icon}</span>
-                  <span>{category.name}</span>
-                  <ChevronDown className="h-3 w-3" />
-                </button>
-
-                {/* Dropdown */}
-                {openCategory === category.slug && (
-                  <div className="absolute top-full left-0 mt-1 w-44 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
-                    {CATEGORY_MENUS.map((menu) => {
-                      const Icon = menu.icon;
-                      // 계급도는 카테고리 메인 페이지로 이동
-                      const menuHref = menu.key === 'tier'
-                        ? `/${category.slug}`
-                        : `/${category.slug}/${menu.key}`;
-                      return (
-                        <Link
-                          key={menu.key}
-                          href={menuHref}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                        >
-                          <Icon className="h-4 w-4" />
-                          {menu.label}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {/* 내가 만든 계급도 메뉴 */}
-            <Link
-              href="/my-tier"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors ml-2"
+            {/* 공식 계급도 드롭다운 */}
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenCategory('official')}
+              onMouseLeave={() => setOpenCategory(null)}
             >
-              <Sparkles className="h-4 w-4 text-accent" />
-              <span>내가 만든 계급도</span>
+              <button
+                className={`
+                  flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  ${openCategory === 'official'
+                    ? 'bg-muted text-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }
+                `}
+              >
+                <Trophy className="h-4 w-4 text-amber-500" />
+                <span>공식 계급도</span>
+                <ChevronDown className="h-3 w-3" />
+              </button>
+
+              {/* 공식 계급도 Dropdown - 카테고리 목록 */}
+              {openCategory === 'official' && (
+                <div className="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
+                  {categories.map((category) => (
+                    <Link
+                      key={category.slug}
+                      href={`/${category.slug}`}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      <span>{category.icon}</span>
+                      <span>{category.name} 계급도</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 오픈 계급도 드롭다운 */}
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenCategory('open')}
+              onMouseLeave={() => setOpenCategory(null)}
+            >
+              <button
+                className={`
+                  flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  ${openCategory === 'open'
+                    ? 'bg-muted text-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }
+                `}
+              >
+                <Users className="h-4 w-4 text-accent" />
+                <span>오픈 계급도</span>
+                <ChevronDown className="h-3 w-3" />
+              </button>
+
+              {/* 오픈 계급도 Dropdown */}
+              {openCategory === 'open' && (
+                <div className="absolute top-full left-0 mt-1 w-44 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
+                  {OPEN_TIER_MENUS.map((menu) => (
+                    <Link
+                      key={menu.key}
+                      href={menu.href}
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      {menu.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 만들기 버튼 */}
+            <Link
+              href="/open/create"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:bg-accent/90 transition-colors ml-1"
+            >
+              <Plus className="h-4 w-4" />
+              <span>만들기</span>
             </Link>
           </nav>
         </div>
