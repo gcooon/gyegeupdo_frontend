@@ -546,101 +546,77 @@ export function AllCategoriesOverview() {
       {/* 이번 주 HOT 이의 */}
       <section>
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold mb-1">이번 주 HOT 이의</h2>
-            <p className="text-muted-foreground">전체 카테고리 등급 조정 투표</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-orange-500" />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold">이번 주 HOT 이의</h2>
+              <p className="text-sm text-muted-foreground">등급 조정 투표 진행 중</p>
+            </div>
           </div>
-          <Button variant="outline" asChild>
+          <Button variant="outline" size="sm" asChild>
             <Link href="/community/disputes">
-              전체 이의 보기
+              전체 보기
+              <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {disputes.map((dispute) => {
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {disputes.slice(0, 4).map((dispute) => {
             const upPercent = dispute.total_votes > 0 ? Math.round((dispute.up_votes / dispute.total_votes) * 100) : 50;
-            const downPercent = 100 - upPercent;
             const isUpTrending = dispute.up_votes > dispute.down_votes;
 
             return (
               <Link key={`${dispute.category}-${dispute.product_id}`} href={`/${dispute.category}/model/${dispute.product_slug}`}>
-                <Card className="card-base h-full hover:border-accent/50 transition-colors">
-                  <CardContent className="p-5">
-                    {/* 카테고리 + 헤더 */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
+                <Card className="card-base h-full hover:border-orange-500/50 transition-all hover:shadow-lg group cursor-pointer">
+                  <CardContent className="p-4">
+                    {/* 카테고리 아이콘 + 티어 */}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
                         <span className="text-lg">{dispute.category_icon}</span>
-                        <TierBadge tier={dispute.current_tier} size="sm" />
-                        <Badge
-                          variant="outline"
-                          className={isUpTrending
-                            ? 'text-emerald-600 border-emerald-500 bg-emerald-50'
-                            : 'text-red-600 border-red-500 bg-red-50'
-                          }
-                        >
-                          {isUpTrending ? (
-                            <><ChevronUp className="h-3 w-3 mr-0.5" />상향</>
-                          ) : (
-                            <><ChevronDown className="h-3 w-3 mr-0.5" />하향</>
-                          )}
-                        </Badge>
+                        <TierBadge tier={dispute.current_tier} size="sm" showLabel={false} />
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {dispute.days_left}일
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] px-1.5 py-0 ${isUpTrending
+                          ? 'text-emerald-600 border-emerald-500 bg-emerald-50'
+                          : 'text-red-600 border-red-500 bg-red-50'
+                        }`}
+                      >
+                        {isUpTrending ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                       </Badge>
                     </div>
 
-                    {/* 제품 정보 */}
-                    <div className="mb-3">
-                      <p className="text-xs text-muted-foreground">{dispute.brand_name}</p>
-                      <h3 className="font-semibold">{dispute.product_name}</h3>
-                    </div>
+                    {/* 제품명 */}
+                    <h3 className="font-semibold text-sm mb-1 group-hover:text-orange-600 transition-colors line-clamp-1">
+                      {dispute.product_name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mb-3">{dispute.brand_name}</p>
 
-                    {/* 투표 바 */}
-                    <div className="space-y-1 mb-3">
-                      <div className="flex justify-between text-xs">
-                        <span className="text-emerald-600 font-medium">UP {upPercent}%</span>
-                        <span className="text-red-600 font-medium">DOWN {downPercent}%</span>
-                      </div>
-                      <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
-                        <div className="bg-emerald-500" style={{ width: `${upPercent}%` }} />
-                        <div className="bg-red-500" style={{ width: `${downPercent}%` }} />
-                      </div>
+                    {/* 투표 바 (미니) */}
+                    <div className="h-1.5 bg-muted rounded-full overflow-hidden flex mb-2">
+                      <div className="bg-emerald-500" style={{ width: `${upPercent}%` }} />
+                      <div className="bg-red-500" style={{ width: `${100 - upPercent}%` }} />
                     </div>
-
-                    {/* 이유 */}
-                    {dispute.reason && (
-                      <div className="p-2 bg-muted/50 rounded-lg mb-3">
-                        <p className="text-xs text-foreground/80 line-clamp-2">
-                          &quot;{dispute.reason}&quot;
-                        </p>
-                      </div>
-                    )}
 
                     {/* Stats */}
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
                         <Users className="h-3 w-3" />
-                        <span>{dispute.total_votes}명</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MessageCircle className="h-3 w-3" />
-                        <span>의견 보기</span>
-                      </div>
+                        {dispute.total_votes}명
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {dispute.days_left}일
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
             );
           })}
-        </div>
-
-        <div className="mt-4 p-3 bg-muted/30 rounded-xl text-center">
-          <p className="text-xs text-muted-foreground">
-            각 제품 상세 페이지에서 UP/DOWN 투표에 참여할 수 있습니다. 1주일간 투표를 취합하여 등급을 조정합니다.
-          </p>
         </div>
       </section>
 
