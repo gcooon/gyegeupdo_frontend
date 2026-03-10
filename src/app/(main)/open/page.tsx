@@ -1,10 +1,7 @@
 import { Metadata } from 'next';
 import { MyTierListContent } from './MyTierListContent';
 import { generateSeoMeta } from '@/lib/seo';
-import { generateItemListJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonLd';
-import { getMockUserTierCharts } from '@/lib/mockUserTierCharts';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tier-chart.com';
+import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';
 
 export const metadata: Metadata = {
   ...generateSeoMeta({
@@ -16,13 +13,6 @@ export const metadata: Metadata = {
 };
 
 export default function OpenTierListPage() {
-  const itemListJsonLd = generateItemListJsonLd([
-    { name: '라면 계급도', url: `${SITE_URL}/open/ramen-tier`, position: 1 },
-    { name: '커피 프랜차이즈 순위', url: `${SITE_URL}/open/coffee-franchise-tier`, position: 2 },
-    { name: '배달앱 순위', url: `${SITE_URL}/open/delivery-app-tier`, position: 3 },
-    { name: '편의점 도시락 티어', url: `${SITE_URL}/open/convenience-store-dosirak-tier`, position: 4 },
-  ]);
-
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: '홈', path: '/' },
     { name: '오픈 계급도', path: '/open' },
@@ -32,13 +22,9 @@ export default function OpenTierListPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MyTierListContent initialCharts={getMockUserTierCharts().items} />
+      <MyTierListContent />
     </>
   );
 }

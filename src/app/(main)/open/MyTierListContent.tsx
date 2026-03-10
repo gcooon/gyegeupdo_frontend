@@ -152,9 +152,9 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   // 내 계급도 탭인데 비로그인 상태면 로그인 유도
   if (initialTab === 'mine' && !authLoading && !isAuthenticated) {
     return (
-      <div className="container py-12 max-w-md">
-        <Card className="text-center py-12">
-          <CardContent>
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <Card className="text-center py-12 px-8 max-w-md w-full">
+          <CardContent className="p-0">
             <LogIn className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
             <h2 className="text-xl font-bold mb-2">로그인이 필요합니다</h2>
             <p className="text-muted-foreground mb-6">
