@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useCategories } from '@/hooks/useBrands';
-import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus, Users, Flame, Clock, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // API 실패 시 폴백용 최소 카테고리 목록
@@ -22,6 +22,13 @@ const CATEGORY_MENUS = [
   { key: 'board', label: '게시판', icon: MessageSquare },
 ];
 
+// 오픈 계급도 서브메뉴
+const OPEN_TIER_MENUS = [
+  { key: 'popular', label: '🔥 인기 계급도', href: '/open?sort=popular', icon: Flame },
+  { key: 'latest', label: '⏰ 최신 계급도', href: '/open?sort=latest', icon: Clock },
+  { key: 'my', label: '📝 내 계급도', href: '/open/my', icon: FileText },
+];
+
 interface SidebarProps {
   className?: string;
 }
@@ -34,6 +41,19 @@ export function Sidebar({ className = '' }: SidebarProps) {
   const categories = (apiCategories && apiCategories.length > 0)
     ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
     : FALLBACK_CATEGORIES;
+
+  // 공식 계급도 / 오픈 계급도 확장 상태
+  const [isOfficialExpanded, setIsOfficialExpanded] = useState(true);
+  const [isOpenTierExpanded, setIsOpenTierExpanded] = useState(false);
+
+  // 현재 경로에 따라 섹션 자동 확장
+  useEffect(() => {
+    if (pathname.startsWith('/open')) {
+      setIsOpenTierExpanded(true);
+    } else if (categories.some(c => pathname.startsWith(`/${c.slug}`))) {
+      setIsOfficialExpanded(true);
+    }
+  }, [pathname, categories]);
 
   // 모바일에서 링크 클릭(경로 변경) 시 사이드바 닫기
   useEffect(() => {
@@ -84,7 +104,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         `}
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <span className="font-semibold">카테고리</span>
+          <span className="font-semibold">메뉴</span>
           <Button variant="ghost" size="icon" onClick={toggle}>
             <X className="h-4 w-4" />
           </Button>
@@ -101,12 +121,104 @@ export function Sidebar({ className = '' }: SidebarProps) {
           onTouchMove={(e) => e.stopPropagation()}
         >
           <div className="px-2">
-            {/* 오픈 계급도 */}
-            <div className="mb-4">
-              <Link
-                href="/open"
+            {/* 🏆 공식 계급도 섹션 */}
+            <div className="mb-2">
+              <button
+                onClick={() => setIsOfficialExpanded(!isOfficialExpanded)}
                 className={`
-                  w-full flex items-center gap-2 px-3 py-3 rounded-lg
+                  w-full flex items-center justify-between px-3 py-3 rounded-lg
+                  text-sm font-semibold transition-colors
+                  ${categories.some(c => pathname.startsWith(`/${c.slug}`))
+                    ? 'bg-amber-500/10 text-amber-600'
+                    : 'hover:bg-muted'
+                  }
+                `}
+              >
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-amber-500" />
+                  <span>공식 계급도</span>
+                </div>
+                {isOfficialExpanded
+                  ? <ChevronDown className="h-4 w-4" />
+                  : <ChevronRight className="h-4 w-4" />
+                }
+              </button>
+
+              {isOfficialExpanded && (
+                <div className="ml-3 mt-1 border-l-2 border-amber-200 pl-3 space-y-1">
+                  {categories.map((category) => {
+                    const isExpanded = expandedCategories.includes(category.slug);
+                    const categoryPath = `/${category.slug}`;
+                    const isActiveCategory = pathname.startsWith(categoryPath);
+
+                    return (
+                      <div key={category.slug}>
+                        <button
+                          onClick={() => toggleCategory(category.slug)}
+                          className={`
+                            w-full flex items-center justify-between px-3 py-2 rounded-lg
+                            text-sm transition-colors
+                            ${isActiveCategory
+                              ? 'bg-accent/10 text-accent font-medium'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            }
+                          `}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span>{category.icon}</span>
+                            <span>{category.name}</span>
+                          </div>
+                          {isExpanded
+                            ? <ChevronDown className="h-3 w-3" />
+                            : <ChevronRight className="h-3 w-3" />
+                          }
+                        </button>
+
+                        {isExpanded && (
+                          <div className="ml-4 mt-0.5 border-l border-border pl-2 space-y-0.5">
+                            {CATEGORY_MENUS.map((menu) => {
+                              const menuPath = menu.key === 'tier'
+                                ? `/${category.slug}`
+                                : `/${category.slug}/${menu.key}`;
+                              const isActiveMenu = menu.key === 'tier'
+                                ? pathname === `/${category.slug}`
+                                : pathname === menuPath || pathname.startsWith(menuPath + '/');
+                              const Icon = menu.icon;
+
+                              return (
+                                <Link
+                                  key={menu.key}
+                                  href={menuPath}
+                                  className={`
+                                    flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors
+                                    ${isActiveMenu
+                                      ? 'bg-accent text-accent-foreground font-medium'
+                                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                    }
+                                  `}
+                                >
+                                  <Icon className="h-3 w-3" />
+                                  {menu.label}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-border my-3 mx-2" />
+
+            {/* 🎨 오픈 계급도 섹션 */}
+            <div className="mb-2">
+              <button
+                onClick={() => setIsOpenTierExpanded(!isOpenTierExpanded)}
+                className={`
+                  w-full flex items-center justify-between px-3 py-3 rounded-lg
                   text-sm font-semibold transition-colors
                   ${pathname.startsWith('/open')
                     ? 'bg-accent/10 text-accent'
@@ -114,105 +226,52 @@ export function Sidebar({ className = '' }: SidebarProps) {
                   }
                 `}
               >
-                <Sparkles className="h-5 w-5 text-accent" />
-                <span>오픈 계급도</span>
-              </Link>
-              {pathname.startsWith('/open') && (
-                <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
-                  <Link
-                    href="/open"
-                    className={`
-                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                      ${pathname === '/open'
-                        ? 'bg-accent text-accent-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                      }
-                    `}
-                  >
-                    <Trophy className="h-4 w-4" />
-                    전체 보기
-                  </Link>
-                  <Link
-                    href="/open/create"
-                    className={`
-                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                      ${pathname === '/open/create'
-                        ? 'bg-accent text-accent-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                      }
-                    `}
-                  >
-                    <Plus className="h-4 w-4" />
-                    새로 만들기
-                  </Link>
+                <div className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-accent" />
+                  <span>오픈 계급도</span>
+                </div>
+                {isOpenTierExpanded
+                  ? <ChevronDown className="h-4 w-4" />
+                  : <ChevronRight className="h-4 w-4" />
+                }
+              </button>
+
+              {isOpenTierExpanded && (
+                <div className="ml-3 mt-1 border-l-2 border-accent/30 pl-3 space-y-0.5">
+                  {OPEN_TIER_MENUS.map((menu) => {
+                    const isActive = pathname === menu.href || pathname.startsWith(menu.href.split('?')[0]);
+                    return (
+                      <Link
+                        key={menu.key}
+                        href={menu.href}
+                        className={`
+                          flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          ${isActive
+                            ? 'bg-accent text-accent-foreground font-medium'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          }
+                        `}
+                      >
+                        {menu.label}
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
 
-            <div className="border-t border-border my-2 mx-2" />
+            <div className="border-t border-border my-3 mx-2" />
 
-            {categories.map((category) => {
-              const isExpanded = expandedCategories.includes(category.slug);
-              const categoryPath = `/${category.slug}`;
-              const isActiveCategory = pathname.startsWith(categoryPath);
-
-              return (
-                <div key={category.slug} className="mb-2">
-                  <button
-                    onClick={() => toggleCategory(category.slug)}
-                    className={`
-                      w-full flex items-center justify-between px-3 py-3 rounded-lg
-                      text-sm font-semibold transition-colors
-                      ${isActiveCategory
-                        ? 'bg-accent/10 text-accent'
-                        : 'hover:bg-muted'
-                      }
-                    `}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">{category.icon}</span>
-                      <span>{category.name}</span>
-                    </div>
-                    {isExpanded
-                      ? <ChevronDown className="h-4 w-4" />
-                      : <ChevronRight className="h-4 w-4" />
-                    }
-                  </button>
-
-                  {isExpanded && (
-                    <div className="ml-3 mt-1 border-l-2 border-border pl-3 space-y-0.5">
-                      {CATEGORY_MENUS.map((menu) => {
-                        // 계급도는 카테고리 메인 페이지로 이동
-                        const menuPath = menu.key === 'tier'
-                          ? `/${category.slug}`
-                          : `/${category.slug}/${menu.key}`;
-                        const isActiveMenu = menu.key === 'tier'
-                          ? pathname === `/${category.slug}`
-                          : pathname === menuPath || pathname.startsWith(menuPath + '/');
-                        const Icon = menu.icon;
-
-                        return (
-                          <Link
-                            key={menu.key}
-                            href={menuPath}
-                            className={`
-                              flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
-                              ${isActiveMenu
-                                ? 'bg-accent text-accent-foreground font-medium'
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                              }
-                            `}
-                          >
-                            <Icon className="h-4 w-4" />
-                            {menu.label}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {/* ➕ 만들기 버튼 */}
+            <div className="px-2">
+              <Link
+                href="/open/create"
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-accent text-white font-semibold hover:bg-accent/90 transition-colors"
+              >
+                <Plus className="h-5 w-5" />
+                <span>계급도 만들기</span>
+              </Link>
+            </div>
           </div>
         </div>
       </aside>
