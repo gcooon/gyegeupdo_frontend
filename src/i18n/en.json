@@ -27,7 +27,14 @@
     "createTier": "Create Tier Chart",
     "myTiers": "My Tier Charts",
     "popular": "Popular",
-    "latest": "Latest"
+    "latest": "Latest",
+    "brandLogo": "T",
+    "brandName": "Tier Chart",
+    "viewTier": "View Tier Chart",
+    "quiz": "3-min Quiz",
+    "compare": "VS Compare",
+    "board": "Board",
+    "categoryTier": "{name} Tier Chart"
   },
   "tier": {
     "S": "God Tier",
@@ -67,6 +74,11 @@
     "deleteConfirm": "Are you sure you want to delete this tier chart? This action cannot be undone.",
     "deleteFailed": "Failed to delete.",
     "imageGenFailed": "Failed to generate image.",
+    "titleRequired": "Please enter a title.",
+    "itemRequired": "Please add at least one item.",
+    "saveFailed": "Failed to create tier chart. Please try again.",
+    "basicInfo": "Basic Info",
+    "shareCreated": "I made my own tier chart!",
     "featured": "Featured"
   },
   "openTier": {

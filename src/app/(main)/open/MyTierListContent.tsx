@@ -230,7 +230,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         <div className="flex gap-2 flex-1 md:justify-end">
           <form onSubmit={handleSearch} className="flex gap-2 flex-1 md:max-w-xs">
             <Input
-              placeholder="검색..."
+              placeholder={tCommon('searchPlaceholder')}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="flex-1"
@@ -320,6 +320,7 @@ interface TierChartCardProps {
 }
 
 function TierChartCard({ chart, index }: TierChartCardProps) {
+  const t = useTranslations('tierChart');
   const tiers: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
 
   return (
@@ -358,7 +359,7 @@ function TierChartCard({ chart, index }: TierChartCardProps) {
                 {chart.is_featured && (
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                     <Crown className="h-3 w-3 mr-1" />
-                    추천
+                    {t('featured')}
                   </Badge>
                 )}
               </div>
@@ -380,7 +381,7 @@ function TierChartCard({ chart, index }: TierChartCardProps) {
                 <Badge variant="outline" className="text-xs">
                   {chart.user_nickname}
                 </Badge>
-                <span>· {chart.item_count}개 항목</span>
+                <span>· {t('itemCount', { count: chart.item_count })}</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1">

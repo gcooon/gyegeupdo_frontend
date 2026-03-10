@@ -31,9 +31,9 @@ const OFFICIAL_SUBMENUS = [
 
 // 오픈 계급도 메뉴
 const OPEN_TIER_MENUS = [
-  { key: 'popular', label: '인기 계급도', href: '/open?sort=popular', icon: Flame },
-  { key: 'latest', label: '최신 계급도', href: '/open?sort=latest', icon: Clock },
-  { key: 'my', label: '내 계급도', href: '/open/my', icon: FileText },
+  { key: 'popular', labelKey: 'popular', href: '/open?sort=popular', icon: Flame },
+  { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
+  { key: 'my', labelKey: 'myTiers', href: '/open/my', icon: FileText },
 ];
 
 export function Header() {
@@ -68,9 +68,9 @@ export function Header() {
 
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground font-bold">
-              티
+              {t('brandLogo')}
             </div>
-            <span className="font-bold text-lg">티어차트 계급도</span>
+            <span className="font-bold text-lg">{t('brandName')}</span>
           </Link>
 
           {/* Main Navigation */}
@@ -106,7 +106,7 @@ export function Header() {
                       className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
                       <span>{category.icon}</span>
-                      <span>{category.name} 계급도</span>
+                      <span>{t('categoryTier', { name: category.name })}</span>
                     </Link>
                   ))}
                   </div>
@@ -147,7 +147,7 @@ export function Header() {
                         className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                       >
                         <Icon className="h-4 w-4" />
-                        {menu.label}
+                        {t(menu.labelKey)}
                       </Link>
                     );
                   })}

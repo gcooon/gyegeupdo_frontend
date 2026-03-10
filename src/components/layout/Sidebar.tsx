@@ -17,17 +17,17 @@ const FALLBACK_CATEGORIES = [
 ];
 
 const CATEGORY_MENUS = [
-  { key: 'tier', label: '계급도 보기', icon: Trophy },
-  { key: 'quiz', label: '3분 진단', icon: Sparkles },
-  { key: 'compare', label: 'VS 비교', icon: GitCompare },
-  { key: 'board', label: '게시판', icon: MessageSquare },
+  { key: 'tier', labelKey: 'viewTier', icon: Trophy },
+  { key: 'quiz', labelKey: 'quiz', icon: Sparkles },
+  { key: 'compare', labelKey: 'compare', icon: GitCompare },
+  { key: 'board', labelKey: 'board', icon: MessageSquare },
 ];
 
 // 오픈 계급도 서브메뉴
 const OPEN_TIER_MENUS = [
-  { key: 'popular', label: '인기 계급도', href: '/open?sort=popular', icon: Flame },
-  { key: 'latest', label: '최신 계급도', href: '/open?sort=latest', icon: Clock },
-  { key: 'my', label: '내 계급도', href: '/open/my', icon: FileText },
+  { key: 'popular', labelKey: 'popular', href: '/open?sort=popular', icon: Flame },
+  { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
+  { key: 'my', labelKey: 'myTiers', href: '/open/my', icon: FileText },
 ];
 
 interface SidebarProps {
@@ -203,7 +203,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                                   `}
                                 >
                                   <Icon className="h-3 w-3" />
-                                  {menu.label}
+                                  {t(menu.labelKey)}
                                 </Link>
                               );
                             })}
@@ -268,7 +268,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                         `}
                       >
                         <Icon className="h-4 w-4" />
-                        {menu.label}
+                        {t(menu.labelKey)}
                       </Link>
                     );
                   })}

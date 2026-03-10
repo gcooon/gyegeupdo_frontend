@@ -143,12 +143,12 @@ export function CreateTierContent() {
   // 제출
   const handleSubmit = async () => {
     if (!title.trim()) {
-      setError('제목을 입력해주세요.');
+      setError(t('titleRequired'));
       return;
     }
 
     if (filledItems < 1) {
-      setError('최소 1개 이상의 항목을 추가해주세요.');
+      setError(t('itemRequired'));
       return;
     }
 
@@ -187,10 +187,10 @@ export function CreateTierContent() {
         setSuccess(true);
         setShowConfetti(true);
       } else {
-        setError(response.data.message || '계급도 생성에 실패했습니다.');
+        setError(response.data.message || t('saveFailed'));
       }
     } catch (err) {
-      setError('계급도 생성에 실패했습니다. 다시 시도해주세요.');
+      setError(t('saveFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -213,7 +213,7 @@ export function CreateTierContent() {
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch {
-      alert('이미지 생성에 실패했습니다.');
+      alert(t('imageGenFailed'));
     } finally {
       setIsDownloading(false);
     }
@@ -266,7 +266,7 @@ export function CreateTierContent() {
               </Button>
               <ShareButtons
                 title={createdChart.title}
-                description={createdChart.description || '나만의 계급도를 만들었어요!'}
+                description={createdChart.description || t('shareCreated')}
                 variant="compact"
                 className="flex-1"
               />
@@ -320,7 +320,7 @@ export function CreateTierContent() {
         {/* 기본 정보 */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">기본 정보</CardTitle>
+            <CardTitle className="text-lg">{t('basicInfo')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
