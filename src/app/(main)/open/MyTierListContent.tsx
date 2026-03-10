@@ -29,6 +29,7 @@ import {
   TrendingUp,
   Clock,
   Sparkles,
+  LogIn,
 } from 'lucide-react';
 import type { UserTierChartListItem, UserTierChartListResponse } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
@@ -148,6 +149,31 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
     { value: 'views', label: '조회순', icon: <Eye className="h-4 w-4" /> },
   ];
 
+  // 내 계급도 탭인데 비로그인 상태면 로그인 유도
+  if (initialTab === 'mine' && !authLoading && !isAuthenticated) {
+    return (
+      <div className="container py-12 max-w-md">
+        <Card className="text-center py-12">
+          <CardContent>
+            <LogIn className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
+            <h2 className="text-xl font-bold mb-2">로그인이 필요합니다</h2>
+            <p className="text-muted-foreground mb-6">
+              내가 만든 계급도를 확인하려면 로그인해주세요.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button asChild className="bg-accent hover:bg-accent/90">
+                <Link href="/login?redirect=/open/my">로그인</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/open">전체 계급도 보기</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container py-6 max-w-6xl">
       {/* 헤더 */}
@@ -155,7 +181,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
             <Sparkles className="h-7 w-7 text-accent" />
-            오픈 계급도
+            {initialTab === 'mine' ? '내 계급도' : '오픈 계급도'}
           </h1>
           <p className="text-muted-foreground mt-1">
             {totalCount > 0 ? `${totalCount}개의 계급도` : '누구나 만들고 공유하는 계급도'}
