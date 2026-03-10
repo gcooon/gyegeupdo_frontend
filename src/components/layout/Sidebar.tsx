@@ -24,9 +24,9 @@ const CATEGORY_MENUS = [
 
 // 오픈 계급도 서브메뉴
 const OPEN_TIER_MENUS = [
-  { key: 'popular', label: '🔥 인기 계급도', href: '/open?sort=popular', icon: Flame },
-  { key: 'latest', label: '⏰ 최신 계급도', href: '/open?sort=latest', icon: Clock },
-  { key: 'my', label: '📝 내 계급도', href: '/open/my', icon: FileText },
+  { key: 'popular', label: '인기 계급도', href: '/open?sort=popular', icon: Flame },
+  { key: 'latest', label: '최신 계급도', href: '/open?sort=latest', icon: Clock },
+  { key: 'my', label: '내 계급도', href: '/open/my', icon: FileText },
 ];
 
 interface SidebarProps {
@@ -240,6 +240,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                 <div className="ml-3 mt-1 border-l-2 border-accent/30 pl-3 space-y-0.5">
                   {OPEN_TIER_MENUS.map((menu) => {
                     const isActive = pathname === menu.href || pathname.startsWith(menu.href.split('?')[0]);
+                    const Icon = menu.icon;
                     return (
                       <Link
                         key={menu.key}
@@ -252,6 +253,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                           }
                         `}
                       >
+                        <Icon className="h-4 w-4" />
                         {menu.label}
                       </Link>
                     );
@@ -266,9 +268,9 @@ export function Sidebar({ className = '' }: SidebarProps) {
             <div className="px-2">
               <Link
                 href="/open/create"
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-accent text-white font-semibold hover:bg-accent/90 transition-colors"
+                className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors"
               >
-                <Plus className="h-5 w-5" />
+                <Plus className="h-4 w-4" />
                 <span>계급도 만들기</span>
               </Link>
             </div>

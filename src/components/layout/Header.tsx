@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users } from 'lucide-react';
+import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -29,9 +29,9 @@ const OFFICIAL_SUBMENUS = [
 
 // 오픈 계급도 메뉴
 const OPEN_TIER_MENUS = [
-  { key: 'popular', label: '🔥 인기 계급도', href: '/open?sort=popular' },
-  { key: 'latest', label: '⏰ 최신 계급도', href: '/open?sort=latest' },
-  { key: 'my', label: '📝 내 계급도', href: '/open/my' },
+  { key: 'popular', label: '인기 계급도', href: '/open?sort=popular', icon: Flame },
+  { key: 'latest', label: '최신 계급도', href: '/open?sort=latest', icon: Clock },
+  { key: 'my', label: '내 계급도', href: '/open/my', icon: FileText },
 ];
 
 export function Header() {
@@ -131,15 +131,19 @@ export function Header() {
               {/* 오픈 계급도 Dropdown */}
               {openCategory === 'open' && (
                 <div className="absolute top-full left-0 mt-1 w-44 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
-                  {OPEN_TIER_MENUS.map((menu) => (
-                    <Link
-                      key={menu.key}
-                      href={menu.href}
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    >
-                      {menu.label}
-                    </Link>
-                  ))}
+                  {OPEN_TIER_MENUS.map((menu) => {
+                    const Icon = menu.icon;
+                    return (
+                      <Link
+                        key={menu.key}
+                        href={menu.href}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Icon className="h-4 w-4" />
+                        {menu.label}
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
