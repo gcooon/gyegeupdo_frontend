@@ -100,7 +100,18 @@
     "normal": "일반",
     "rising": "급상승",
     "candidate": "승급 후보",
-    "promoted": "추천"
+    "promoted": "추천",
+    "progressTitle": "승격 진행률",
+    "target": "목표",
+    "points": "점",
+    "likes": "좋아요",
+    "views": "조회",
+    "comments": "댓글",
+    "multiplier": "×{value}점",
+    "normalMessage": "50점 이상 달성 시 급상승 상태가 됩니다!",
+    "risingMessage": "100점 달성 시 승급 후보가 됩니다!",
+    "candidateMessage": "운영자 검토 대기 중입니다. 곧 승급될 수 있습니다!",
+    "promotedMessage": "축하합니다! 추천 계급도로 선정되었습니다!"
   },
   "comment": {
     "title": "댓글",

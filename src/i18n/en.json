@@ -100,7 +100,18 @@
     "normal": "Normal",
     "rising": "Rising",
     "candidate": "Candidate",
-    "promoted": "Featured"
+    "promoted": "Featured",
+    "progressTitle": "Promotion Progress",
+    "target": "Target",
+    "points": "pts",
+    "likes": "Likes",
+    "views": "Views",
+    "comments": "Comments",
+    "multiplier": "×{value} pts",
+    "normalMessage": "Reach 50 points to become Rising!",
+    "risingMessage": "Reach 100 points to become a Candidate!",
+    "candidateMessage": "Pending admin review. You may be promoted soon!",
+    "promotedMessage": "Congratulations! You've been featured!"
   },
   "comment": {
     "title": "Comments",
