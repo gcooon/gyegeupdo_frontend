@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useCategories } from '@/hooks/useBrands';
 import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus, Users, Flame, Clock, FileText } from 'lucide-react';
@@ -35,6 +35,7 @@ interface SidebarProps {
 
 export function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname() ?? '';
+  const searchParams = useSearchParams();
   const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: apiCategories } = useCategories();
@@ -239,7 +240,16 @@ export function Sidebar({ className = '' }: SidebarProps) {
               {isOpenTierExpanded && (
                 <div className="ml-3 mt-1 border-l-2 border-accent/30 pl-3 space-y-0.5">
                   {OPEN_TIER_MENUS.map((menu) => {
-                    const isActive = pathname === menu.href || pathname.startsWith(menu.href.split('?')[0]);
+                    // 정확한 활성 상태 체크
+                    let isActive = false;
+                    if (menu.key === 'my') {
+                      // /open/my 페이지
+                      isActive = pathname === '/open/my' || pathname.startsWith('/open/my/');
+                    } else {
+                      // /open?sort=popular 또는 /open?sort=latest
+                      const currentSort = searchParams.get('sort');
+                      isActive = pathname === '/open' && currentSort === menu.key;
+                    }
                     const Icon = menu.icon;
                     return (
                       <Link
@@ -268,7 +278,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
             <div className="px-2">
               <Link
                 href="/open/create"
-                className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors"
+                className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 <span>계급도 만들기</span>

@@ -93,7 +93,8 @@ export function Header() {
 
               {/* 공식 계급도 Dropdown - 카테고리 목록 */}
               {openCategory === 'official' && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
+                <div className="absolute top-full left-0 pt-1 w-48 z-50">
+                  <div className="bg-card border border-border rounded-lg shadow-lg py-1">
                   {categories.map((category) => (
                     <Link
                       key={category.slug}
@@ -104,6 +105,7 @@ export function Header() {
                       <span>{category.name} 계급도</span>
                     </Link>
                   ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -130,7 +132,8 @@ export function Header() {
 
               {/* 오픈 계급도 Dropdown */}
               {openCategory === 'open' && (
-                <div className="absolute top-full left-0 mt-1 w-44 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
+                <div className="absolute top-full left-0 pt-1 w-44 z-50">
+                  <div className="bg-card border border-border rounded-lg shadow-lg py-1">
                   {OPEN_TIER_MENUS.map((menu) => {
                     const Icon = menu.icon;
                     return (
@@ -144,6 +147,7 @@ export function Header() {
                       </Link>
                     );
                   })}
+                  </div>
                 </div>
               )}
             </div>
