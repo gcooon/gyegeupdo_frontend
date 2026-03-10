@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
 import { useHomeSummary, HomeCategory, HomeDispute, HomeReview, HomeUserChart } from '@/hooks/useHome';
+import { useCategories } from '@/hooks/useBrands';
+import type { CategoryListItem, CategoryGroup } from '@/types/model';
 
 // 카테고리 티커 데이터
 const CATEGORY_TICKER = [
@@ -226,6 +228,21 @@ function StarRating({ rating }: { rating: number }) {
 
 export function AllCategoriesOverview() {
   const { data: homeSummary, isLoading } = useHomeSummary();
+  const { data: apiCategories } = useCategories();
+
+  // API 카테고리를 CategoryListItem 형태로 변환
+  const categoryCards: CategoryListItem[] = (apiCategories || []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    icon: c.icon,
+    group: (c.group || '') as CategoryGroup,
+    description: c.description || '',
+    display_config: c.display_config || {},
+    display_order: c.display_order || 0,
+    product_count: c.product_count,
+    brand_count: c.brand_count,
+  }));
 
   // API 데이터 또는 폴백 데이터
   const categories: HomeCategory[] = homeSummary?.categories?.length
@@ -347,117 +364,109 @@ export function AllCategoriesOverview() {
         </div>
       </section>
 
-      {/* 카테고리별 계급도 미리보기 */}
-      <section className="space-y-8">
-        {categories.map((category) => (
-          <Card key={category.slug} className="card-base overflow-hidden">
-            <CardContent className="p-0">
-              {/* 카테고리 헤더 */}
-              <div
-                className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4"
-                style={{ background: `linear-gradient(135deg, ${category.color}15, ${category.color}05)` }}
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className="w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-3xl md:text-4xl"
-                    style={{ background: `${category.color}20` }}
-                  >
-                    {category.icon}
-                  </div>
-                  <div>
-                    <h2 className="text-xl md:text-2xl font-bold">{category.name} 계급도</h2>
-                    <p className="text-sm text-muted-foreground">{category.description}</p>
-                  </div>
-                </div>
-              </div>
+      {/* 공식 계급도 카드 그리드 */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+              <Trophy className="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold">공식 계급도</h2>
+              <p className="text-sm text-muted-foreground">전문가 리뷰 기반 공식 등급</p>
+            </div>
+          </div>
+        </div>
 
-              {/* TOP 3 미리보기 */}
-              <div className="p-4 md:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Crown className="h-5 w-5 text-amber-500" />
-                  <span className="font-semibold">TOP 3</span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
-                  {category.top_items.map((item, index) => (
-                    <Link
-                      key={item.name}
-                      href={`/${category.slug}/model/${item.slug}`}
-                      className="relative flex flex-col items-center p-3 md:p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
-                    >
-                      {/* 순위 뱃지 */}
-                      <div
-                        className={`
-                          absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center
-                          text-xs font-bold text-white shadow-md
-                          ${index === 0 ? 'bg-amber-500' : index === 1 ? 'bg-slate-400' : 'bg-amber-700'}
-                        `}
-                      >
-                        {index + 1}
+        {/* 카테고리 카드 그리드 */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {(categoryCards.length > 0 ? categoryCards : CATEGORIES.map((c, i) => ({
+            id: i,
+            name: c.name,
+            slug: c.slug,
+            icon: c.icon,
+            group: '' as CategoryGroup,
+            description: c.description,
+            display_config: { color: c.color },
+            display_order: i,
+            product_count: undefined,
+            brand_count: undefined,
+          }))).map((category) => {
+            const color = category.display_config?.color || '#3B82F6';
+            return (
+              <Link key={category.slug} href={`/${category.slug}`}>
+                <Card className="h-full hover:shadow-lg transition-all hover:scale-[1.02] group cursor-pointer overflow-hidden">
+                  <CardContent className="p-0">
+                    {/* 상단 컬러 바 */}
+                    <div
+                      className="h-1.5"
+                      style={{ background: `linear-gradient(90deg, ${color}, ${color}80)` }}
+                    />
+                    <div className="p-4">
+                      {/* 아이콘 + 이름 */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div
+                          className="w-11 h-11 rounded-xl flex items-center justify-center text-xl"
+                          style={{ background: `${color}15` }}
+                        >
+                          {category.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-sm group-hover:text-primary transition-colors truncate">
+                            {category.name}
+                          </h3>
+                          {category.description && (
+                            <p className="text-xs text-muted-foreground truncate">
+                              {category.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
-                      {/* 로고/이미지 */}
-                      <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden mb-2 bg-muted flex items-center justify-center">
-                        {item.image_url ? (
-                          <Image
-                            src={item.image_url}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <span className="text-2xl">{category.icon}</span>
+                      {/* 통계 */}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                        {category.product_count !== undefined && (
+                          <span>{category.product_count}개 제품</span>
+                        )}
+                        {category.brand_count !== undefined && (
+                          <span className="text-muted">·</span>
+                        )}
+                        {category.brand_count !== undefined && (
+                          <span>{category.brand_count}개 브랜드</span>
                         )}
                       </div>
 
-                      {/* 용도 라벨 (있는 경우) */}
-                      {item.usage && (
-                        <p className="text-[10px] text-muted-foreground mb-0.5">
-                          {item.usage}
-                        </p>
-                      )}
-
-                      {/* 브랜드 + 이름 */}
-                      {item.brand_name && (
-                        <p className="text-[10px] text-muted-foreground">{item.brand_name}</p>
-                      )}
-                      <p className="text-xs md:text-sm font-medium text-center line-clamp-1">
-                        {item.name}
-                      </p>
-
-                      {/* 점수 */}
-                      <p className="text-xs text-amber-600 font-bold">
-                        {item.score}점
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-
-                {/* 하단 액션 */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <TrendingUp className="h-4 w-4 text-emerald-500" />
-                    <span>관심 상승: <strong className="text-foreground">{category.trending}</strong></span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/${category.slug}/quiz`}>
-                        <Sparkles className="h-4 w-4 mr-1" />
-                        3분 진단
-                      </Link>
-                    </Button>
-                    <Button size="sm" asChild style={{ background: category.color }}>
-                      <Link href={`/${category.slug}`}>
-                        계급도 보기
-                        <ArrowRight className="h-4 w-4 ml-1" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                      {/* 액션 버튼 */}
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 text-xs h-8"
+                          style={{ borderColor: `${color}50`, color }}
+                          asChild
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Link href={`/${category.slug}/quiz`}>
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            진단
+                          </Link>
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="flex-1 text-xs text-white h-8"
+                          style={{ background: color }}
+                        >
+                          계급도
+                          <ArrowRight className="h-3 w-3 ml-1" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
       </section>
 
       {/* 내가 만든 계급도 섹션 */}
