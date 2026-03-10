@@ -3,7 +3,52 @@ import type {
   UserTierChartListItem,
   UserTierChartListResponse,
   TierChartComment,
+  PromotionProgress,
 } from '@/types/tier';
+
+// 승격 점수 계산 헬퍼
+function calculatePromotionProgress(
+  likeCount: number,
+  viewCount: number,
+  commentCount: number
+): PromotionProgress {
+  const score = likeCount * 3 + viewCount * 0.1 + commentCount * 5;
+
+  let status: 'normal' | 'rising' | 'candidate' | 'promoted';
+  let statusDisplay: string;
+  let targetScore: number | null;
+  let progressPercent: number;
+
+  if (score >= 100) {
+    status = 'candidate';
+    statusDisplay = '승급 후보';
+    targetScore = null;
+    progressPercent = 100;
+  } else if (score >= 50) {
+    status = 'rising';
+    statusDisplay = '급상승';
+    targetScore = 100;
+    progressPercent = Math.min(((score - 50) / 50) * 100, 100);
+  } else {
+    status = 'normal';
+    statusDisplay = '일반';
+    targetScore = 50;
+    progressPercent = Math.min((score / 50) * 100, 100);
+  }
+
+  return {
+    current_score: score,
+    target_score: targetScore,
+    progress_percent: Math.round(progressPercent * 10) / 10,
+    status,
+    status_display: statusDisplay,
+    score_breakdown: {
+      likes: likeCount * 3,
+      views: Math.round(viewCount * 0.1 * 10) / 10,
+      comments: commentCount * 5,
+    },
+  };
+}
 
 // ===== 댓글 데이터 =====
 
@@ -121,6 +166,11 @@ const MOCK_CHARTS: UserTierChart[] = [
     created_at: '2026-03-01T10:00:00Z',
     updated_at: '2026-03-01T10:00:00Z',
     comments: RAMEN_COMMENTS,
+    // 승격 시스템: 128*3 + 1420*0.1 + 3*5 = 384 + 142 + 15 = 541점
+    promotion_score: 541,
+    promotion_status: 'candidate',
+    promotion_status_display: '승급 후보',
+    promotion_progress: calculatePromotionProgress(128, 1420, 3),
   },
   {
     id: 1002,
@@ -164,6 +214,11 @@ const MOCK_CHARTS: UserTierChart[] = [
     created_at: '2026-03-02T14:00:00Z',
     updated_at: '2026-03-02T14:00:00Z',
     comments: COFFEE_COMMENTS,
+    // 승격 시스템: 95*3 + 890*0.1 + 2*5 = 285 + 89 + 10 = 384점
+    promotion_score: 384,
+    promotion_status: 'candidate',
+    promotion_status_display: '승급 후보',
+    promotion_progress: calculatePromotionProgress(95, 890, 2),
   },
   {
     id: 1003,
@@ -204,6 +259,11 @@ const MOCK_CHARTS: UserTierChart[] = [
     created_at: '2026-03-03T20:00:00Z',
     updated_at: '2026-03-03T20:00:00Z',
     comments: DELIVERY_COMMENTS,
+    // 승격 시스템: 67*3 + 654*0.1 + 2*5 = 201 + 65.4 + 10 = 276.4점
+    promotion_score: 276.4,
+    promotion_status: 'candidate',
+    promotion_status_display: '승급 후보',
+    promotion_progress: calculatePromotionProgress(67, 654, 2),
   },
   {
     id: 1004,
@@ -245,6 +305,11 @@ const MOCK_CHARTS: UserTierChart[] = [
     created_at: '2026-03-04T16:00:00Z',
     updated_at: '2026-03-04T16:00:00Z',
     comments: DOSIRAK_COMMENTS,
+    // 승격 시스템: 54*3 + 432*0.1 + 2*5 = 162 + 43.2 + 10 = 215.2점
+    promotion_score: 215.2,
+    promotion_status: 'candidate',
+    promotion_status_display: '승급 후보',
+    promotion_progress: calculatePromotionProgress(54, 432, 2),
   },
 ];
 
@@ -262,6 +327,7 @@ function countItems(chart: UserTierChart): number {
 }
 
 function toListItem(chart: UserTierChart): UserTierChartListItem {
+  const progress = chart.promotion_progress;
   return {
     id: chart.id,
     uuid: chart.uuid,
@@ -277,6 +343,17 @@ function toListItem(chart: UserTierChart): UserTierChartListItem {
     is_liked: chart.is_liked,
     is_featured: chart.is_featured,
     created_at: chart.created_at,
+    // 승격 시스템
+    promotion_score: chart.promotion_score,
+    promotion_status: chart.promotion_status,
+    promotion_status_display: chart.promotion_status_display,
+    promotion_progress: progress ? {
+      current_score: progress.current_score,
+      target_score: progress.target_score,
+      progress_percent: progress.progress_percent,
+      status: progress.status,
+      status_display: progress.status_display,
+    } : undefined,
   };
 }
 
