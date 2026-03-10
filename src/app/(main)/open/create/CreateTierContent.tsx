@@ -39,8 +39,10 @@ import {
   Trash2,
 } from 'lucide-react';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
-import type { TierChartItem, TierChartData, UserTierChart } from '@/types/tier';
+import type { TierChartItem, TierChartData, UserTierChart, TierChartLanguage } from '@/types/tier';
+import { LANGUAGE_OPTIONS } from '@/types/tier';
 import Link from 'next/link';
+import { useTranslations } from '@/i18n';
 
 const TIER_ICONS: Record<TierLevel, React.ElementType> = {
   S: Crown,
@@ -59,10 +61,13 @@ interface TierItemInput extends TierChartItem {
 export function CreateTierContent() {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const t = useTranslations('tierChart');
+  const tCommon = useTranslations('common');
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState<'public' | 'private'>('public');
+  const [language, setLanguage] = useState<TierChartLanguage>('ko');
   const [tierData, setTierData] = useState<Record<TierLevel, TierItemInput[]>>({
     S: [],
     A: [],
@@ -174,6 +179,7 @@ export function CreateTierContent() {
         description: description.trim(),
         tier_data: apiTierData,
         visibility,
+        language,
       });
 
       if (response.data.success) {
@@ -234,9 +240,9 @@ export function CreateTierContent() {
           >
             <div className="text-center py-8">
               <Sparkles className="h-16 w-16 text-accent mx-auto mb-4" />
-              <h1 className="text-2xl font-bold mb-2">계급도가 완성되었습니다!</h1>
+              <h1 className="text-2xl font-bold mb-2">{t('created')}</h1>
               <p className="text-muted-foreground">
-                친구들과 공유하고 의견을 나눠보세요
+                {t('shareDesc')}
               </p>
             </div>
 
@@ -256,7 +262,7 @@ export function CreateTierContent() {
                 className="flex-1"
               >
                 <Download className="h-4 w-4 mr-2" />
-                {isDownloading ? '생성 중...' : '이미지로 저장'}
+                {isDownloading ? tCommon('loading') : t('downloadImage')}
               </Button>
               <ShareButtons
                 title={createdChart.title}
@@ -269,13 +275,13 @@ export function CreateTierContent() {
             <div className="flex justify-center gap-4 pt-4">
               <Button variant="outline" asChild>
                 <Link href="/open">
-                  목록으로
+                  {t('backToList')}
                 </Link>
               </Button>
               <Button asChild className="bg-accent hover:bg-accent/90">
                 <Link href={`/open/${createdChart.slug}`}>
                   <Eye className="h-4 w-4 mr-2" />
-                  계급도 보기
+                  {t('viewChart')}
                 </Link>
               </Button>
             </div>
@@ -292,15 +298,15 @@ export function CreateTierContent() {
         <Button variant="ghost" size="sm" asChild className="mb-4">
           <Link href="/open">
             <ChevronLeft className="h-4 w-4 mr-1" />
-            목록으로
+            {t('backToList')}
           </Link>
         </Button>
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <Sparkles className="h-7 w-7 text-accent" />
-          나만의 계급도 만들기
+          {t('create')}
         </h1>
         <p className="text-muted-foreground mt-1">
-          어떤 주제든 가능해요! 티어를 만들고 공유해보세요.
+          {t('createDesc')}
         </p>
       </div>
 
@@ -318,10 +324,10 @@ export function CreateTierContent() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">제목 *</Label>
+              <Label htmlFor="title">{t('titleLabel')} *</Label>
               <Input
                 id="title"
-                placeholder="예: 라면 계급도, 카페 계급도, 게임 캐릭터 계급도..."
+                placeholder={t('titlePlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}
@@ -329,37 +335,58 @@ export function CreateTierContent() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">설명 (선택)</Label>
+              <Label htmlFor="description">{t('descLabel')}</Label>
               <Textarea
                 id="description"
-                placeholder="계급도에 대한 간단한 설명을 적어주세요"
+                placeholder={t('descPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>공개 설정</Label>
-              <Select value={visibility} onValueChange={(v) => setVisibility(v as 'public' | 'private')}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="public">
-                    <span className="flex items-center gap-2">
-                      <Eye className="h-4 w-4" />
-                      공개
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="private">
-                    <span className="flex items-center gap-2">
-                      <EyeOff className="h-4 w-4" />
-                      비공개
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex flex-wrap gap-4">
+              <div className="space-y-2">
+                <Label>{t('visibility')}</Label>
+                <Select value={visibility} onValueChange={(v) => setVisibility(v as 'public' | 'private')}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">
+                      <span className="flex items-center gap-2">
+                        <Eye className="h-4 w-4" />
+                        {t('public')}
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="private">
+                      <span className="flex items-center gap-2">
+                        <EyeOff className="h-4 w-4" />
+                        {t('private')}
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{t('language')}</Label>
+                <Select value={language} onValueChange={(v) => setLanguage(v as TierChartLanguage)}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LANGUAGE_OPTIONS.map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        <span className="flex items-center gap-2">
+                          <span>{lang.flag}</span>
+                          {lang.name}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -367,8 +394,8 @@ export function CreateTierContent() {
         {/* 티어 입력 */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">티어 구성</CardTitle>
-            <Badge variant="secondary">{filledItems}개 항목</Badge>
+            <CardTitle className="text-lg">{t('tierConfig')}</CardTitle>
+            <Badge variant="secondary">{t('itemCount', { count: filledItems })}</Badge>
           </CardHeader>
           <CardContent>
             <div ref={tierListRef} className="rounded-xl overflow-hidden">
@@ -381,6 +408,7 @@ export function CreateTierContent() {
                   onUpdateItem={(id, field, value) => updateItem(tier, id, field, value)}
                   onRemoveItem={(id) => removeItem(tier, id)}
                   onMoveItem={(id, toTier) => moveItem(tier, toTier, id)}
+                  t={t}
                 />
               ))}
             </div>
@@ -390,7 +418,7 @@ export function CreateTierContent() {
         {/* 제출 버튼 */}
         <div className="flex justify-end gap-3">
           <Button variant="outline" asChild>
-            <Link href="/open">취소</Link>
+            <Link href="/open">{tCommon('cancel')}</Link>
           </Button>
           <Button
             onClick={handleSubmit}
@@ -402,7 +430,7 @@ export function CreateTierContent() {
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            저장하기
+            {t('saveChart')}
           </Button>
         </div>
       </div>
@@ -417,9 +445,10 @@ interface TierRowProps {
   onUpdateItem: (id: string, field: keyof TierChartItem, value: string) => void;
   onRemoveItem: (id: string) => void;
   onMoveItem: (id: string, toTier: TierLevel) => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
-function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveItem }: TierRowProps) {
+function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveItem, t }: TierRowProps) {
   const config = TIER_CONFIG[tier];
   const TierIcon = TIER_ICONS[tier];
 
@@ -468,13 +497,13 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
               <GripVertical className="h-5 w-5 text-slate-500 mt-2 shrink-0" />
               <div className="flex-1 space-y-2">
                 <Input
-                  placeholder="항목 이름"
+                  placeholder={t('itemName')}
                   value={item.name}
                   onChange={(e) => onUpdateItem(item.id, 'name', e.target.value)}
                   className="bg-slate-600/50 border-slate-500"
                 />
                 <Input
-                  placeholder="선정 이유 (선택)"
+                  placeholder={t('itemReason')}
                   value={item.reason || ''}
                   onChange={(e) => onUpdateItem(item.id, 'reason', e.target.value)}
                   className="bg-slate-600/50 border-slate-500 text-sm"
@@ -483,7 +512,7 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
               <div className="flex flex-col gap-1">
                 <Select onValueChange={(v) => onMoveItem(item.id, v as TierLevel)}>
                   <SelectTrigger className="w-[70px] h-8 text-xs">
-                    <SelectValue placeholder="이동" />
+                    <SelectValue placeholder={t('move')} />
                   </SelectTrigger>
                   <SelectContent>
                     {TIERS.filter((t) => t !== tier).map((t) => (
@@ -518,7 +547,7 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
           className="w-full border-2 border-dashed border-slate-600 hover:border-accent text-slate-400 hover:text-accent"
         >
           <Plus className="h-4 w-4 mr-1" />
-          항목 추가
+          {t('addItem')}
         </Button>
       </div>
     </div>

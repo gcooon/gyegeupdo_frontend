@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { ko, enUS } from 'date-fns/locale';
 import html2canvas from 'html2canvas';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/lib/api';
+import { useTranslations } from '@/i18n';
+import { useLocaleStore } from '@/store/localeStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -53,6 +55,11 @@ interface TierChartDetailContentProps {
 export function TierChartDetailContent({ slug, initialChart }: TierChartDetailContentProps) {
   const router = useRouter();
   const { isAuthenticated, user } = useAuth();
+  const t = useTranslations('tierChart');
+  const tCommon = useTranslations('common');
+  const tComment = useTranslations('comment');
+  const tStats = useTranslations('stats');
+  const { locale } = useLocaleStore();
 
   const [chart, setChart] = useState<UserTierChart | null>(initialChart || null);
   const [isLoading, setIsLoading] = useState(!initialChart);
@@ -112,7 +119,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           setLikeCount(mockChart.like_count);
           setComments(mockChart.comments || []);
         } else {
-          setError('계급도를 불러올 수 없습니다.');
+          setError(t('loadError'));
         }
       } finally {
         setIsLoading(false);
@@ -210,7 +217,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         router.push('/open');
       }
     } catch {
-      alert('삭제에 실패했습니다.');
+      alert(t('deleteFailed'));
     } finally {
       setIsDeleting(false);
       setShowDeleteDialog(false);
@@ -234,7 +241,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch {
-      alert('이미지 생성에 실패했습니다.');
+      alert(t('imageGenFailed'));
     } finally {
       setIsDownloading(false);
     }
@@ -253,10 +260,10 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       <div className="container py-12">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error || '계급도를 찾을 수 없습니다.'}</AlertDescription>
+          <AlertDescription>{error || t('notFound')}</AlertDescription>
         </Alert>
         <Button asChild className="mt-4">
-          <Link href="/open">목록으로</Link>
+          <Link href="/open">{t('backToList')}</Link>
         </Button>
       </div>
     );
@@ -268,7 +275,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       <Button variant="ghost" size="sm" asChild className="mb-4">
         <Link href="/open">
           <ChevronLeft className="h-4 w-4 mr-1" />
-          목록으로
+          {t('backToList')}
         </Link>
       </Button>
 
@@ -291,7 +298,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
             {chart.is_featured && (
               <Badge className="bg-amber-500 text-white">
                 <Crown className="h-3 w-3 mr-1" />
-                추천
+                {t('featured')}
               </Badge>
             )}
           </div>
@@ -307,7 +314,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
             {chart.view_count}
           </span>
           <span>
-            {formatDistanceToNow(new Date(chart.created_at), { addSuffix: true, locale: ko })}
+            {formatDistanceToNow(new Date(chart.created_at), { addSuffix: true, locale: locale === 'ko' ? ko : enUS })}
           </span>
         </div>
       </div>
@@ -376,17 +383,17 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           className={isLiked ? 'bg-red-500 hover:bg-red-600' : ''}
         >
           <Heart className={`h-4 w-4 mr-2 ${isLiked ? 'fill-white' : ''}`} />
-          좋아요 {likeCount}
+          {tStats('likes')} {likeCount}
         </Button>
 
         <Button onClick={handleDownload} variant="outline" disabled={isDownloading}>
           <Download className="h-4 w-4 mr-2" />
-          {isDownloading ? '생성 중...' : '이미지 저장'}
+          {isDownloading ? t('downloadingImage') : t('downloadImage')}
         </Button>
 
         <ShareButtons
           title={chart.title}
-          description={chart.description || '나만의 계급도를 만들었어요!'}
+          description={chart.description || t('shareDesc')}
           variant="compact"
         />
 
@@ -395,7 +402,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
             <Button variant="outline" asChild>
               <Link href={`/open/${slug}/edit`}>
                 <Edit className="h-4 w-4 mr-2" />
-                수정
+                {tCommon('edit')}
               </Link>
             </Button>
             <Button
@@ -404,7 +411,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
               onClick={() => setShowDeleteDialog(true)}
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              삭제
+              {tCommon('delete')}
             </Button>
           </>
         )}
@@ -422,7 +429,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
-            댓글 {chart.comment_count}
+            {tComment('title')} {chart.comment_count}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -430,7 +437,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           {isAuthenticated ? (
             <div className="flex gap-2">
               <Textarea
-                placeholder="댓글을 입력하세요..."
+                placeholder={tComment('placeholder')}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 rows={2}
@@ -451,11 +458,9 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           ) : (
             <Alert>
               <AlertDescription>
-                댓글을 작성하려면{' '}
                 <Link href={`/login?redirect=/open/${slug}`} className="text-accent underline">
-                  로그인
+                  {tComment('loginRequired')}
                 </Link>
-                이 필요합니다.
               </AlertDescription>
             </Alert>
           )}
@@ -464,7 +469,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           <div className="space-y-4">
             {comments.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">
-                첫 번째 댓글을 남겨보세요!
+                {tComment('beFirst')}
               </p>
             ) : (
               comments.map((comment) => (
@@ -473,6 +478,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
                   comment={comment}
                   onDelete={handleDeleteComment}
                   isOwner={chart.is_owner}
+                  locale={locale}
                 />
               ))
             )}
@@ -484,14 +490,14 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>계급도 삭제</DialogTitle>
+            <DialogTitle>{t('deleteTitle')}</DialogTitle>
             <DialogDescription>
-              정말 이 계급도를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+              {t('deleteConfirm')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-              취소
+              {tCommon('cancel')}
             </Button>
             <Button
               variant="destructive"
@@ -499,7 +505,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
               disabled={isDeleting}
             >
               {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              삭제
+              {tCommon('delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -512,9 +518,10 @@ interface CommentItemProps {
   comment: TierChartComment;
   onDelete: (id: number) => void;
   isOwner: boolean;
+  locale: string;
 }
 
-function CommentItem({ comment, onDelete, isOwner }: CommentItemProps) {
+function CommentItem({ comment, onDelete, isOwner, locale }: CommentItemProps) {
   const canDelete = comment.is_owner || isOwner;
 
   return (
@@ -528,7 +535,7 @@ function CommentItem({ comment, onDelete, isOwner }: CommentItemProps) {
         <div className="flex items-center gap-2">
           <span className="font-medium text-sm">{comment.user_nickname}</span>
           <span className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: ko })}
+            {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: locale === 'ko' ? ko : enUS })}
           </span>
           {canDelete && (
             <Button

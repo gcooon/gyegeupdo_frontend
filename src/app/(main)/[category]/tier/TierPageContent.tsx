@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { TierLevel } from '@/lib/tier';
 import { ShareButtons } from '@/components/share/ShareButtons';
+import { useTranslations } from '@/i18n';
 
 interface TierPageContentProps {
   category: string;
@@ -553,6 +554,8 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
   const { data: categoryData = initialCategory, isLoading: isCategoryLoading } = useCategory(category, initialCategory);
   const { data: products = [], isLoading: isProductsLoading } = useCategoryProducts(category);
   const tierGridRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('officialTier');
+  const tCommon = useTranslations('common');
 
   // 카테고리별 필터 가져오기
   const filters = CATEGORY_FILTERS[category] || DEFAULT_FILTERS;
@@ -624,7 +627,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
   if (isLoading || isCategoryLoading || isProductsLoading) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">데이터를 불러오는 중...</p>
+        <p className="text-muted-foreground">{t('loading')}</p>
       </div>
     );
   }
@@ -632,7 +635,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
   if (error || !brands) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-500">데이터를 불러오는데 실패했습니다.</p>
+        <p className="text-red-500">{t('loadError')}</p>
       </div>
     );
   }
@@ -689,10 +692,10 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">
-            {categoryData?.name || '제품'} 계급도
+            {t('title', { category: categoryData?.name || 'Product' })}
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            커뮤니티 리뷰와 {brands.length}개 브랜드 데이터 기반
+            {t('subtitle', { count: brands.length })}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -703,7 +706,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
             className={hasActiveFilters ? 'border-accent text-accent' : ''}
           >
             <Filter className="h-4 w-4 mr-2" />
-            필터
+            {t('filter')}
             {hasActiveFilters && (
               <Badge variant="secondary" className="ml-2 h-5 px-1.5">
                 {[budgetFilter, typeFilter].filter(f => f !== 'all').length}
@@ -712,7 +715,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
           </Button>
           <Button variant="outline" size="sm" onClick={handleDownloadImage}>
             <Download className="h-4 w-4 mr-2" />
-            이미지 저장
+            {t('downloadImage')}
           </Button>
           <ShareButtons
             title={`${categoryData?.name || '제품'} 계급도 - 계급도`}
@@ -727,18 +730,18 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
         <Card className="card-base">
           <CardContent className="py-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-medium">필터</h3>
+              <h3 className="font-medium">{t('filter')}</h3>
               {hasActiveFilters && (
                 <Button variant="ghost" size="sm" onClick={clearFilters}>
                   <X className="h-4 w-4 mr-1" />
-                  초기화
+                  {t('reset')}
                 </Button>
               )}
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               {/* Budget Filter */}
               <div>
-                <p className="text-sm text-muted-foreground mb-2">예산</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('budget')}</p>
                 <div className="flex flex-wrap gap-2">
                   {BUDGET_FILTERS.map((filter) => (
                     <button
@@ -760,7 +763,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
 
               {/* Type Filter */}
               <div>
-                <p className="text-sm text-muted-foreground mb-2">타입</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('type')}</p>
                 <div className="flex flex-wrap gap-2">
                   {TYPE_FILTERS.map((filter) => (
                     <button
@@ -791,13 +794,13 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
             value="usage"
             className="h-full text-base font-semibold rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
           >
-            🎯 용도별 계급도
+            🎯 {t('byUsage')}
           </TabsTrigger>
           <TabsTrigger
             value="brand"
             className="h-full text-base font-semibold rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
           >
-            🏆 브랜드 계급도
+            🏆 {t('byBrand')}
           </TabsTrigger>
         </TabsList>
 
@@ -826,19 +829,13 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
                     {(['S', 'A', 'B', 'C', 'D'] as TierLevel[]).map((tier) => {
                       const items = usageTiers[tier] || [];
                       const tierColors: Record<TierLevel, string> = {
-                        S: '#FFD700',  // 황제 - Gold
-                        A: '#9370DB',  // 왕 - Purple
-                        B: '#4169E1',  // 양반 - Royal Blue
-                        C: '#3CB371',  // 중인 - Green
-                        D: '#8B7355',  // 평민 - Brown
+                        S: '#FFD700',
+                        A: '#9370DB',
+                        B: '#4169E1',
+                        C: '#3CB371',
+                        D: '#8B7355',
                       };
-                      const tierLabels: Record<TierLevel, string> = {
-                        S: '황제',
-                        A: '왕',
-                        B: '양반',
-                        C: '중인',
-                        D: '평민',
-                      };
+                      const tierLabelKey = `tierLabels.${tier}` as const;
                       return (
                         <div key={tier} className="flex border-b last:border-b-0">
                           {/* 티어 라벨 */}
@@ -849,14 +846,14 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
                             }}
                           >
                             <span className={`text-lg font-black ${tier === 'S' ? 'text-black' : 'text-white'}`}>
-                              {tierLabels[tier]}
+                              {t(tierLabelKey)}
                             </span>
                           </div>
 
                           {/* 제품 목록 */}
                           <div className="flex-1 p-2 bg-muted/30 flex flex-wrap gap-1.5 min-h-[60px] items-center">
                             {items.length === 0 ? (
-                              <span className="text-sm text-muted-foreground italic">아직 데이터가 없습니다</span>
+                              <span className="text-sm text-muted-foreground italic">{t('noData')}</span>
                             ) : (
                               items.map((item) => (
                                 <Link
@@ -900,13 +897,13 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
               🎯
             </div>
             <h3 className="font-bold mb-1">
-              {category === 'running-shoes' ? '나에게 맞는 러닝화 찾기' : category === 'chicken' ? '나에게 맞는 치킨 찾기' : '맞춤 추천'}
+              {categoryData?.name ? t('quiz.findMatch', { category: categoryData.name }) : t('quiz.customRecommend')}
             </h3>
             <p className="text-sm text-muted-foreground mb-4 flex-1">
-              3분 퀴즈로 취향에 맞는 제품을 찾아보세요
+              {t('quiz.desc')}
             </p>
             <Button className="w-full bg-accent hover:bg-accent/90" asChild>
-              <Link href={`/${category}/quiz`}>퀴즈 시작 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              <Link href={`/${category}/quiz`}>{t('quiz.start')} <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
           </CardContent>
         </Card>
@@ -933,12 +930,12 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
             <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center text-2xl mb-3">
               💖
             </div>
-            <h3 className="font-bold mb-1">스와이프로 발견하기</h3>
+            <h3 className="font-bold mb-1">{t('discover.title')}</h3>
             <p className="text-sm text-muted-foreground mb-4 flex-1">
-              좌우 스와이프로 취향에 맞는 제품을 찾아보세요
+              {t('discover.desc')}
             </p>
             <Button variant="outline" className="w-full border-pink-300 hover:bg-pink-50" asChild>
-              <Link href={`/${category}/discover`}>시작하기 <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              <Link href={`/${category}/discover`}>{t('discover.start')} <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
           </CardContent>
         </Card>
@@ -947,12 +944,12 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       {/* Scoring Criteria */}
       <Card className="card-base">
         <CardContent className="py-6">
-          <h3 className="font-semibold mb-4">계급도 평가 기준</h3>
+          <h3 className="font-semibold mb-4">{t('criteria.title')}</h3>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {scoreDefinitions.map((def) => (
               <div key={def.key} className="p-3 bg-muted/50 rounded-lg">
                 <p className="font-medium text-accent">{def.label}</p>
-                <p className="text-xs text-muted-foreground mt-1">가중치 {def.weight}%</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('criteria.weight', { percent: def.weight })}</p>
               </div>
             ))}
           </div>
@@ -968,11 +965,11 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
           <section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold mb-1">이번 주 HOT 이의</h2>
-                <p className="text-sm text-muted-foreground">커뮤니티 등급 조정 투표</p>
+                <h2 className="text-xl font-bold mb-1">{t('dispute.title')}</h2>
+                <p className="text-sm text-muted-foreground">{t('dispute.subtitle')}</p>
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/community/disputes">전체 이의 보기</Link>
+                <Link href="/community/disputes">{t('dispute.viewAll')}</Link>
               </Button>
             </div>
 
@@ -998,15 +995,15 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
                               }
                             >
                               {isUpTrending ? (
-                                <><ChevronUp className="h-3 w-3 mr-0.5" />상향 요청</>
+                                <><ChevronUp className="h-3 w-3 mr-0.5" />{t('dispute.upRequest')}</>
                               ) : (
-                                <><ChevronDown className="h-3 w-3 mr-0.5" />하향 요청</>
+                                <><ChevronDown className="h-3 w-3 mr-0.5" />{t('dispute.downRequest')}</>
                               )}
                             </Badge>
                           </div>
                           <Badge variant="secondary" className="text-xs">
                             <Clock className="h-3 w-3 mr-1" />
-                            {dispute.daysLeft}일 남음
+                            {t('dispute.daysLeft', { days: dispute.daysLeft })}
                           </Badge>
                         </div>
 
@@ -1055,11 +1052,11 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            <span>{dispute.totalVotes}명 투표</span>
+                            <span>{t('dispute.votes', { count: dispute.totalVotes })}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <MessageCircle className="h-3 w-3" />
-                            <span>의견 보기</span>
+                            <span>{t('dispute.viewOpinions')}</span>
                           </div>
                         </div>
                       </CardContent>
@@ -1071,7 +1068,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
 
             <div className="mt-4 p-3 bg-muted/30 rounded-xl text-center">
               <p className="text-xs text-muted-foreground">
-                각 제품 상세 페이지에서 UP/DOWN 투표에 참여할 수 있습니다. 1주일간 투표를 취합하여 등급을 조정합니다.
+                {t('dispute.voteInfo')}
               </p>
             </div>
           </section>
@@ -1087,11 +1084,11 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
           <section className="py-6 bg-muted/30 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold mb-1">커뮤니티 리뷰</h2>
-                <p className="text-sm text-muted-foreground">실제 사용자들의 솔직한 후기</p>
+                <h2 className="text-xl font-bold mb-1">{t('review.title')}</h2>
+                <p className="text-sm text-muted-foreground">{t('review.subtitle')}</p>
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/community/reviews">전체 리뷰 보기</Link>
+                <Link href="/community/reviews">{t('review.viewAll')}</Link>
               </Button>
             </div>
 
@@ -1104,12 +1101,12 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
                       <Star className="h-5 w-5 text-accent" />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">내 {categoryName} 리뷰 남기기</p>
-                      <p className="text-xs text-muted-foreground">다른 사용자들에게 도움이 되는 리뷰를 작성해주세요</p>
+                      <p className="font-semibold text-sm">{t('review.writeReview', { category: categoryName })}</p>
+                      <p className="text-xs text-muted-foreground">{t('review.writeReviewDesc')}</p>
                     </div>
                   </div>
                   <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                    <Link href="/review/write">리뷰 작성하기</Link>
+                    <Link href="/review/write">{t('review.writeButton')}</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -1169,7 +1166,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
 
             <div className="mt-4 text-center">
               <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
-                더 많은 리뷰 보기 →
+                {t('review.viewMore')}
               </Link>
             </div>
           </section>

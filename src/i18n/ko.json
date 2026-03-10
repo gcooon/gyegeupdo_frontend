@@ -1,0 +1,222 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "retry": "다시 시도",
+    "goHome": "홈으로 돌아가기",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "create": "만들기",
+    "search": "검색",
+    "searchPlaceholder": "검색...",
+    "more": "더 보기",
+    "back": "뒤로",
+    "next": "다음",
+    "prev": "이전",
+    "all": "전체",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "signup": "회원가입"
+  },
+  "nav": {
+    "home": "홈",
+    "officialTier": "공식 계급도",
+    "openTier": "오픈 계급도",
+    "createTier": "계급도 만들기",
+    "myTiers": "내 계급도",
+    "popular": "인기 계급도",
+    "latest": "최신 계급도"
+  },
+  "tier": {
+    "S": "신급",
+    "A": "챔피언",
+    "B": "실속파",
+    "C": "가성비",
+    "D": "비추천"
+  },
+  "tierChart": {
+    "title": "계급도",
+    "create": "계급도 만들기",
+    "createDesc": "어떤 주제든 가능해요! 티어를 만들고 공유해보세요.",
+    "titleLabel": "제목",
+    "titlePlaceholder": "예: 라면 계급도, 카페 계급도, 게임 캐릭터 계급도...",
+    "descLabel": "설명 (선택)",
+    "descPlaceholder": "계급도에 대한 간단한 설명을 적어주세요",
+    "visibility": "공개 설정",
+    "public": "공개",
+    "private": "비공개",
+    "language": "언어",
+    "tierConfig": "티어 구성",
+    "itemCount": "{count}개 항목",
+    "addItem": "항목 추가",
+    "itemName": "항목 이름",
+    "itemReason": "선정 이유 (선택)",
+    "move": "이동",
+    "saveChart": "저장하기",
+    "created": "계급도가 완성되었습니다!",
+    "shareDesc": "친구들과 공유하고 의견을 나눠보세요",
+    "downloadImage": "이미지 저장",
+    "downloadingImage": "생성 중...",
+    "viewChart": "계급도 보기",
+    "backToList": "목록으로",
+    "notFound": "계급도를 찾을 수 없습니다.",
+    "loadError": "계급도를 불러올 수 없습니다.",
+    "deleteTitle": "계급도 삭제",
+    "deleteConfirm": "정말 이 계급도를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "deleteFailed": "삭제에 실패했습니다.",
+    "imageGenFailed": "이미지 생성에 실패했습니다.",
+    "featured": "추천"
+  },
+  "openTier": {
+    "title": "오픈 계급도",
+    "desc": "누구나 만들고 공유하는 계급도",
+    "countDesc": "{count}개의 계급도",
+    "myTitle": "내 계급도",
+    "tabs": {
+      "all": "전체",
+      "featured": "추천",
+      "mine": "내 계급도"
+    },
+    "sort": {
+      "popular": "인기순",
+      "latest": "최신순",
+      "views": "조회순"
+    },
+    "noResults": "검색 결과가 없습니다.",
+    "empty": "아직 계급도가 없습니다.",
+    "createFirst": "첫 번째 계급도 만들기",
+    "loginRequired": "로그인이 필요합니다",
+    "loginRequiredDesc": "내가 만든 계급도를 확인하려면 로그인해주세요.",
+    "viewAll": "전체 계급도 보기"
+  },
+  "stats": {
+    "likes": "좋아요",
+    "views": "조회수",
+    "comments": "댓글"
+  },
+  "promotion": {
+    "normal": "일반",
+    "rising": "급상승",
+    "candidate": "승급 후보",
+    "promoted": "추천"
+  },
+  "comment": {
+    "title": "댓글",
+    "placeholder": "댓글을 입력하세요...",
+    "submit": "등록",
+    "reply": "답글",
+    "delete": "삭제",
+    "loginRequired": "댓글을 작성하려면 로그인이 필요합니다.",
+    "beFirst": "첫 번째 댓글을 남겨보세요!"
+  },
+  "auth": {
+    "loginTitle": "로그인",
+    "loginDesc": "티어차트 계급도에 로그인하고 투표에 참여하세요",
+    "signupTitle": "회원가입",
+    "signupDesc": "티어차트 계급도에 가입하고 투표에 참여하세요",
+    "email": "이메일",
+    "emailPlaceholder": "example@email.com",
+    "password": "비밀번호",
+    "passwordPlaceholder": "비밀번호 입력",
+    "passwordMinLength": "8자 이상",
+    "confirmPassword": "비밀번호 확인",
+    "confirmPasswordPlaceholder": "비밀번호 다시 입력",
+    "nickname": "닉네임",
+    "nicknamePlaceholder": "닉네임 (2자 이상)",
+    "loginButton": "로그인",
+    "loggingIn": "로그인 중...",
+    "signupButton": "회원가입",
+    "signingUp": "가입 중...",
+    "noAccount": "계정이 없으신가요?",
+    "hasAccount": "이미 계정이 있으신가요?",
+    "socialLogin": "소셜 로그인",
+    "kakao": "카카오로 시작하기",
+    "naver": "네이버로 시작하기",
+    "google": "Google로 시작하기",
+    "errorInvalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
+    "errorPasswordMismatch": "비밀번호가 일치하지 않습니다.",
+    "errorPasswordTooShort": "비밀번호는 8자 이상이어야 합니다.",
+    "errorNicknameTooShort": "닉네임은 2자 이상이어야 합니다.",
+    "errorSignupFailed": "회원가입에 실패했습니다. 다시 시도해주세요."
+  },
+  "footer": {
+    "brand": "티어차트 계급도",
+    "tagline": "모든 제품의 계급도 큐레이션 플랫폼",
+    "runningShoes": "러닝화",
+    "chicken": "치킨",
+    "viewTier": "계급도 보기",
+    "quiz": "3분 진단",
+    "compare": "VS 비교",
+    "info": "정보",
+    "about": "서비스 소개",
+    "copyright": "© {year} 티어차트 계급도. All rights reserved.",
+    "terms": "이용약관",
+    "privacy": "개인정보처리방침",
+    "contact": "문의하기",
+    "affiliate": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."
+  },
+  "errorPage": {
+    "title": "문제가 발생했습니다",
+    "desc": "페이지를 로드하는 중 오류가 발생했습니다. 다시 시도해주세요.",
+    "notFoundTitle": "페이지를 찾을 수 없습니다",
+    "notFoundDesc": "요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다."
+  },
+  "officialTier": {
+    "title": "{category} 계급도",
+    "subtitle": "커뮤니티 리뷰와 {count}개 브랜드 데이터 기반",
+    "loading": "데이터를 불러오는 중...",
+    "loadError": "데이터를 불러오는데 실패했습니다.",
+    "filter": "필터",
+    "downloadImage": "이미지 저장",
+    "reset": "초기화",
+    "budget": "예산",
+    "type": "타입",
+    "byUsage": "용도별 계급도",
+    "byBrand": "브랜드 계급도",
+    "noData": "아직 데이터가 없습니다",
+    "tierLabels": {
+      "S": "황제",
+      "A": "왕",
+      "B": "양반",
+      "C": "중인",
+      "D": "평민"
+    },
+    "quiz": {
+      "findMatch": "나에게 맞는 {category} 찾기",
+      "customRecommend": "맞춤 추천",
+      "desc": "3분 퀴즈로 취향에 맞는 제품을 찾아보세요",
+      "start": "퀴즈 시작"
+    },
+    "discover": {
+      "title": "스와이프로 발견하기",
+      "desc": "좌우 스와이프로 취향에 맞는 제품을 찾아보세요",
+      "start": "시작하기"
+    },
+    "criteria": {
+      "title": "계급도 평가 기준",
+      "weight": "가중치 {percent}%"
+    },
+    "dispute": {
+      "title": "이번 주 HOT 이의",
+      "subtitle": "커뮤니티 등급 조정 투표",
+      "viewAll": "전체 이의 보기",
+      "upRequest": "상향 요청",
+      "downRequest": "하향 요청",
+      "daysLeft": "{days}일 남음",
+      "votes": "{count}명 투표",
+      "viewOpinions": "의견 보기",
+      "voteInfo": "각 제품 상세 페이지에서 UP/DOWN 투표에 참여할 수 있습니다. 1주일간 투표를 취합하여 등급을 조정합니다."
+    },
+    "review": {
+      "title": "커뮤니티 리뷰",
+      "subtitle": "실제 사용자들의 솔직한 후기",
+      "viewAll": "전체 리뷰 보기",
+      "writeReview": "내 {category} 리뷰 남기기",
+      "writeReviewDesc": "다른 사용자들에게 도움이 되는 리뷰를 작성해주세요",
+      "writeButton": "리뷰 작성하기",
+      "viewMore": "더 많은 리뷰 보기 →"
+    }
+  }
+}

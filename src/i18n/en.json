@@ -1,0 +1,222 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Try Again",
+    "goHome": "Go Home",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "searchPlaceholder": "Search...",
+    "more": "Load more",
+    "back": "Back",
+    "next": "Next",
+    "prev": "Previous",
+    "all": "All",
+    "login": "Log in",
+    "logout": "Log out",
+    "signup": "Sign up"
+  },
+  "nav": {
+    "home": "Home",
+    "officialTier": "Official Tier Charts",
+    "openTier": "Open Tier Charts",
+    "createTier": "Create Tier Chart",
+    "myTiers": "My Tier Charts",
+    "popular": "Popular",
+    "latest": "Latest"
+  },
+  "tier": {
+    "S": "God Tier",
+    "A": "Champion",
+    "B": "Solid Choice",
+    "C": "Budget Pick",
+    "D": "Not Recommended"
+  },
+  "tierChart": {
+    "title": "Tier Chart",
+    "create": "Create Tier Chart",
+    "createDesc": "Any topic works! Create and share your tier list.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g., Ramen Tier List, Coffee Shop Rankings...",
+    "descLabel": "Description (optional)",
+    "descPlaceholder": "Add a brief description of your tier chart",
+    "visibility": "Visibility",
+    "public": "Public",
+    "private": "Private",
+    "language": "Language",
+    "tierConfig": "Tier Setup",
+    "itemCount": "{count} items",
+    "addItem": "Add item",
+    "itemName": "Item name",
+    "itemReason": "Reason (optional)",
+    "move": "Move",
+    "saveChart": "Save",
+    "created": "Your tier chart is ready!",
+    "shareDesc": "Share with friends and discuss",
+    "downloadImage": "Save as image",
+    "downloadingImage": "Generating...",
+    "viewChart": "View tier chart",
+    "backToList": "Back to list",
+    "notFound": "Tier chart not found.",
+    "loadError": "Failed to load tier chart.",
+    "deleteTitle": "Delete Tier Chart",
+    "deleteConfirm": "Are you sure you want to delete this tier chart? This action cannot be undone.",
+    "deleteFailed": "Failed to delete.",
+    "imageGenFailed": "Failed to generate image.",
+    "featured": "Featured"
+  },
+  "openTier": {
+    "title": "Open Tier Charts",
+    "desc": "User-created tier charts for everyone",
+    "countDesc": "{count} tier charts",
+    "myTitle": "My Tier Charts",
+    "tabs": {
+      "all": "All",
+      "featured": "Featured",
+      "mine": "My Charts"
+    },
+    "sort": {
+      "popular": "Popular",
+      "latest": "Latest",
+      "views": "Most viewed"
+    },
+    "noResults": "No results found.",
+    "empty": "No tier charts yet.",
+    "createFirst": "Create the first tier chart",
+    "loginRequired": "Login required",
+    "loginRequiredDesc": "Please log in to view your tier charts.",
+    "viewAll": "View all tier charts"
+  },
+  "stats": {
+    "likes": "Likes",
+    "views": "Views",
+    "comments": "Comments"
+  },
+  "promotion": {
+    "normal": "Normal",
+    "rising": "Rising",
+    "candidate": "Candidate",
+    "promoted": "Featured"
+  },
+  "comment": {
+    "title": "Comments",
+    "placeholder": "Write a comment...",
+    "submit": "Post",
+    "reply": "Reply",
+    "delete": "Delete",
+    "loginRequired": "Please log in to comment.",
+    "beFirst": "Be the first to comment!"
+  },
+  "auth": {
+    "loginTitle": "Log In",
+    "loginDesc": "Log in to Tier Chart and join the voting",
+    "signupTitle": "Sign Up",
+    "signupDesc": "Sign up for Tier Chart and join the voting",
+    "email": "Email",
+    "emailPlaceholder": "example@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter password",
+    "passwordMinLength": "8+ characters",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Re-enter password",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Nickname (2+ characters)",
+    "loginButton": "Log In",
+    "loggingIn": "Logging in...",
+    "signupButton": "Sign Up",
+    "signingUp": "Signing up...",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "socialLogin": "Social Login",
+    "kakao": "Continue with Kakao",
+    "naver": "Continue with Naver",
+    "google": "Continue with Google",
+    "errorInvalidCredentials": "Invalid email or password.",
+    "errorPasswordMismatch": "Passwords do not match.",
+    "errorPasswordTooShort": "Password must be at least 8 characters.",
+    "errorNicknameTooShort": "Nickname must be at least 2 characters.",
+    "errorSignupFailed": "Sign up failed. Please try again."
+  },
+  "footer": {
+    "brand": "Tier Chart",
+    "tagline": "The tier chart curation platform for all products",
+    "runningShoes": "Running Shoes",
+    "chicken": "Chicken",
+    "viewTier": "View Tier Chart",
+    "quiz": "3-min Quiz",
+    "compare": "VS Compare",
+    "info": "Info",
+    "about": "About Us",
+    "copyright": "© {year} Tier Chart. All rights reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "contact": "Contact Us",
+    "affiliate": "This post is part of the Coupang Partners program, and a commission is received accordingly."
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "desc": "An error occurred while loading the page. Please try again.",
+    "notFoundTitle": "Page not found",
+    "notFoundDesc": "The page you requested does not exist or may have been moved."
+  },
+  "officialTier": {
+    "title": "{category} Tier Chart",
+    "subtitle": "Based on community reviews and {count} brands",
+    "loading": "Loading data...",
+    "loadError": "Failed to load data.",
+    "filter": "Filter",
+    "downloadImage": "Save Image",
+    "reset": "Reset",
+    "budget": "Budget",
+    "type": "Type",
+    "byUsage": "By Usage",
+    "byBrand": "By Brand",
+    "noData": "No data yet",
+    "tierLabels": {
+      "S": "Emperor",
+      "A": "King",
+      "B": "Noble",
+      "C": "Citizen",
+      "D": "Commoner"
+    },
+    "quiz": {
+      "findMatch": "Find your perfect {category}",
+      "customRecommend": "Custom Recommendation",
+      "desc": "Take a 3-minute quiz to find products that match your preferences",
+      "start": "Start Quiz"
+    },
+    "discover": {
+      "title": "Discover by Swiping",
+      "desc": "Swipe left or right to find products that match your taste",
+      "start": "Get Started"
+    },
+    "criteria": {
+      "title": "Tier Evaluation Criteria",
+      "weight": "Weight {percent}%"
+    },
+    "dispute": {
+      "title": "This Week's HOT Disputes",
+      "subtitle": "Community tier adjustment voting",
+      "viewAll": "View All Disputes",
+      "upRequest": "Upgrade Request",
+      "downRequest": "Downgrade Request",
+      "daysLeft": "{days} days left",
+      "votes": "{count} votes",
+      "viewOpinions": "View Opinions",
+      "voteInfo": "You can participate in UP/DOWN voting on each product detail page. Votes are collected for one week to adjust the tier."
+    },
+    "review": {
+      "title": "Community Reviews",
+      "subtitle": "Honest reviews from real users",
+      "viewAll": "View All Reviews",
+      "writeReview": "Write a {category} review",
+      "writeReviewDesc": "Help other users with your review",
+      "writeButton": "Write Review",
+      "viewMore": "View more reviews →"
+    }
+  }
+}

@@ -31,10 +31,13 @@ import {
   Sparkles,
   LogIn,
 } from 'lucide-react';
-import type { UserTierChartListItem, UserTierChartListResponse } from '@/types/tier';
+import type { UserTierChartListItem, UserTierChartListResponse, TierChartLanguage } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
 import { getMockUserTierCharts } from '@/lib/mockUserTierCharts';
 import { PromotionBadge } from '@/components/promotion';
+import { LanguageBadge } from '@/components/tier/LanguageBadge';
+import { LanguageFilter } from '@/components/tier/LanguageFilter';
+import { useTranslations } from '@/i18n';
 
 type SortOption = 'popular' | 'latest' | 'views';
 
@@ -46,6 +49,9 @@ interface MyTierListContentProps {
 export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierListContentProps = {}) {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const t = useTranslations('openTier');
+  const tCommon = useTranslations('common');
+  const tNav = useTranslations('nav');
   const [charts, setCharts] = useState<UserTierChartListItem[]>(initialCharts || []);
   const [isLoading, setIsLoading] = useState(!initialCharts?.length);
   const [page, setPage] = useState(1);
@@ -55,6 +61,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'mine'>(initialTab);
+  const [languageFilter, setLanguageFilter] = useState<TierChartLanguage | 'all'>('all');
 
   const fetchCharts = useCallback(async (resetPage = false) => {
     setIsLoading(true);
@@ -72,6 +79,10 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
 
       if (activeTab === 'featured') {
         params.append('featured', 'true');
+      }
+
+      if (languageFilter !== 'all') {
+        params.append('language', languageFilter);
       }
 
       let url = `/tiers/user-charts/?${params}`;
@@ -112,13 +123,13 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
     } finally {
       setIsLoading(false);
     }
-  }, [page, sort, search, activeTab, isAuthenticated]);
+  }, [page, sort, search, activeTab, isAuthenticated, languageFilter]);
 
   useEffect(() => {
     if (!authLoading) {
       fetchCharts(true);
     }
-  }, [sort, search, activeTab, authLoading]);
+  }, [sort, search, activeTab, authLoading, languageFilter]);
 
   useEffect(() => {
     if (page > 1 && !authLoading) {
@@ -145,9 +156,9 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   };
 
   const sortOptions: { value: SortOption; label: string; icon: React.ReactNode }[] = [
-    { value: 'popular', label: '인기순', icon: <TrendingUp className="h-4 w-4" /> },
-    { value: 'latest', label: '최신순', icon: <Clock className="h-4 w-4" /> },
-    { value: 'views', label: '조회순', icon: <Eye className="h-4 w-4" /> },
+    { value: 'popular', label: t('sort.popular'), icon: <TrendingUp className="h-4 w-4" /> },
+    { value: 'latest', label: t('sort.latest'), icon: <Clock className="h-4 w-4" /> },
+    { value: 'views', label: t('sort.views'), icon: <Eye className="h-4 w-4" /> },
   ];
 
   // 내 계급도 탭인데 비로그인 상태면 로그인 유도
@@ -157,16 +168,16 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         <Card className="text-center py-12 px-8 max-w-md w-full">
           <CardContent className="p-0">
             <LogIn className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-            <h2 className="text-xl font-bold mb-2">로그인이 필요합니다</h2>
+            <h2 className="text-xl font-bold mb-2">{t('loginRequired')}</h2>
             <p className="text-muted-foreground mb-6">
-              내가 만든 계급도를 확인하려면 로그인해주세요.
+              {t('loginRequiredDesc')}
             </p>
             <div className="flex flex-col gap-3">
               <Button asChild className="bg-accent hover:bg-accent/90">
-                <Link href="/login?redirect=/open/my">로그인</Link>
+                <Link href="/login?redirect=/open/my">{tCommon('login')}</Link>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/open">전체 계급도 보기</Link>
+                <Link href="/open">{t('viewAll')}</Link>
               </Button>
             </div>
           </CardContent>
@@ -182,15 +193,15 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
             <Sparkles className="h-7 w-7 text-accent" />
-            {initialTab === 'mine' ? '내 계급도' : '오픈 계급도'}
+            {initialTab === 'mine' ? t('myTitle') : t('title')}
           </h1>
           <p className="text-muted-foreground mt-1">
-            {totalCount > 0 ? `${totalCount}개의 계급도` : '누구나 만들고 공유하는 계급도'}
+            {totalCount > 0 ? t('countDesc', { count: totalCount }) : t('desc')}
           </p>
         </div>
         <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90">
           <Plus className="h-4 w-4 mr-2" />
-          계급도 만들기
+          {tNav('createTier')}
         </Button>
       </div>
 
@@ -205,13 +216,13 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           className="w-full md:w-auto"
         >
           <TabsList className="grid grid-cols-3 w-full md:w-auto">
-            <TabsTrigger value="all">전체</TabsTrigger>
+            <TabsTrigger value="all">{t('tabs.all')}</TabsTrigger>
             <TabsTrigger value="featured">
               <Crown className="h-4 w-4 mr-1" />
-              추천
+              {t('tabs.featured')}
             </TabsTrigger>
             <TabsTrigger value="mine" disabled={!isAuthenticated}>
-              내 계급도
+              {t('tabs.mine')}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -247,6 +258,14 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         </div>
       </div>
 
+      {/* 언어 필터 */}
+      <div className="mb-6">
+        <LanguageFilter
+          value={languageFilter}
+          onChange={(v) => { setLanguageFilter(v); setPage(1); }}
+        />
+      </div>
+
       {/* 계급도 목록 */}
       {isLoading && charts.length === 0 ? (
         <div className="flex justify-center py-12">
@@ -257,11 +276,11 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           <CardContent>
             <Sparkles className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-4">
-              {search ? '검색 결과가 없습니다.' : '아직 계급도가 없습니다.'}
+              {search ? t('noResults') : t('empty')}
             </p>
             <Button onClick={handleCreateClick} variant="outline">
               <Plus className="h-4 w-4 mr-2" />
-              첫 번째 계급도 만들기
+              {t('createFirst')}
             </Button>
           </CardContent>
         </Card>
@@ -285,7 +304,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 ) : null}
-                더 보기
+                {tCommon('more')}
               </Button>
             </div>
           )}
@@ -355,6 +374,9 @@ function TierChartCard({ chart, index }: TierChartCardProps) {
             {/* 메타 정보 */}
             <div className="flex items-center justify-between text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
+                {chart.language && (
+                  <LanguageBadge language={chart.language} size="sm" />
+                )}
                 <Badge variant="outline" className="text-xs">
                   {chart.user_nickname}
                 </Badge>

@@ -7,6 +7,7 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import { useCategories } from '@/hooks/useBrands';
 import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus, Users, Flame, Clock, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from '@/i18n';
 
 // API 실패 시 폴백용 최소 카테고리 목록
 const FALLBACK_CATEGORIES = [
@@ -39,6 +40,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
   const { isOpen, close, expandedCategories, toggle, toggleCategory } = useSidebarStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: apiCategories } = useCategories();
+  const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
   const categories = (apiCategories && apiCategories.length > 0)
     ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
     : FALLBACK_CATEGORIES;
@@ -105,7 +108,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
         `}
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <span className="font-semibold">메뉴</span>
+          <span className="font-semibold">{tCommon('all')}</span>
           <Button variant="ghost" size="icon" onClick={toggle}>
             <X className="h-4 w-4" />
           </Button>
@@ -138,7 +141,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
               >
                 <div className="flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-amber-500" />
-                  <span>공식 계급도</span>
+                  <span>{t('officialTier')}</span>
                 </div>
                 {isOfficialExpanded
                   ? <ChevronDown className="h-4 w-4" />
@@ -230,7 +233,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
               >
                 <div className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-accent" />
-                  <span>오픈 계급도</span>
+                  <span>{t('openTier')}</span>
                 </div>
                 {isOpenTierExpanded
                   ? <ChevronDown className="h-4 w-4" />
@@ -282,7 +285,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                 className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors"
               >
                 <Plus className="h-4 w-4" />
-                <span>계급도 만들기</span>
+                <span>{t('createTier')}</span>
               </Link>
             </div>
           </div>

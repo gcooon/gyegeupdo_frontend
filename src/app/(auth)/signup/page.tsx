@@ -10,10 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, UserPlus, Mail, Lock, User } from 'lucide-react';
+import { useTranslations } from '@/i18n';
 
 export default function SignupPage() {
   const router = useRouter();
   const { register, isAuthenticated, isLoading: authLoading } = useAuth();
+  const t = useTranslations('auth');
   const [formData, setFormData] = useState({
     email: '',
     nickname: '',
@@ -45,19 +47,19 @@ export default function SignupPage() {
 
     // 클라이언트 측 유효성 검사
     if (formData.password !== formData.password2) {
-      setError('비밀번호가 일치하지 않습니다.');
+      setError(t('errorPasswordMismatch'));
       setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.');
+      setError(t('errorPasswordTooShort'));
       setIsLoading(false);
       return;
     }
 
     if (formData.nickname.length < 2) {
-      setError('닉네임은 2자 이상이어야 합니다.');
+      setError(t('errorNicknameTooShort'));
       setIsLoading(false);
       return;
     }
@@ -79,7 +81,7 @@ export default function SignupPage() {
         setError(errorMsg);
       }
     } catch (err) {
-      setError('회원가입에 실패했습니다. 다시 시도해주세요.');
+      setError(t('errorSignupFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -92,9 +94,9 @@ export default function SignupPage() {
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-accent/20 flex items-center justify-center">
             <UserPlus className="w-8 h-8 text-accent" />
           </div>
-          <CardTitle className="text-2xl font-bold">회원가입</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('signupTitle')}</CardTitle>
           <CardDescription>
-            티어차트 계급도에 가입하고 투표에 참여하세요
+            {t('signupDesc')}
           </CardDescription>
         </CardHeader>
 
@@ -107,14 +109,14 @@ export default function SignupPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">이메일</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="example@email.com"
+                  placeholder={t('emailPlaceholder')}
                   value={formData.email}
                   onChange={handleChange}
                   className="pl-10"
@@ -124,14 +126,14 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="nickname">닉네임</Label>
+              <Label htmlFor="nickname">{t('nickname')}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="nickname"
                   name="nickname"
                   type="text"
-                  placeholder="닉네임 (2자 이상)"
+                  placeholder={t('nicknamePlaceholder')}
                   value={formData.nickname}
                   onChange={handleChange}
                   className="pl-10"
@@ -143,14 +145,14 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">비밀번호</Label>
+              <Label htmlFor="password">{t('password')}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="8자 이상"
+                  placeholder={t('passwordMinLength')}
                   value={formData.password}
                   onChange={handleChange}
                   className="pl-10"
@@ -161,14 +163,14 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password2">비밀번호 확인</Label>
+              <Label htmlFor="password2">{t('confirmPassword')}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password2"
                   name="password2"
                   type="password"
-                  placeholder="비밀번호 다시 입력"
+                  placeholder={t('confirmPasswordPlaceholder')}
                   value={formData.password2}
                   onChange={handleChange}
                   className="pl-10"
@@ -188,17 +190,17 @@ export default function SignupPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  가입 중...
+                  {t('signingUp')}
                 </>
               ) : (
-                '회원가입'
+                t('signupButton')
               )}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
-              이미 계정이 있으신가요?{' '}
+              {t('hasAccount')}{' '}
               <Link href="/login" className="text-accent hover:underline font-medium">
-                로그인
+                {t('loginButton')}
               </Link>
             </p>
           </CardFooter>

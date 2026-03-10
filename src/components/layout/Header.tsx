@@ -15,6 +15,8 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useBrands';
 import { NAV_CATEGORIES } from '@/config/categories';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { useTranslations } from '@/i18n';
 
 // API 실패 시 폴백용 (중앙 설정에서 가져옴)
 const FALLBACK_CATEGORIES = NAV_CATEGORIES;
@@ -39,6 +41,8 @@ export function Header() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const { data: apiCategories } = useCategories();
+  const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
   const categories = (apiCategories && apiCategories.length > 0)
     ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
     : FALLBACK_CATEGORIES;
@@ -87,7 +91,7 @@ export function Header() {
                 `}
               >
                 <Trophy className="h-4 w-4 text-amber-500" />
-                <span>공식 계급도</span>
+                <span>{t('officialTier')}</span>
                 <ChevronDown className="h-3 w-3" />
               </button>
 
@@ -126,7 +130,7 @@ export function Header() {
                 `}
               >
                 <Users className="h-4 w-4 text-accent" />
-                <span>오픈 계급도</span>
+                <span>{t('openTier')}</span>
                 <ChevronDown className="h-3 w-3" />
               </button>
 
@@ -158,12 +162,15 @@ export function Header() {
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:bg-accent/90 transition-colors ml-1"
             >
               <Plus className="h-4 w-4" />
-              <span>만들기</span>
+              <span>{tCommon('create')}</span>
             </Link>
           </nav>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* 언어 전환 */}
+          <LanguageSwitcher />
+
           {isLoading ? (
             <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
           ) : isAuthenticated && user ? (
@@ -189,30 +196,30 @@ export function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{user.first_name || '사용자'}</p>
+                  <p className="text-sm font-medium">{user.first_name || user.email.split('@')[0]}</p>
                   <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/mypage" className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    마이페이지
+                    {t('myTiers')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
-                  로그아웃
+                  {tCommon('logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/login">로그인</Link>
+                <Link href="/login">{tCommon('login')}</Link>
               </Button>
               <Button size="sm" className="bg-accent hover:bg-accent/90" asChild>
-                <Link href="/signup">회원가입</Link>
+                <Link href="/signup">{tCommon('signup')}</Link>
               </Button>
             </>
           )}

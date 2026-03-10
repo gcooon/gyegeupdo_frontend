@@ -1,5 +1,19 @@
 import { TierLevel } from '@/lib/tier';
 
+// ===== 국제화 타입 =====
+
+export type TierChartLanguage = 'ko' | 'en' | 'ja' | 'zh';
+
+export const LANGUAGE_OPTIONS: { code: TierChartLanguage; name: string; flag: string }[] = [
+  { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+];
+
+export const getLanguageInfo = (code: TierChartLanguage) =>
+  LANGUAGE_OPTIONS.find(l => l.code === code) || LANGUAGE_OPTIONS[0];
+
 export interface TierDispute {
   id: number;
   model_id: number;
@@ -103,6 +117,11 @@ export interface UserTierChart {
   promotion_status?: PromotionStatus;
   promotion_status_display?: string;
   promotion_progress?: PromotionProgress;
+  // 국제화
+  language?: TierChartLanguage;
+  language_display?: string;
+  author_country?: string;
+  is_global?: boolean;
 }
 
 export interface UserTierChartListItem {
@@ -125,6 +144,10 @@ export interface UserTierChartListItem {
   promotion_status?: PromotionStatus;
   promotion_status_display?: string;
   promotion_progress?: Omit<PromotionProgress, 'score_breakdown'>;
+  // 국제화
+  language?: TierChartLanguage;
+  language_display?: string;
+  author_country?: string;
 }
 
 export interface TierChartComment {
@@ -153,4 +176,5 @@ export interface CreateTierChartPayload {
   description?: string;
   tier_data: TierChartData;
   visibility?: 'public' | 'private';
+  language?: TierChartLanguage;
 }
