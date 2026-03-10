@@ -96,7 +96,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
       <aside
         className={`
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          fixed md:sticky top-16 left-0 z-50
+          fixed md:sticky top-16 left-0 z-40
           h-[calc(100vh-4rem)]
           ${isOpen ? 'w-64' : 'w-0 md:w-0'}
           bg-card border-r border-border
