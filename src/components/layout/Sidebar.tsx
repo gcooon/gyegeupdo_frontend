@@ -113,11 +113,12 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
         <div
           ref={scrollRef}
-          className="flex-1 min-h-0 overflow-y-auto py-2 pb-8"
+          className="flex-1 min-h-0 overflow-y-auto py-2 pb-24"
           style={{
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
             overscrollBehavior: 'contain',
+            paddingBottom: 'max(6rem, env(safe-area-inset-bottom, 6rem))',
           }}
           onTouchMove={(e) => e.stopPropagation()}
         >
