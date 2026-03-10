@@ -41,6 +41,9 @@ import {
 import { TierLevel } from '@/lib/tier';
 import { ShareButtons } from '@/components/share/ShareButtons';
 
+// 이미지 표시 여부 플래그 (이미지 준비 완료 시 true로 변경)
+const SHOW_PRODUCT_IMAGES = false;
+
 interface Props {
   category: string;
   slug: string;
@@ -371,33 +374,35 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
         <div className="lg:col-span-2 space-y-6">
           {/* Product Header */}
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Image */}
-            <div className="md:w-2/5 shrink-0">
-              <Card className="card-base overflow-hidden">
-                <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative">
-                  {product.image_url ? (
-                    <img
-                      src={product.image_url}
-                      alt={`${product.brand.name} ${product.name}`}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-8xl text-muted-foreground/50">
-                      {categoryInfo.icon}
-                    </span>
-                  )}
-                  {/* Bookmark Button */}
-                  <button
-                    onClick={() => setIsBookmarked(!isBookmarked)}
-                    className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-colors"
-                  >
-                    <Bookmark
-                      className={`h-5 w-5 ${isBookmarked ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
-                    />
-                  </button>
-                </div>
-              </Card>
-            </div>
+            {/* Image - 이미지 준비 완료 시 SHOW_PRODUCT_IMAGES를 true로 변경 */}
+            {SHOW_PRODUCT_IMAGES && (
+              <div className="md:w-2/5 shrink-0">
+                <Card className="card-base overflow-hidden">
+                  <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative">
+                    {product.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={`${product.brand.name} ${product.name}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-8xl text-muted-foreground/50">
+                        {categoryInfo.icon}
+                      </span>
+                    )}
+                    {/* Bookmark Button */}
+                    <button
+                      onClick={() => setIsBookmarked(!isBookmarked)}
+                      className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-colors"
+                    >
+                      <Bookmark
+                        className={`h-5 w-5 ${isBookmarked ? 'fill-accent text-accent' : 'text-muted-foreground'}`}
+                      />
+                    </button>
+                  </div>
+                </Card>
+              </div>
+            )}
 
             {/* Product Info */}
             <div className="flex-1 space-y-4">
@@ -778,17 +783,20 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
                   <Link key={alt.id} href={`/${category}/model/${alt.slug}`}>
                     <Card className="card-base h-full hover:border-accent/50 transition-colors">
                       <CardContent className="p-4">
-                        <div className="aspect-square bg-muted rounded-xl mb-3 flex items-center justify-center">
-                          {alt.image_url ? (
-                            <img
-                              src={alt.image_url}
-                              alt={alt.name}
-                              className="w-full h-full object-cover rounded-xl"
-                            />
-                          ) : (
-                            <span className="text-3xl">{categoryInfo.icon}</span>
-                          )}
-                        </div>
+                        {/* 이미지 - 이미지 준비 완료 시 SHOW_PRODUCT_IMAGES를 true로 변경 */}
+                        {SHOW_PRODUCT_IMAGES && (
+                          <div className="aspect-square bg-muted rounded-xl mb-3 flex items-center justify-center">
+                            {alt.image_url ? (
+                              <img
+                                src={alt.image_url}
+                                alt={alt.name}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                            ) : (
+                              <span className="text-3xl">{categoryInfo.icon}</span>
+                            )}
+                          </div>
+                        )}
                         <p className="text-xs text-muted-foreground">{alt.brand.name}</p>
                         <p className="font-semibold text-sm truncate">{alt.name}</p>
                         <div className="mt-2 flex items-center justify-between">
