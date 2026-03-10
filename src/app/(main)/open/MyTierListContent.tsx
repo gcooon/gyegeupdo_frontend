@@ -34,6 +34,7 @@ import {
 import type { UserTierChartListItem, UserTierChartListResponse } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
 import { getMockUserTierCharts } from '@/lib/mockUserTierCharts';
+import { PromotionBadge } from '@/components/promotion';
 
 type SortOption = 'popular' | 'latest' | 'views';
 
@@ -327,12 +328,21 @@ function TierChartCard({ chart, index }: TierChartCardProps) {
               <h3 className="font-semibold line-clamp-2 group-hover:text-accent transition-colors">
                 {chart.title}
               </h3>
-              {chart.is_featured && (
-                <Badge variant="secondary" className="shrink-0">
-                  <Crown className="h-3 w-3 mr-1" />
-                  추천
-                </Badge>
-              )}
+              <div className="flex gap-1 shrink-0">
+                {chart.promotion_status && chart.promotion_status !== 'normal' && (
+                  <PromotionBadge
+                    status={chart.promotion_status}
+                    statusDisplay={chart.promotion_status_display}
+                    size="sm"
+                  />
+                )}
+                {chart.is_featured && (
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                    <Crown className="h-3 w-3 mr-1" />
+                    추천
+                  </Badge>
+                )}
+              </div>
             </div>
 
             {/* 설명 */}

@@ -43,6 +43,25 @@ export interface TrendResponse {
   items: TrendItem[];
 }
 
+// ===== 승격 시스템 타입 =====
+
+export type PromotionStatus = 'normal' | 'rising' | 'candidate' | 'promoted';
+
+export interface PromotionScoreBreakdown {
+  likes: number;
+  views: number;
+  comments: number;
+}
+
+export interface PromotionProgress {
+  current_score: number;
+  target_score: number | null;
+  progress_percent: number;
+  status: PromotionStatus;
+  status_display: string;
+  score_breakdown?: PromotionScoreBreakdown;
+}
+
 // ===== 사용자 계급도 타입 =====
 
 export interface TierChartItem {
@@ -79,6 +98,11 @@ export interface UserTierChart {
   created_at: string;
   updated_at: string;
   comments?: TierChartComment[];
+  // 승격 시스템
+  promotion_score?: number;
+  promotion_status?: PromotionStatus;
+  promotion_status_display?: string;
+  promotion_progress?: PromotionProgress;
 }
 
 export interface UserTierChartListItem {
@@ -96,6 +120,11 @@ export interface UserTierChartListItem {
   is_liked: boolean;
   is_featured: boolean;
   created_at: string;
+  // 승격 시스템
+  promotion_score?: number;
+  promotion_status?: PromotionStatus;
+  promotion_status_display?: string;
+  promotion_progress?: Omit<PromotionProgress, 'score_breakdown'>;
 }
 
 export interface TierChartComment {

@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
 import { getMockUserTierChart } from '@/lib/mockUserTierCharts';
+import { PromotionBadge, PromotionProgress } from '@/components/promotion';
 import type { UserTierChart, TierChartComment, TierChartData } from '@/types/tier';
 
 const TIERS: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
@@ -280,12 +281,20 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
               <p className="text-muted-foreground mt-2">{chart.description}</p>
             )}
           </div>
-          {chart.is_featured && (
-            <Badge className="bg-amber-500 text-white shrink-0">
-              <Crown className="h-3 w-3 mr-1" />
-              추천
-            </Badge>
-          )}
+          <div className="flex gap-2 shrink-0">
+            {chart.promotion_status && chart.promotion_status !== 'normal' && (
+              <PromotionBadge
+                status={chart.promotion_status}
+                statusDisplay={chart.promotion_status_display}
+              />
+            )}
+            {chart.is_featured && (
+              <Badge className="bg-amber-500 text-white">
+                <Crown className="h-3 w-3 mr-1" />
+                추천
+              </Badge>
+            )}
+          </div>
         </div>
 
         {/* 메타 정보 */}
@@ -400,6 +409,13 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           </>
         )}
       </div>
+
+      {/* 승격 진행률 */}
+      {chart.promotion_progress && (
+        <div className="mb-6">
+          <PromotionProgress progress={chart.promotion_progress} />
+        </div>
+      )}
 
       {/* 댓글 섹션 */}
       <Card>
