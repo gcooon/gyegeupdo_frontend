@@ -217,15 +217,15 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           }}
           className="w-full md:w-auto"
         >
-          <TabsList className="flex w-full md:w-auto h-auto">
-            <TabsTrigger value="all" className="flex-shrink-0">{t('tabs.all')}</TabsTrigger>
-            <TabsTrigger value="hall_of_fame" className="flex-shrink-0">
+          <TabsList className="grid grid-cols-4 w-full md:w-auto md:flex h-auto">
+            <TabsTrigger value="all">{t('tabs.all')}</TabsTrigger>
+            <TabsTrigger value="hall_of_fame">
               {t('tabs.hallOfFame')}
             </TabsTrigger>
-            <TabsTrigger value="hot" className="flex-shrink-0">
+            <TabsTrigger value="hot">
               {t('tabs.hot')}
             </TabsTrigger>
-            <TabsTrigger value="mine" className="flex-shrink-0" disabled={!isAuthenticated}>
+            <TabsTrigger value="mine" disabled={!isAuthenticated}>
               {t('tabs.mine')}
             </TabsTrigger>
           </TabsList>
