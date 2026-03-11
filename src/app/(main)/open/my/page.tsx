@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { MyTierListContent } from '../MyTierListContent';
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';
+import { Loader2 } from 'lucide-react';
 
 export const metadata: Metadata = {
   ...generateSeoMeta({
@@ -10,6 +12,14 @@ export const metadata: Metadata = {
     path: '/open/my',
   }),
 };
+
+function LoadingFallback() {
+  return (
+    <div className="flex justify-center items-center min-h-[50vh]">
+      <Loader2 className="h-8 w-8 animate-spin text-accent" />
+    </div>
+  );
+}
 
 export default function MyTierChartsPage() {
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
@@ -24,7 +34,9 @@ export default function MyTierChartsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MyTierListContent initialTab="mine" />
+      <Suspense fallback={<LoadingFallback />}>
+        <MyTierListContent initialTab="mine" />
+      </Suspense>
     </>
   );
 }

@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { OpenPageContent } from './OpenPageContent';
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';
+import { Loader2 } from 'lucide-react';
 
 export const metadata: Metadata = {
   ...generateSeoMeta({
@@ -11,6 +13,14 @@ export const metadata: Metadata = {
   }),
   keywords: ['오픈 계급도', '계급도 만들기', '나만의 순위', '티어 리스트', '사용자 계급도'],
 };
+
+function LoadingFallback() {
+  return (
+    <div className="flex justify-center items-center min-h-[50vh]">
+      <Loader2 className="h-8 w-8 animate-spin text-accent" />
+    </div>
+  );
+}
 
 export default function OpenTierListPage() {
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
@@ -24,7 +34,9 @@ export default function OpenTierListPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <OpenPageContent />
+      <Suspense fallback={<LoadingFallback />}>
+        <OpenPageContent />
+      </Suspense>
     </>
   );
 }
