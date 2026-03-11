@@ -809,8 +809,10 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
                   사용자 리뷰
                   <Badge variant="secondary">{details.reviews.length}개</Badge>
                 </div>
-                <Button variant="outline" size="sm">
-                  리뷰 작성하기
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/${category}/board?tag=product_review&write=true`}>
+                    리뷰 작성하기
+                  </Link>
                 </Button>
               </CardTitle>
             </CardHeader>
