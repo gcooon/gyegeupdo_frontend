@@ -15,13 +15,24 @@ export interface PostComment {
   is_owner: boolean;
 }
 
+export type PostTag = 'free' | 'product_review' | 'question';
+
+export interface PostProductInfo {
+  id: number;
+  name: string;
+  slug: string;
+  brand_name: string;
+}
+
 export interface Post {
   id: number;
   title: string;
+  tag: PostTag;
   content: string;
   user: PostUser;
   category_slug: string;
   category_name: string;
+  product_info: PostProductInfo | null;
   view_count: number;
   like_count: number;
   comment_count: number;
@@ -35,9 +46,11 @@ export interface Post {
 export interface PostListItem {
   id: number;
   title: string;
+  tag: PostTag;
   user: PostUser;
   category_slug: string;
   category_name: string;
+  product_info: PostProductInfo | null;
   view_count: number;
   like_count: number;
   comment_count: number;
@@ -59,9 +72,11 @@ export interface PostCommentsResponse {
 }
 
 export interface CreatePostPayload {
-  title: string;
+  title?: string;
   content: string;
   category_slug: string;
+  tag?: PostTag;
+  product_slug?: string;
 }
 
 export interface UpdatePostPayload {

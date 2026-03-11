@@ -484,7 +484,7 @@ export function OfficialHubContent() {
             </div>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/community/reviews">
+            <Link href="/running-shoes/board?tag=product_review">
               {tOfficial('viewAll')}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
@@ -505,7 +505,7 @@ export function OfficialHubContent() {
                 </div>
               </div>
               <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                <Link href="/review/write">{tOfficial('writeReviewButton')}</Link>
+                <Link href="/running-shoes/board?tag=product_review&write=true">{tOfficial('writeReviewButton')}</Link>
               </Button>
             </div>
           </CardContent>
@@ -565,7 +565,7 @@ export function OfficialHubContent() {
         </div>
 
         <div className="mt-4 text-center">
-          <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+          <Link href="/running-shoes/board?tag=product_review" className="text-sm text-muted-foreground hover:text-accent transition-colors">
             더 많은 리뷰 보기 →
           </Link>
         </div>
@@ -584,7 +584,7 @@ export function OfficialHubContent() {
             </div>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/community/disputes">
+            <Link href="/running-shoes/tier">
               {tOfficial('viewAll')}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>

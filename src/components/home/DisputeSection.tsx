@@ -26,7 +26,7 @@ export function DisputeSection() {
             <p className="text-muted-foreground">커뮤니티 등급 조정 투표</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/community/disputes">
+            <Link href="/running-shoes/tier">
               전체 이의 보기
             </Link>
           </Button>

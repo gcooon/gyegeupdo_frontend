@@ -559,7 +559,7 @@ export function AllCategoriesOverview() {
             </div>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/community/disputes">
+            <Link href="/running-shoes/tier">
               전체 보기
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
@@ -631,7 +631,7 @@ export function AllCategoriesOverview() {
             <p className="text-muted-foreground">전체 카테고리 최신 후기</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/community/reviews">전체 리뷰 보기</Link>
+            <Link href="/running-shoes/board?tag=product_review">전체 리뷰 보기</Link>
           </Button>
         </div>
 
@@ -649,7 +649,7 @@ export function AllCategoriesOverview() {
                 </div>
               </div>
               <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                <Link href="/review/write">리뷰 작성하기</Link>
+                <Link href="/running-shoes/board?tag=product_review&write=true">리뷰 작성하기</Link>
               </Button>
             </div>
           </CardContent>
@@ -709,7 +709,7 @@ export function AllCategoriesOverview() {
         </div>
 
         <div className="mt-4 text-center">
-          <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+          <Link href="/running-shoes/board?tag=product_review" className="text-sm text-muted-foreground hover:text-accent transition-colors">
             더 많은 리뷰 보기 →
           </Link>
         </div>

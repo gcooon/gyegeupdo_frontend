@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import { ko, enUS } from 'date-fns/locale';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,13 +29,33 @@ import {
   User,
   Loader2,
   AlertCircle,
+  Package,
 } from 'lucide-react';
 import { useCategory } from '@/hooks/useBrands';
 import { usePosts, useCreatePost } from '@/hooks/usePosts';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocaleStore } from '@/store/localeStore';
 import { getCategoryInfo } from '@/config/categories';
-import type { PostListItem } from '@/types/board';
+import type { PostListItem, PostTag } from '@/types/board';
+
+const TAG_OPTIONS: { value: PostTag | 'all'; label: string }[] = [
+  { value: 'all', label: '전체' },
+  { value: 'free', label: '자유토론' },
+  { value: 'product_review', label: '제품후기' },
+  { value: 'question', label: '질문' },
+];
+
+const TAG_BADGE_STYLES: Record<PostTag, string> = {
+  free: 'bg-blue-100 text-blue-700 border-blue-200',
+  product_review: 'bg-green-100 text-green-700 border-green-200',
+  question: 'bg-orange-100 text-orange-700 border-orange-200',
+};
+
+const TAG_LABELS: Record<PostTag, string> = {
+  free: '자유토론',
+  product_review: '제품후기',
+  question: '질문',
+};
 
 interface BoardContentProps {
   category: string;
@@ -43,40 +63,75 @@ interface BoardContentProps {
 
 export function BoardContent({ category }: BoardContentProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: categoryData } = useCategory(category);
   const { isAuthenticated } = useAuth();
   const { locale } = useLocaleStore();
   const config = getCategoryInfo(categoryData || category);
 
+  // URL 파라미터에서 초기 태그 읽기
+  const initialTag = (searchParams.get('tag') as PostTag) || 'all';
+  const [selectedTag, setSelectedTag] = useState<PostTag | 'all'>(initialTag);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [isWriteDialogOpen, setIsWriteDialogOpen] = useState(false);
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
+    tag: 'free' as PostTag,
+    product_slug: '',
   });
+
+  // URL에 ?tag= 있으면 write 다이얼로그 자동 열기
+  useEffect(() => {
+    if (searchParams.get('write') === 'true' && isAuthenticated) {
+      const urlTag = searchParams.get('tag') as PostTag;
+      if (urlTag) {
+        setNewPost(prev => ({ ...prev, tag: urlTag }));
+      }
+      setIsWriteDialogOpen(true);
+    }
+  }, [searchParams, isAuthenticated]);
 
   // API 연결
   const { data, isLoading, error, refetch } = usePosts({
     category,
+    tag: selectedTag !== 'all' ? selectedTag : undefined,
     search: searchQuery || undefined,
     page,
   });
   const createPost = useCreatePost();
 
+  const handleTagChange = (tag: PostTag | 'all') => {
+    setSelectedTag(tag);
+    setPage(1);
+  };
+
   const handleWritePost = async () => {
-    if (!newPost.title.trim() || !newPost.content.trim()) return;
+    const needsTitle = newPost.tag !== 'product_review';
+    if (needsTitle && !newPost.title.trim()) return;
+    if (!newPost.content.trim()) return;
+    if (newPost.tag === 'product_review' && !newPost.product_slug.trim()) return;
 
     try {
-      const createdPost = await createPost.mutateAsync({
-        title: newPost.title,
+      const payload: {
+        content: string;
+        category_slug: string;
+        tag: PostTag;
+        title?: string;
+        product_slug?: string;
+      } = {
         content: newPost.content,
         category_slug: category,
-      });
+        tag: newPost.tag,
+      };
+      if (newPost.title.trim()) payload.title = newPost.title;
+      if (newPost.product_slug) payload.product_slug = newPost.product_slug;
+
+      const createdPost = await createPost.mutateAsync(payload);
       setIsWriteDialogOpen(false);
-      setNewPost({ title: '', content: '' });
+      setNewPost({ title: '', content: '', tag: 'free', product_slug: '' });
       refetch();
-      // 작성 후 상세 페이지로 이동
       router.push(`/${category}/board/${createdPost.id}`);
     } catch {
       // 에러 처리
@@ -93,6 +148,13 @@ export function BoardContent({ category }: BoardContentProps) {
   const posts = data?.results || [];
   const pinnedPosts = posts.filter(post => post.is_notice);
   const regularPosts = posts.filter(post => !post.is_notice);
+
+  const writeButtonDisabled = (() => {
+    if (newPost.tag === 'product_review') {
+      return !newPost.content.trim() || !newPost.product_slug.trim() || createPost.isPending;
+    }
+    return !newPost.title.trim() || !newPost.content.trim() || createPost.isPending;
+  })();
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -119,14 +181,52 @@ export function BoardContent({ category }: BoardContentProps) {
               <DialogTitle>새 글 작성</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              {/* 태그 선택 */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">제목</label>
+                <label className="text-sm font-medium">태그</label>
+                <div className="flex gap-2">
+                  {TAG_OPTIONS.filter(t => t.value !== 'all').map((tag) => (
+                    <Button
+                      key={tag.value}
+                      type="button"
+                      variant={newPost.tag === tag.value ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setNewPost({ ...newPost, tag: tag.value as PostTag })}
+                    >
+                      {tag.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 제품 선택 (제품후기일 때) */}
+              {newPost.tag === 'product_review' && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">관련 제품 (slug)</label>
+                  <Input
+                    placeholder="예: nike-pegasus-41"
+                    value={newPost.product_slug}
+                    onChange={(e) => setNewPost({ ...newPost, product_slug: e.target.value })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    제품 상세 페이지 URL의 마지막 부분을 입력하세요
+                  </p>
+                </div>
+              )}
+
+              {/* 제목 (제품후기는 선택사항) */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  제목 {newPost.tag === 'product_review' && <span className="text-muted-foreground">(선택)</span>}
+                </label>
                 <Input
-                  placeholder="제목을 입력하세요"
+                  placeholder={newPost.tag === 'product_review' ? '비워두면 자동 생성됩니다' : '제목을 입력하세요'}
                   value={newPost.title}
                   onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
                 />
               </div>
+
+              {/* 내용 */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">내용</label>
                 <Textarea
@@ -143,7 +243,7 @@ export function BoardContent({ category }: BoardContentProps) {
               </Button>
               <Button
                 onClick={handleWritePost}
-                disabled={!newPost.title.trim() || !newPost.content.trim() || createPost.isPending}
+                disabled={writeButtonDisabled}
               >
                 {createPost.isPending ? (
                   <>
@@ -172,6 +272,20 @@ export function BoardContent({ category }: BoardContentProps) {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* 태그 필터 탭 */}
+      <div className="flex gap-2 flex-wrap">
+        {TAG_OPTIONS.map((tag) => (
+          <Button
+            key={tag.value}
+            variant={selectedTag === tag.value ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => handleTagChange(tag.value)}
+          >
+            {tag.label}
+          </Button>
+        ))}
+      </div>
 
       {/* 검색 */}
       <Card>
@@ -312,8 +426,19 @@ function PostCard({
               <div className="flex items-center gap-2 mb-1">
                 {post.is_notice && (
                   <Badge variant="secondary" className="text-xs">
-                    📌 공지
+                    공지
                   </Badge>
+                )}
+                {post.tag && (
+                  <Badge variant="outline" className={`text-xs ${TAG_BADGE_STYLES[post.tag]}`}>
+                    {TAG_LABELS[post.tag]}
+                  </Badge>
+                )}
+                {post.product_info && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Package className="h-3 w-3" />
+                    {post.product_info.brand_name} {post.product_info.name}
+                  </span>
                 )}
               </div>
 

@@ -750,7 +750,7 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
             <p className="text-muted-foreground">커뮤니티 등급 조정 투표</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/community/disputes">
+            <Link href="/running-shoes/tier">
               전체 이의 보기
             </Link>
           </Button>
@@ -881,7 +881,7 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
               <p className="text-muted-foreground">실제 사용자들의 솔직한 후기</p>
             </div>
             <Button variant="outline" asChild>
-              <Link href="/community/reviews">전체 리뷰 보기</Link>
+              <Link href="/running-shoes/board?tag=product_review">전체 리뷰 보기</Link>
             </Button>
           </div>
 
@@ -901,7 +901,7 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
                   </div>
                 </div>
                 <Button className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                  <Link href="/review/write">
+                  <Link href="/running-shoes/board?tag=product_review&write=true">
                     리뷰 작성하기
                   </Link>
                 </Button>
@@ -968,7 +968,7 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
           {/* More Reviews Link */}
           <div className="mt-6 text-center">
             <Link
-              href="/community/reviews"
+              href="/running-shoes/board?tag=product_review"
               className="text-sm text-muted-foreground hover:text-accent transition-colors"
             >
               더 많은 리뷰 보기 →

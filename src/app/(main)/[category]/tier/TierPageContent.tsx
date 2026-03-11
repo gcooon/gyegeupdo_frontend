@@ -21,11 +21,11 @@ import {
   Users,
   MessageCircle,
   Clock,
-  Star,
   ThumbsUp,
 } from 'lucide-react';
 import { TierLevel } from '@/lib/tier';
 import { ShareButtons } from '@/components/share/ShareButtons';
+import { usePosts } from '@/hooks/usePosts';
 import { useTranslations } from '@/i18n';
 
 interface TierPageContentProps {
@@ -439,115 +439,6 @@ const HOT_DISPUTES: Record<string, {
   ],
 };
 
-// 커뮤니티 리뷰 데이터
-const RECENT_REVIEWS: Record<string, {
-  id: number;
-  user: { name: string; type: string };
-  model: { name: string; brand: string; tier: TierLevel; slug: string };
-  rating: number;
-  content: string;
-  likes: number;
-  comments: number;
-  createdAt: string;
-}[]> = {
-  'running-shoes': [
-    {
-      id: 1,
-      user: { name: '러닝좋아', type: '평발 / 넓은 발' },
-      model: { name: '노바블라스트 5', brand: '아식스', tier: 'A', slug: 'novablast-5' },
-      rating: 5,
-      content: '평발인데 아치 서포트가 적당하고 쿠셔닝이 정말 좋아요. 10km 이상 달려도 발이 편합니다.',
-      likes: 24,
-      comments: 5,
-      createdAt: '2시간 전',
-    },
-    {
-      id: 2,
-      user: { name: '마라토너K', type: '보통 / 보통 발' },
-      model: { name: '알파플라이 3', brand: '나이키', tier: 'S', slug: 'alphafly-3' },
-      rating: 4,
-      content: '가격이 비싸지만 레이스용으로는 최고입니다. 다만 내구성은 좀 아쉬워요.',
-      likes: 18,
-      comments: 3,
-      createdAt: '5시간 전',
-    },
-    {
-      id: 3,
-      user: { name: '초보러너', type: '오버프로네이션 / 좁은 발' },
-      model: { name: '젤 카야노 31', brand: '아식스', tier: 'S', slug: 'gel-kayano-31' },
-      rating: 5,
-      content: '오버프로네이션 교정이 필요한 분들께 강력 추천합니다. 안정성이 뛰어나요.',
-      likes: 31,
-      comments: 8,
-      createdAt: '1일 전',
-    },
-    {
-      id: 4,
-      user: { name: '런런런', type: '정상 / 보통 발' },
-      model: { name: '클리프톤 10', brand: '호카', tier: 'A', slug: 'clifton-10' },
-      rating: 4,
-      content: '가볍고 쿠셔닝 좋습니다. 다만 통기성이 조금 아쉬워요. 여름에는 덥습니다.',
-      likes: 12,
-      comments: 2,
-      createdAt: '1일 전',
-    },
-  ],
-  'chicken': [
-    {
-      id: 101,
-      user: { name: '치킨마스터', type: '매운맛 좋아함' },
-      model: { name: '뿌링클', brand: 'BHC', tier: 'S', slug: 'bhc-puringkle' },
-      rating: 5,
-      content: '치즈 시즈닝이 정말 맛있어요. 맥주 안주로 최고입니다. 재주문 확정!',
-      likes: 32,
-      comments: 7,
-      createdAt: '1시간 전',
-    },
-    {
-      id: 102,
-      user: { name: '야식킹', type: '바삭함 선호' },
-      model: { name: '황금올리브치킨', brand: 'BBQ', tier: 'S', slug: 'bbq-golden-olive' },
-      rating: 5,
-      content: '올리브유로 튀겨서 담백하고 바삭해요. 치킨 본연의 맛을 느끼기 좋습니다.',
-      likes: 28,
-      comments: 4,
-      createdAt: '3시간 전',
-    },
-    {
-      id: 103,
-      user: { name: '혼닭러버', type: '가성비 중시' },
-      model: { name: '교촌 오리지날', brand: '교촌', tier: 'S', slug: 'kyochon-original' },
-      rating: 4,
-      content: '간장 소스가 은은하게 배어서 좋아요. 다만 양이 조금 아쉽습니다.',
-      likes: 19,
-      comments: 3,
-      createdAt: '5시간 전',
-    },
-    {
-      id: 104,
-      user: { name: '파티플래너', type: '모임용' },
-      model: { name: '굽네 고추바사삭', brand: '굽네', tier: 'A', slug: 'goobne-gochu' },
-      rating: 4,
-      content: '오븐에 구워서 건강한 느낌이에요. 매콤한 맛이 좋고 살짝 덜 느끼해요.',
-      likes: 15,
-      comments: 2,
-      createdAt: '1일 전',
-    },
-  ],
-};
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`h-3.5 w-3.5 ${star <= rating ? 'fill-amber-400 text-amber-400' : 'text-muted'}`}
-        />
-      ))}
-    </div>
-  );
-}
 
 export function TierPageContent({ category, initialBrands, initialCategory }: TierPageContentProps) {
   const { data: brands = initialBrands, isLoading, error } = useBrands(category, initialBrands);
@@ -969,7 +860,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
                 <p className="text-sm text-muted-foreground">{t('dispute.subtitle')}</p>
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/community/disputes">{t('dispute.viewAll')}</Link>
+                <Link href={`/${category}/tier`}>{t('dispute.viewAll')}</Link>
               </Button>
             </div>
 
@@ -1076,102 +967,120 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       })()}
 
       {/* 커뮤니티 리뷰 섹션 */}
-      {(() => {
-        const reviews = RECENT_REVIEWS[category] || [];
-        const categoryName = categoryData?.name || '제품';
+      <TierCommunitySection category={category} categoryName={categoryData?.name || '제품'} t={t} />
+    </div>
+  );
+}
 
-        return (
-          <section className="py-6 bg-muted/30 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-bold mb-1">{t('review.title')}</h2>
-                <p className="text-sm text-muted-foreground">{t('review.subtitle')}</p>
+function TierCommunitySection({
+  category,
+  categoryName,
+  t,
+}: {
+  category: string;
+  categoryName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any;
+}) {
+  const { data, isLoading } = usePosts({
+    category,
+    tag: 'product_review',
+    page_size: 4,
+  });
+
+  const posts = data?.results || [];
+
+  return (
+    <section className="py-6 bg-muted/30 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-xl font-bold mb-1">{t('review.title')}</h2>
+          <p className="text-sm text-muted-foreground">{t('review.subtitle')}</p>
+        </div>
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/${category}/board?tag=product_review`}>{t('review.viewAll')}</Link>
+        </Button>
+      </div>
+
+      {/* 리뷰 작성 CTA */}
+      <Card className="card-base mb-4 border-accent/30 bg-accent/5">
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                <MessageCircle className="h-5 w-5 text-accent" />
               </div>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/community/reviews">{t('review.viewAll')}</Link>
-              </Button>
+              <div>
+                <p className="font-semibold text-sm">{t('review.writeReview', { category: categoryName })}</p>
+                <p className="text-xs text-muted-foreground">{t('review.writeReviewDesc')}</p>
+              </div>
             </div>
+            <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
+              <Link href={`/${category}/board?tag=product_review&write=true`}>{t('review.writeButton')}</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-            {/* 리뷰 작성 CTA */}
-            <Card className="card-base mb-4 border-accent/30 bg-accent/5">
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                      <Star className="h-5 w-5 text-accent" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">{t('review.writeReview', { category: categoryName })}</p>
-                      <p className="text-xs text-muted-foreground">{t('review.writeReviewDesc')}</p>
+      {/* 게시글 그리드 */}
+      {isLoading ? (
+        <div className="flex justify-center py-8">
+          <span className="text-sm text-muted-foreground">불러오는 중...</span>
+        </div>
+      ) : posts.length > 0 ? (
+        <div className="grid md:grid-cols-2 gap-4">
+          {posts.map((post: import('@/types/board').PostListItem) => (
+            <Link key={post.id} href={`/${category}/board/${post.id}`}>
+              <Card className="card-base hover:border-accent/50 transition-colors h-full">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-medium text-primary">
+                          {post.user.username[0]?.toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{post.user.username}</p>
+                        {post.product_info && (
+                          <p className="text-[10px] text-muted-foreground">
+                            {post.product_info.brand_name} {post.product_info.name}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                    <Link href="/review/write">{t('review.writeButton')}</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* 리뷰 그리드 */}
-            <div className="grid md:grid-cols-2 gap-4">
-              {reviews.map((review) => (
-                <Card key={review.id} className="card-base">
-                  <CardContent className="p-4">
-                    {/* 헤더 */}
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">{review.user.name[0]}</span>
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">{review.user.name}</p>
-                          <p className="text-[10px] text-muted-foreground">{review.user.type}</p>
-                        </div>
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">{review.createdAt}</span>
-                    </div>
+                  <h3 className="text-sm font-medium mb-1 line-clamp-1">{post.title}</h3>
 
-                    {/* 제품 링크 */}
-                    <Link
-                      href={`/${category}/model/${review.model.slug}`}
-                      className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground hover:text-accent transition-colors"
-                    >
-                      <span>{review.model.brand} {review.model.name}</span>
-                      <TierBadge tier={review.model.tier} size="sm" showLabel={false} />
-                    </Link>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2">
+                    <span className="flex items-center gap-1">
+                      <ThumbsUp className="h-3.5 w-3.5" />
+                      {post.like_count}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageCircle className="h-3.5 w-3.5" />
+                      {post.comment_count}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <Card className="card-base">
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground text-sm">아직 커뮤니티 후기가 없습니다. 첫 번째 후기를 남겨보세요!</p>
+          </CardContent>
+        </Card>
+      )}
 
-                    {/* 별점 */}
-                    <div className="mb-2">
-                      <StarRating rating={review.rating} />
-                    </div>
-
-                    {/* 내용 */}
-                    <p className="text-sm text-foreground/90 mb-3 line-clamp-2">{review.content}</p>
-
-                    {/* 액션 */}
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <button className="flex items-center gap-1 hover:text-accent transition-colors">
-                        <ThumbsUp className="h-3.5 w-3.5" />
-                        <span>{review.likes}</span>
-                      </button>
-                      <button className="flex items-center gap-1 hover:text-accent transition-colors">
-                        <MessageCircle className="h-3.5 w-3.5" />
-                        <span>{review.comments}</span>
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <div className="mt-4 text-center">
-              <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
-                {t('review.viewMore')}
-              </Link>
-            </div>
-          </section>
-        );
-      })()}
-    </div>
+      <div className="mt-4 text-center">
+        <Link href={`/${category}/board?tag=product_review`} className="text-sm text-muted-foreground hover:text-accent transition-colors">
+          {t('review.viewMore')}
+        </Link>
+      </div>
+    </section>
   );
 }

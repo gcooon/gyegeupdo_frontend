@@ -14,6 +14,8 @@ import {
 
 interface PostFilters {
   category?: string;
+  tag?: string;
+  product?: string;
   search?: string;
   page?: number;
   page_size?: number;
@@ -27,6 +29,8 @@ export function usePosts(filters?: PostFilters) {
       const params = new URLSearchParams();
 
       if (filters?.category) params.append('category', filters.category);
+      if (filters?.tag) params.append('tag', filters.tag);
+      if (filters?.product) params.append('product', filters.product);
       if (filters?.search) params.append('search', filters.search);
       if (filters?.page) params.append('page', String(filters.page));
       if (filters?.page_size) params.append('page_size', String(filters.page_size));

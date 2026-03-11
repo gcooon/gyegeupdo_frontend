@@ -53,7 +53,7 @@ import {
 } from 'lucide-react';
 import { TierLevel } from '@/lib/tier';
 import { ShareButtons } from '@/components/share/ShareButtons';
-import { ProductComments } from '@/components/product/ProductComments';
+import { ProductBoardSection } from '@/components/board/ProductBoardSection';
 
 // 이미지 표시 여부 플래그 (이미지 준비 완료 시 true로 변경)
 const SHOW_PRODUCT_IMAGES = false;
@@ -929,8 +929,8 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
             </Card>
           )}
 
-          {/* Comments Section - API 연결 */}
-          <ProductComments productSlug={slug} categorySlug={category} />
+          {/* 커뮤니티 섹션 - 통합 게시판 */}
+          <ProductBoardSection productSlug={slug} categorySlug={category} productName={product.name} />
 
           {/* Traps Section */}
           {product.traps && product.traps.length > 0 && (
