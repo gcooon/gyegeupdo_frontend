@@ -1,5 +1,15 @@
 'use client';
 
+// TODO: 모바일 하단 네비게이션 - 나중에 필요할 수 있으므로 코드 보존
+// 다시 활성화하려면 아래 주석을 해제하고 return null을 제거하세요
+
+export function MobileNav() {
+  return null;
+}
+
+/*
+// ===== 비활성화된 코드 (나중에 사용 가능) =====
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Trophy, Search, MessageSquare, User } from 'lucide-react';
@@ -21,11 +31,6 @@ const FALLBACK_CATEGORY_LABELS: Record<string, { label: string; icon: string }> 
 };
 
 export function MobileNav() {
-  // TODO: 나중에 필요할 수 있으므로 코드는 유지하고 숨김 처리
-  // 다시 활성화하려면 아래 return null을 제거하세요
-  return null;
-
-  // eslint-disable-next-line @typescript-eslint/no-unreachable-code
   const pathname = usePathname() ?? '';
   const { isOpen: isSidebarOpen } = useSidebarStore();
   const { data: apiCategories } = useCategories();
@@ -71,7 +76,6 @@ export function MobileNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card border-t border-border">
-      {/* 현재 카테고리 표시 */}
       {showCategoryIndicator && (
         <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-3 py-1 bg-accent text-white text-[10px] font-medium rounded-t-lg flex items-center gap-1">
           <span>{categoryInfo.icon}</span>
@@ -101,3 +105,4 @@ export function MobileNav() {
     </nav>
   );
 }
+*/
