@@ -207,6 +207,18 @@
   .gradient-gold {
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   }
+  /* Hide scrollbar but allow scrolling */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+  /* Ensure touch events work */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
 }
 
 /* Shimmer Animation for S-tier */
