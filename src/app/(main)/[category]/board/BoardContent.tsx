@@ -149,13 +149,28 @@ export function BoardContent({ category }: BoardContentProps) {
       refetch();
       router.push(`/${category}/board/${createdPost.id}`);
     } catch (err: unknown) {
-      // axios error의 response data에서 상세 메시지 추출
-      const axiosErr = err as { response?: { data?: { message?: string; detail?: string } } };
-      const serverMsg = axiosErr?.response?.data?.message
-        || axiosErr?.response?.data?.detail
-        || JSON.stringify(axiosErr?.response?.data)
-        || (err instanceof Error ? err.message : '게시글 작성에 실패했습니다.');
-      setWriteError(String(serverMsg));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const axiosErr = err as any;
+      const data = axiosErr?.response?.data;
+      let serverMsg = '게시글 작성에 실패했습니다.';
+      if (data) {
+        // DRF validation errors: { "field": ["error msg"] } or { "message": "..." }
+        if (typeof data === 'object') {
+          const parts: string[] = [];
+          for (const [key, val] of Object.entries(data)) {
+            if (Array.isArray(val)) {
+              parts.push(`${key}: ${val.join(', ')}`);
+            } else if (typeof val === 'string') {
+              parts.push(val);
+            }
+          }
+          if (parts.length > 0) serverMsg = parts.join(' | ');
+          else serverMsg = JSON.stringify(data);
+        } else {
+          serverMsg = String(data);
+        }
+      }
+      setWriteError(serverMsg);
     }
   };
 
