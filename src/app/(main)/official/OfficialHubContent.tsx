@@ -17,9 +17,12 @@ import {
   ChevronUp,
   ChevronDown,
   ArrowRight,
+  Star,
+  ThumbsUp,
+  MessageCircle,
 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
-import { useHomeSummary, HomeCategory, HomeDispute } from '@/hooks/useHome';
+import { useHomeSummary, HomeCategory, HomeDispute, HomeReview } from '@/hooks/useHome';
 import { useCategories } from '@/hooks/useBrands';
 import type { CategoryListItem, CategoryGroup } from '@/types/model';
 import { useTranslations } from '@/i18n';
@@ -137,6 +140,70 @@ const ALL_HOT_DISPUTES = [
   },
 ];
 
+const ALL_RECENT_REVIEWS = [
+  {
+    id: 1,
+    category: 'running-shoes',
+    category_icon: '👟',
+    user: { name: '러닝좋아', type: '평발 / 넓은 발' },
+    product: { name: '노바블라스트 5', brand: '아식스', tier: 'S' as TierLevel, slug: 'novablast-5' },
+    rating: 5,
+    content: '2025년 최고의 데일리 러닝화! 쿠셔닝과 반발력의 완벽한 균형. 공홈 마비될 정도로 인기 있는 이유를 알겠어요.',
+    likes: 156,
+    comments: 23,
+    created_at: '2시간 전',
+  },
+  {
+    id: 101,
+    category: 'chicken',
+    category_icon: '🍗',
+    user: { name: '치킨마스터', type: '매운맛 좋아함' },
+    product: { name: '뿌링클', brand: 'BHC', tier: 'S' as TierLevel, slug: 'bhc-puringkle' },
+    rating: 5,
+    content: '치즈 시즈닝이 정말 맛있어요. 맥주 안주로 최고입니다. 재주문 확정!',
+    likes: 32,
+    comments: 7,
+    created_at: '1시간 전',
+  },
+  {
+    id: 2,
+    category: 'running-shoes',
+    category_icon: '👟',
+    user: { name: '마라토너K', type: '보통 / 보통 발' },
+    product: { name: '메타스피드 스카이 도쿄', brand: '아식스', tier: 'S' as TierLevel, slug: 'metaspeed-sky-tokyo' },
+    rating: 5,
+    content: '아식스가 레이싱화 왕좌 탈환! FF LEAP 폼 반발력이 미쳤어요. 서브3 도전하시는 분들 강추합니다.',
+    likes: 87,
+    comments: 15,
+    created_at: '5시간 전',
+  },
+  {
+    id: 102,
+    category: 'chicken',
+    category_icon: '🍗',
+    user: { name: '야식킹', type: '바삭함 선호' },
+    product: { name: '황금올리브치킨', brand: 'BBQ', tier: 'S' as TierLevel, slug: 'bbq-golden-olive' },
+    rating: 5,
+    content: '올리브유로 튀겨서 담백하고 바삭해요. 치킨 본연의 맛을 느끼기 좋습니다.',
+    likes: 28,
+    comments: 4,
+    created_at: '3시간 전',
+  },
+];
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={`h-3.5 w-3.5 ${star <= rating ? 'fill-amber-400 text-amber-400' : 'text-muted'}`}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function OfficialHubContent() {
   const { data: homeSummary } = useHomeSummary();
   const { data: apiCategories } = useCategories();
@@ -196,6 +263,10 @@ export function OfficialHubContent() {
         reason: '',
         days_left: d.daysLeft,
       }));
+
+  const reviews: HomeReview[] = homeSummary?.reviews?.length
+    ? homeSummary.reviews
+    : ALL_RECENT_REVIEWS;
 
   return (
     <div className="container py-6 max-w-6xl space-y-12">
@@ -372,7 +443,135 @@ export function OfficialHubContent() {
         </div>
       </section>
 
-      {/* HOT 이의 섹션 */}
+      {/* 퀵 액션 CTA */}
+      <section className="py-8 bg-gradient-to-r from-primary/5 to-accent/5 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
+        <div className="text-center mb-6">
+          <h2 className="text-xl md:text-2xl font-bold mb-2">{tOfficial('quickActions')}</h2>
+          <p className="text-muted-foreground">{tOfficial('quickActionsDesc')}</p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button size="lg" className="bg-accent hover:bg-accent/90" asChild>
+            <Link href="/running-shoes/quiz">
+              <Sparkles className="h-5 w-5 mr-2" />
+              3분 진단
+            </Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="/running-shoes/compare">
+              <GitCompare className="h-5 w-5 mr-2" />
+              VS 비교
+            </Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="/running-shoes/board">
+              <MessageSquare className="h-5 w-5 mr-2" />
+              게시판
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* 커뮤니티 리뷰 */}
+      <section className="py-8 bg-muted/30 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+              <MessageCircle className="h-5 w-5 text-accent" />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold">{tOfficial('communityReviews')}</h2>
+              <p className="text-sm text-muted-foreground">{tOfficial('communityReviewsDesc')}</p>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/community/reviews">
+              {tOfficial('viewAll')}
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Link>
+          </Button>
+        </div>
+
+        {/* 리뷰 작성 CTA */}
+        <Card className="card-base mb-6 border-accent/30 bg-accent/5">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                  <Star className="h-5 w-5 text-accent" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{tOfficial('writeReview')}</p>
+                  <p className="text-xs text-muted-foreground">{tOfficial('writeReviewDesc')}</p>
+                </div>
+              </div>
+              <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
+                <Link href="/review/write">{tOfficial('writeReviewButton')}</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 리뷰 그리드 */}
+        <div className="grid md:grid-cols-2 gap-4">
+          {reviews.slice(0, 4).map((review) => (
+            <Card key={review.id} className="card-base">
+              <CardContent className="p-4">
+                {/* 헤더 */}
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{review.category_icon}</span>
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-xs font-medium text-primary">{review.user.name[0]}</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">{review.user.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{review.user.type}</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">{review.created_at}</span>
+                </div>
+
+                {/* 제품 링크 */}
+                <Link
+                  href={`/${review.category}/model/${review.product.slug}`}
+                  className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground hover:text-accent transition-colors"
+                >
+                  <span>{review.product.brand} {review.product.name}</span>
+                  <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
+                </Link>
+
+                {/* 별점 */}
+                <div className="mb-2">
+                  <StarRating rating={review.rating} />
+                </div>
+
+                {/* 내용 */}
+                <p className="text-sm text-foreground/90 mb-3 line-clamp-2">{review.content}</p>
+
+                {/* 액션 */}
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <button className="flex items-center gap-1 hover:text-accent transition-colors">
+                    <ThumbsUp className="h-3.5 w-3.5" />
+                    <span>{review.likes}</span>
+                  </button>
+                  <button className="flex items-center gap-1 hover:text-accent transition-colors">
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    <span>{review.comments}</span>
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="mt-4 text-center">
+          <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+            더 많은 리뷰 보기 →
+          </Link>
+        </div>
+      </section>
+
+      {/* HOT 이의 섹션 - 맨 아래로 이동 */}
       <section>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -457,34 +656,6 @@ export function OfficialHubContent() {
               </Link>
             );
           })}
-        </div>
-      </section>
-
-      {/* 퀵 액션 CTA */}
-      <section className="py-8 bg-gradient-to-r from-primary/5 to-accent/5 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
-        <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">{tOfficial('quickActions')}</h2>
-          <p className="text-muted-foreground">{tOfficial('quickActionsDesc')}</p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Button size="lg" className="bg-accent hover:bg-accent/90" asChild>
-            <Link href="/running-shoes/quiz">
-              <Sparkles className="h-5 w-5 mr-2" />
-              3분 진단
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/running-shoes/compare">
-              <GitCompare className="h-5 w-5 mr-2" />
-              VS 비교
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/running-shoes/board">
-              <MessageSquare className="h-5 w-5 mr-2" />
-              게시판
-            </Link>
-          </Button>
         </div>
       </section>
     </div>

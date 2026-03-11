@@ -30,6 +30,7 @@
     "latest": "최신 계급도",
     "hallOfFame": "명예의전당",
     "viewAll": "전체 보기",
+    "officialTierHome": "공식 계급도 홈",
     "openTierHome": "오픈 계급도 홈",
     "brandLogo": "티",
     "brandName": "티어차트 계급도",
@@ -206,7 +207,12 @@
     "hotDisputesDesc": "등급 조정 투표 진행 중",
     "viewAll": "전체 보기",
     "quickActions": "빠른 액션",
-    "quickActionsDesc": "원하는 기능을 바로 이용해보세요"
+    "quickActionsDesc": "원하는 기능을 바로 이용해보세요",
+    "communityReviews": "커뮤니티 리뷰",
+    "communityReviewsDesc": "전체 카테고리 최신 후기",
+    "writeReview": "내 리뷰 남기기",
+    "writeReviewDesc": "다른 사용자들에게 도움이 되는 리뷰를 작성해주세요",
+    "writeReviewButton": "리뷰 작성하기"
   },
   "openHub": {
     "badge": "사용자들이 만든",
@@ -229,7 +235,9 @@
     "guideStep2Desc": "순위를 매길 항목들을 추가",
     "guideStep3Title": "3. 티어 배치",
     "guideStep3Desc": "S~D로 분류, 드래그앤드롭",
-    "startCreating": "지금 시작하기"
+    "startCreating": "지금 시작하기",
+    "hallOfFameTitle": "명예의전당",
+    "viewHallOfFame": "더 보기"
   },
   "officialTier": {
     "title": "{category} 계급도",

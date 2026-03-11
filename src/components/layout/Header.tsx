@@ -21,7 +21,7 @@ import { useTranslations } from '@/i18n';
 // API 실패 시 폴백용 (중앙 설정에서 가져옴)
 const FALLBACK_CATEGORIES = NAV_CATEGORIES;
 
-// 공식 계급도 서브메뉴 (카테고리 선택 후)
+// 공식 계급도 서브메뉴 (카테고리 선택 후) - 나중에 사용할 수 있으므로 유지
 const OFFICIAL_SUBMENUS = [
   { key: 'tier', label: '계급도 보기', icon: Trophy },
   { key: 'quiz', label: '3분 진단', icon: Sparkles },
@@ -36,6 +36,13 @@ const OPEN_TIER_MENUS = [
   { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
   { key: 'hallOfFame', labelKey: 'hallOfFame', href: '/open?tab=hall_of_fame', icon: Crown },
   { key: 'my', labelKey: 'myTiers', href: '/open/my', icon: FileText },
+];
+
+// 모바일 퀵 메뉴 (두 번째 줄에 표시)
+const MOBILE_QUICK_MENUS = [
+  { key: 'official', labelKey: 'officialTier', href: '/official', icon: Trophy, color: 'text-amber-500' },
+  { key: 'open', labelKey: 'openTier', href: '/open', icon: Users, color: 'text-accent' },
+  { key: 'create', labelKey: 'create', href: '/open/create', icon: Plus, color: 'text-emerald-500' },
 ];
 
 export function Header() {
@@ -56,26 +63,28 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-      <div className="flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
-        <div className="flex items-center gap-4">
+      {/* 메인 헤더 줄 */}
+      <div className="flex h-14 items-center justify-between px-4 md:px-6 lg:px-8">
+        <div className="flex items-center gap-2 md:gap-4">
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden shrink-0"
             onClick={toggle}
           >
             <Menu className="h-5 w-5" />
           </Button>
 
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground font-bold">
+          {/* 로고 + 타이틀 (한 줄 고정) */}
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground font-bold shrink-0">
               {t('brandLogo')}
             </div>
-            <span className="font-bold text-lg">{t('brandName')}</span>
+            <span className="font-bold text-base md:text-lg whitespace-nowrap">{t('brandName')}</span>
           </Link>
 
-          {/* Main Navigation */}
+          {/* Desktop Navigation - lg 이상에서만 표시 */}
           <nav className="hidden lg:flex items-center gap-1 ml-4">
             {/* 공식 계급도 드롭다운 */}
             <div
@@ -105,8 +114,8 @@ export function Header() {
                     href="/official"
                     className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors border-b border-border"
                   >
-                    <LayoutGrid className="h-4 w-4 text-amber-500" />
-                    <span>{t('viewAll')}</span>
+                    <Home className="h-4 w-4 text-amber-500" />
+                    <span>{t('officialTierHome')}</span>
                   </Link>
                   {categories.map((category) => (
                     <Link
@@ -181,7 +190,7 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           {/* 언어 전환 */}
           <LanguageSwitcher />
 
@@ -190,11 +199,11 @@ export function Header() {
           ) : isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-1 md:gap-2 px-2 md:px-3">
                   <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center">
                     <User className="h-4 w-4 text-accent" />
                   </div>
-                  <span className="hidden sm:inline-block max-w-[100px] truncate">
+                  <span className="hidden md:inline-block max-w-[100px] truncate">
                     {user.profile?.badge && user.profile.badge !== 'none' && (
                       <span className="mr-1">
                         {user.profile.badge === 'verified' && '✓'}
@@ -205,7 +214,7 @@ export function Header() {
                     )}
                     {user.first_name || user.email.split('@')[0]}
                   </span>
-                  <ChevronDown className="h-3 w-3" />
+                  <ChevronDown className="h-3 w-3 hidden md:block" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -229,14 +238,33 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" className="px-2 md:px-3 text-xs md:text-sm" asChild>
                 <Link href="/login">{tCommon('login')}</Link>
               </Button>
-              <Button size="sm" className="bg-accent hover:bg-accent/90" asChild>
+              <Button size="sm" className="bg-accent hover:bg-accent/90 px-2 md:px-3 text-xs md:text-sm" asChild>
                 <Link href="/signup">{tCommon('signup')}</Link>
               </Button>
             </>
           )}
+        </div>
+      </div>
+
+      {/* 모바일 퀵 메뉴 줄 - lg 미만에서만 표시 */}
+      <div className="lg:hidden border-t border-border/40">
+        <div className="flex items-center justify-center gap-1 px-2 py-1.5">
+          {MOBILE_QUICK_MENUS.map((menu) => {
+            const Icon = menu.icon;
+            return (
+              <Link
+                key={menu.key}
+                href={menu.href}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              >
+                <Icon className={`h-3.5 w-3.5 ${menu.color}`} />
+                <span>{menu.key === 'create' ? tCommon(menu.labelKey) : t(menu.labelKey)}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </header>

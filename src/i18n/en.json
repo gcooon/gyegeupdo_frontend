@@ -30,6 +30,7 @@
     "latest": "Latest",
     "hallOfFame": "Hall of Fame",
     "viewAll": "View All",
+    "officialTierHome": "Official Tier Home",
     "openTierHome": "Open Tier Home",
     "brandLogo": "T",
     "brandName": "Tier Chart",
@@ -206,7 +207,12 @@
     "hotDisputesDesc": "Tier adjustment voting in progress",
     "viewAll": "View All",
     "quickActions": "Quick Actions",
-    "quickActionsDesc": "Get started with the features you need"
+    "quickActionsDesc": "Get started with the features you need",
+    "communityReviews": "Community Reviews",
+    "communityReviewsDesc": "Latest reviews from all categories",
+    "writeReview": "Write a Review",
+    "writeReviewDesc": "Help other users with your review",
+    "writeReviewButton": "Write Review"
   },
   "openHub": {
     "badge": "User Created",
@@ -229,7 +235,9 @@
     "guideStep2Desc": "Add items to rank",
     "guideStep3Title": "3. Arrange Tiers",
     "guideStep3Desc": "Classify S~D, drag and drop",
-    "startCreating": "Start Now"
+    "startCreating": "Start Now",
+    "hallOfFameTitle": "Hall of Fame",
+    "viewHallOfFame": "View More"
   },
   "officialTier": {
     "title": "{category} Tier Chart",

@@ -153,7 +153,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
               {isOfficialExpanded && (
                 <div className="ml-3 mt-1 border-l-2 border-amber-200 pl-3 space-y-1">
-                  {/* 전체 보기 링크 */}
+                  {/* 공식 계급도 홈 링크 */}
                   <Link
                     href="/official"
                     className={`
@@ -164,8 +164,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
                       }
                     `}
                   >
-                    <LayoutGrid className="h-4 w-4 text-amber-500" />
-                    <span>{t('viewAll')}</span>
+                    <Home className="h-4 w-4 text-amber-500" />
+                    <span>{t('officialTierHome')}</span>
                   </Link>
                   {categories.map((category) => {
                     const isExpanded = expandedCategories.includes(category.slug);

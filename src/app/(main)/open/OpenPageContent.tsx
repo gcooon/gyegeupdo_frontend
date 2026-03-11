@@ -1,6 +1,6 @@
 'use client';
 
-import { OpenHeroSection, FeaturedCharts, CreateGuideSection } from '@/components/open';
+import { OpenHeroSection, CreateGuideSection, HallOfFameSection } from '@/components/open';
 import { HotOpenTierCharts } from '@/components/home/HotOpenTierCharts';
 import { MyTierListContent } from './MyTierListContent';
 
@@ -12,14 +12,14 @@ export function OpenPageContent() {
         <OpenHeroSection />
       </div>
 
-      {/* 피처드 계급도 */}
-      <div className="container max-w-6xl">
-        <FeaturedCharts />
-      </div>
-
-      {/* HOT 오픈 계급도 */}
+      {/* HOT 오픈 계급도 - 위로 이동 */}
       <div className="container max-w-6xl">
         <HotOpenTierCharts />
+      </div>
+
+      {/* 명예의전당 섹션 - 신규 */}
+      <div className="container max-w-6xl">
+        <HallOfFameSection />
       </div>
 
       {/* 계급도 만들기 가이드 */}
