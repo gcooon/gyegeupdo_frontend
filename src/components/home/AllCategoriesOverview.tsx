@@ -438,27 +438,27 @@ export function AllCategoriesOverview() {
                       </div>
 
                       {/* 액션 버튼 */}
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 text-xs h-8"
+                          className="flex-1 text-[10px] sm:text-xs h-7 sm:h-8 px-2 sm:px-3 min-w-0"
                           style={{ borderColor: `${color}50`, color }}
                           asChild
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Link href={`/${category.slug}/quiz`}>
-                            <Sparkles className="h-3 w-3 mr-1" />
-                            진단
+                            <Sparkles className="h-3 w-3 sm:mr-1 flex-shrink-0" />
+                            <span className="hidden sm:inline">진단</span>
                           </Link>
                         </Button>
                         <Button
                           size="sm"
-                          className="flex-1 text-xs text-white h-8"
+                          className="flex-1 text-[10px] sm:text-xs text-white h-7 sm:h-8 px-2 sm:px-3 min-w-0"
                           style={{ background: color }}
                         >
-                          계급도
-                          <ArrowRight className="h-3 w-3 ml-1" />
+                          <span className="truncate">계급도</span>
+                          <ArrowRight className="h-3 w-3 ml-0.5 flex-shrink-0" />
                         </Button>
                       </div>
                     </div>

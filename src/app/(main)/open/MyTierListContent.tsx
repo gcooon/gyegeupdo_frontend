@@ -43,7 +43,7 @@ import { useTranslations } from '@/i18n';
 
 type SortOption = 'popular' | 'latest' | 'views';
 
-type TabType = 'all' | 'hot' | 'hall_of_fame' | 'featured' | 'mine';
+type TabType = 'all' | 'hall_of_fame' | 'hot' | 'mine';
 
 interface MyTierListContentProps {
   initialCharts?: UserTierChartListItem[];
@@ -79,10 +79,6 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
 
       if (search) {
         params.append('search', search);
-      }
-
-      if (activeTab === 'featured') {
-        params.append('featured', 'true');
       }
 
       if (languageFilter !== 'all') {
@@ -223,21 +219,17 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           }}
           className="w-full md:w-auto"
         >
-          <TabsList className="grid grid-cols-5 w-full md:w-auto">
-            <TabsTrigger value="all">{t('tabs.all')}</TabsTrigger>
-            <TabsTrigger value="hot" className="text-orange-500">
-              <Flame className="h-4 w-4 mr-1" />
-              {t('tabs.hot')}
-            </TabsTrigger>
-            <TabsTrigger value="hall_of_fame" className="text-yellow-500">
+          <TabsList className="flex w-full md:w-auto overflow-x-auto">
+            <TabsTrigger value="all" className="flex-shrink-0">{t('tabs.all')}</TabsTrigger>
+            <TabsTrigger value="hall_of_fame" className="flex-shrink-0 text-yellow-500">
               <Trophy className="h-4 w-4 mr-1" />
               {t('tabs.hallOfFame')}
             </TabsTrigger>
-            <TabsTrigger value="featured">
-              <Crown className="h-4 w-4 mr-1" />
-              {t('tabs.featured')}
+            <TabsTrigger value="hot" className="flex-shrink-0 text-orange-500">
+              <Flame className="h-4 w-4 mr-1" />
+              {t('tabs.hot')}
             </TabsTrigger>
-            <TabsTrigger value="mine" disabled={!isAuthenticated}>
+            <TabsTrigger value="mine" className="flex-shrink-0" disabled={!isAuthenticated}>
               {t('tabs.mine')}
             </TabsTrigger>
           </TabsList>
