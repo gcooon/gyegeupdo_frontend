@@ -31,7 +31,7 @@ const OFFICIAL_SUBMENUS = [
 
 // 오픈 계급도 메뉴
 const OPEN_TIER_MENUS = [
-  { key: 'home', labelKey: 'viewAll', href: '/open', icon: Home, isHeader: true },
+  { key: 'home', labelKey: 'openTierHome', href: '/open', icon: Home, isHeader: true },
   { key: 'popular', labelKey: 'popular', href: '/open?sort=popular', icon: Flame },
   { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
   { key: 'hallOfFame', labelKey: 'hallOfFame', href: '/open?tab=hall_of_fame', icon: Crown },

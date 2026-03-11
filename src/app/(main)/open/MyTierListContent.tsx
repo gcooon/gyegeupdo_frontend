@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/lib/api';
@@ -50,6 +50,7 @@ interface MyTierListContentProps {
 
 export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierListContentProps = {}) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('openTier');
   const tCommon = useTranslations('common');
@@ -59,11 +60,62 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [sort, setSort] = useState<SortOption>('popular');
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [languageFilter, setLanguageFilter] = useState<TierChartLanguage | 'all'>('all');
+
+  // URL에서 sort와 tab 파라미터 읽기
+  const urlSort = searchParams.get('sort') as SortOption | null;
+  const urlTab = searchParams.get('tab') as TabType | null;
+
+  // URL 파라미터 기반으로 상태 결정
+  const sort: SortOption = urlSort && ['popular', 'latest', 'views'].includes(urlSort) ? urlSort : 'popular';
+  const activeTab: TabType = urlTab && ['all', 'hall_of_fame', 'hot', 'mine'].includes(urlTab)
+    ? urlTab
+    : (initialTab !== 'all' ? initialTab : 'all');
+
+  // 페이지 제목 결정 (URL 필터 기반)
+  const getPageTitle = () => {
+    if (initialTab === 'mine' || activeTab === 'mine') return t('myTitle');
+    if (activeTab === 'hall_of_fame') return tNav('hallOfFame');
+    if (activeTab === 'hot') return t('tabs.hot');
+    if (urlSort === 'popular') return tNav('popular');
+    if (urlSort === 'latest') return tNav('latest');
+    if (urlSort === 'views') return t('sort.views');
+    return t('title');
+  };
+
+  // URL 업데이트 함수
+  const updateURL = useCallback((newSort?: SortOption, newTab?: TabType) => {
+    const params = new URLSearchParams();
+    const targetSort = newSort ?? sort;
+    const targetTab = newTab ?? activeTab;
+
+    if (targetSort && targetSort !== 'popular') {
+      params.set('sort', targetSort);
+    }
+    if (targetTab && targetTab !== 'all') {
+      params.set('tab', targetTab);
+    }
+
+    const queryString = params.toString();
+    router.push(`/open${queryString ? `?${queryString}` : ''}`, { scroll: false });
+  }, [router, sort, activeTab]);
+
+  const handleSortChange = (newSort: SortOption) => {
+    setPage(1);
+    updateURL(newSort, activeTab);
+  };
+
+  const handleTabChange = (newTab: TabType) => {
+    // 비로그인 상태에서 "내 계급도" 탭 클릭 시 로그인 페이지로 이동
+    if (newTab === 'mine' && !isAuthenticated) {
+      router.push('/login?redirect=/open/my');
+      return;
+    }
+    setPage(1);
+    updateURL(sort, newTab);
+  };
 
   const fetchCharts = useCallback(async (resetPage = false) => {
     setIsLoading(true);
@@ -194,8 +246,14 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <Sparkles className="h-7 w-7 text-accent" />
-            {initialTab === 'mine' ? t('myTitle') : t('title')}
+            {activeTab === 'hall_of_fame' ? (
+              <Crown className="h-7 w-7 text-amber-500" />
+            ) : activeTab === 'hot' ? (
+              <TrendingUp className="h-7 w-7 text-red-500" />
+            ) : (
+              <Sparkles className="h-7 w-7 text-accent" />
+            )}
+            {getPageTitle()}
           </h1>
           <p className="text-muted-foreground mt-1">
             {totalCount > 0 ? t('countDesc', { count: totalCount }) : t('desc')}
@@ -211,16 +269,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <Tabs
           value={activeTab}
-          onValueChange={(v) => {
-            const newTab = v as TabType;
-            // 비로그인 상태에서 "내 계급도" 탭 클릭 시 로그인 페이지로 이동
-            if (newTab === 'mine' && !isAuthenticated) {
-              router.push('/login?redirect=/open/my');
-              return;
-            }
-            setActiveTab(newTab);
-            setPage(1);
-          }}
+          onValueChange={(v) => handleTabChange(v as TabType)}
           className="w-full md:w-auto"
         >
           <TabsList className="flex w-full md:w-auto overflow-x-auto no-scrollbar gap-1 p-1">
@@ -252,7 +301,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
             </Button>
           </form>
 
-          <Select value={sort} onValueChange={(v) => { setSort(v as SortOption); setPage(1); }}>
+          <Select value={sort} onValueChange={(v) => handleSortChange(v as SortOption)}>
             <SelectTrigger className="w-[130px]">
               <SelectValue />
             </SelectTrigger>
