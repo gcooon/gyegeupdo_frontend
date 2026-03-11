@@ -21,6 +21,11 @@ const FALLBACK_CATEGORY_LABELS: Record<string, { label: string; icon: string }> 
 };
 
 export function MobileNav() {
+  // TODO: 나중에 필요할 수 있으므로 코드는 유지하고 숨김 처리
+  // 다시 활성화하려면 아래 return null을 제거하세요
+  return null;
+
+  // eslint-disable-next-line @typescript-eslint/no-unreachable-code
   const pathname = usePathname() ?? '';
   const { isOpen: isSidebarOpen } = useSidebarStore();
   const { data: apiCategories } = useCategories();
