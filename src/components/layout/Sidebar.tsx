@@ -87,9 +87,9 @@ export function Sidebar({ className = '' }: SidebarProps) {
     <>
       {!isOpen && (
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="fixed left-4 top-20 z-40 hidden md:flex"
+          className="fixed left-4 top-20 z-40 hidden md:flex bg-card shadow-md border-border"
           onClick={toggle}
         >
           <Menu className="h-5 w-5" />
