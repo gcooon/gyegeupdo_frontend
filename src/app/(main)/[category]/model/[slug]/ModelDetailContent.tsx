@@ -3,12 +3,23 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useProduct } from '@/hooks/useModels';
+import { useAuth } from '@/hooks/useAuth';
+import { useProductDispute, useCreateDispute, useDisputeVote } from '@/hooks/useDisputes';
 import { TierBadge } from '@/components/tier/TierBadge';
 import { RadarChartSection } from '@/components/model/RadarChartSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import {
   ShoppingCart,
   ExternalLink,
@@ -37,9 +48,12 @@ import {
   Award,
   MessageCircle,
   ChevronRight,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import { TierLevel } from '@/lib/tier';
 import { ShareButtons } from '@/components/share/ShareButtons';
+import { ProductComments } from '@/components/product/ProductComments';
 
 // 이미지 표시 여부 플래그 (이미지 준비 완료 시 true로 변경)
 const SHOW_PRODUCT_IMAGES = false;
@@ -312,8 +326,15 @@ function StarRating({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md
 
 export function ModelDetailContent({ category, slug, initialProduct }: Props) {
   const { data: product = initialProduct, isLoading, error } = useProduct(slug, initialProduct);
-  const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
+  const { isAuthenticated } = useAuth();
+  const { data: activeDispute, refetch: refetchDispute } = useProductDispute(slug);
+  const createDispute = useCreateDispute();
+  const disputeVote = useDisputeVote();
+
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [showDisputeDialog, setShowDisputeDialog] = useState(false);
+  const [disputeType, setDisputeType] = useState<'upgrade' | 'downgrade' | null>(null);
+  const [disputeReason, setDisputeReason] = useState('');
 
   // Mock 상세 데이터 가져오기
   const details = MOCK_PRODUCT_DETAILS[category]?.[slug] || DEFAULT_PRODUCT_DETAILS;
@@ -337,11 +358,64 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
     );
   }
 
-  const totalVotes = details.upVotes + details.downVotes;
-  const upPercent = Math.round((details.upVotes / totalVotes) * 100);
+  // 실제 API 데이터 또는 Mock 데이터 사용
+  const disputeUpVotes = activeDispute?.support_count ?? details.upVotes;
+  const disputeDownVotes = activeDispute?.oppose_count ?? details.downVotes;
+  const totalVotes = disputeUpVotes + disputeDownVotes;
+  const upPercent = totalVotes > 0 ? Math.round((disputeUpVotes / totalVotes) * 100) : 50;
+  const userVote = activeDispute?.user_vote;
 
-  const handleVote = (voteType: 'up' | 'down') => {
-    setUserVote(userVote === voteType ? null : voteType);
+  // 투표 처리
+  const handleVote = async (voteType: 'support' | 'oppose') => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    // 이미 투표했으면 무시
+    if (userVote) {
+      alert('이미 투표하셨습니다.');
+      return;
+    }
+
+    // 활성 이의제기가 없으면 새로 생성
+    if (!activeDispute && product) {
+      setDisputeType(voteType === 'support' ? 'upgrade' : 'downgrade');
+      setShowDisputeDialog(true);
+      return;
+    }
+
+    // 기존 이의제기에 투표
+    if (activeDispute) {
+      try {
+        await disputeVote.mutateAsync({
+          disputeId: activeDispute.id,
+          vote: voteType,
+        });
+        refetchDispute();
+      } catch {
+        alert('투표 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  // 이의제기 생성
+  const handleCreateDispute = async () => {
+    if (!disputeType || !disputeReason.trim() || !product) return;
+
+    try {
+      await createDispute.mutateAsync({
+        product: product.id,
+        dispute_type: disputeType,
+        reason: disputeReason.trim(),
+      });
+      setShowDisputeDialog(false);
+      setDisputeReason('');
+      setDisputeType(null);
+      refetchDispute();
+    } catch {
+      alert('이의제기 생성 중 오류가 발생했습니다.');
+    }
   };
 
   const categoryLabels: Record<string, { name: string; icon: string }> = {
@@ -486,42 +560,76 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
             <CardContent className="py-5">
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
-                  <h3 className="font-bold mb-1">이 제품의 티어가 적절한가요?</h3>
+                  <h3 className="font-bold mb-1">
+                    {activeDispute ? (
+                      <>
+                        {activeDispute.dispute_type === 'upgrade' ? '상향' : '하향'} 이의 진행 중
+                        <Badge variant="outline" className="ml-2 text-xs">
+                          {activeDispute.status === 'colosseum' ? '투표 진행' : '검토 중'}
+                        </Badge>
+                      </>
+                    ) : (
+                      '이 제품의 티어가 적절한가요?'
+                    )}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    커뮤니티 투표로 등급이 조정됩니다
+                    {activeDispute
+                      ? `"${activeDispute.reason.slice(0, 50)}${activeDispute.reason.length > 50 ? '...' : ''}" - ${activeDispute.user.username}`
+                      : '커뮤니티 투표로 등급이 조정됩니다'}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => handleVote('up')}
+                    onClick={() => handleVote('support')}
+                    disabled={!!userVote || disputeVote.isPending}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all ${
-                      userVote === 'up'
+                      userVote === 'support'
                         ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                        : 'border-muted hover:border-emerald-300 hover:bg-emerald-50/50'
+                        : userVote
+                          ? 'border-muted opacity-50 cursor-not-allowed'
+                          : 'border-muted hover:border-emerald-300 hover:bg-emerald-50/50'
                     }`}
                   >
                     <ChevronUp className="h-5 w-5" />
                     <div className="text-left">
-                      <p className="font-bold">{details.upVotes + (userVote === 'up' ? 1 : 0)}</p>
-                      <p className="text-xs">UP</p>
+                      <p className="font-bold">{disputeUpVotes}</p>
+                      <p className="text-xs">찬성</p>
                     </div>
                   </button>
                   <button
-                    onClick={() => handleVote('down')}
+                    onClick={() => handleVote('oppose')}
+                    disabled={!!userVote || disputeVote.isPending}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all ${
-                      userVote === 'down'
+                      userVote === 'oppose'
                         ? 'border-red-500 bg-red-50 text-red-700'
-                        : 'border-muted hover:border-red-300 hover:bg-red-50/50'
+                        : userVote
+                          ? 'border-muted opacity-50 cursor-not-allowed'
+                          : 'border-muted hover:border-red-300 hover:bg-red-50/50'
                     }`}
                   >
                     <ChevronDown className="h-5 w-5" />
                     <div className="text-left">
-                      <p className="font-bold">{details.downVotes + (userVote === 'down' ? 1 : 0)}</p>
-                      <p className="text-xs">DOWN</p>
+                      <p className="font-bold">{disputeDownVotes}</p>
+                      <p className="text-xs">반대</p>
                     </div>
                   </button>
                 </div>
               </div>
+
+              {/* 로그인 안내 */}
+              {!isAuthenticated && (
+                <Alert className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    투표에 참여하려면{' '}
+                    <Link href={`/login?redirect=/${category}/model/${slug}`} className="text-accent underline">
+                      로그인
+                    </Link>
+                    이 필요합니다.
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* Vote Progress */}
               <div className="mt-4 space-y-1">
                 <div className="h-2 bg-muted rounded-full overflow-hidden flex">
@@ -529,13 +637,87 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
                   <div className="bg-red-500 transition-all" style={{ width: `${100 - upPercent}%` }} />
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>UP {upPercent}%</span>
+                  <span>찬성 {upPercent}%</span>
                   <span>총 {totalVotes}명 투표</span>
-                  <span>DOWN {100 - upPercent}%</span>
+                  <span>반대 {100 - upPercent}%</span>
                 </div>
               </div>
+
+              {/* 투표 상태 메시지 */}
+              {userVote && (
+                <p className="text-xs text-center text-muted-foreground mt-2">
+                  이미 {userVote === 'support' ? '찬성' : '반대'}에 투표하셨습니다
+                </p>
+              )}
             </CardContent>
           </Card>
+
+          {/* 이의제기 생성 다이얼로그 */}
+          <Dialog open={showDisputeDialog} onOpenChange={setShowDisputeDialog}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {product?.name} 등급 {disputeType === 'upgrade' ? '상향' : '하향'} 이의제기
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="flex items-center justify-center gap-2">
+                  <TierBadge tier={product?.tier || 'B'} size="md" />
+                  <span className="text-muted-foreground">→</span>
+                  <Badge
+                    variant="outline"
+                    className={disputeType === 'upgrade'
+                      ? 'text-emerald-600 border-emerald-500'
+                      : 'text-red-600 border-red-500'
+                    }
+                  >
+                    {disputeType === 'upgrade' ? '상향' : '하향'} 요청
+                  </Badge>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">이의 사유</label>
+                  <Textarea
+                    placeholder="등급 조정이 필요한 이유를 입력해주세요..."
+                    value={disputeReason}
+                    onChange={(e) => setDisputeReason(e.target.value)}
+                    rows={4}
+                    maxLength={500}
+                  />
+                  <p className="text-xs text-muted-foreground text-right">
+                    {disputeReason.length}/500
+                  </p>
+                </div>
+
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    이의제기가 30명 이상의 찬성을 받으면 콜로세움에서 공개 투표가 진행됩니다.
+                    관리자가 투표 결과를 검토하여 등급을 조정합니다.
+                  </AlertDescription>
+                </Alert>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowDisputeDialog(false)}>
+                  취소
+                </Button>
+                <Button
+                  onClick={handleCreateDispute}
+                  disabled={!disputeReason.trim() || createDispute.isPending}
+                  className={disputeType === 'upgrade'
+                    ? 'bg-emerald-500 hover:bg-emerald-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                  }
+                >
+                  {createDispute.isPending ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" />처리 중...</>
+                  ) : (
+                    '이의제기 등록'
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           {/* Features / Specs */}
           {details.features.length > 0 && (
@@ -746,6 +928,9 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
               </CardContent>
             </Card>
           )}
+
+          {/* Comments Section - API 연결 */}
+          <ProductComments productSlug={slug} categorySlug={category} />
 
           {/* Traps Section */}
           {product.traps && product.traps.length > 0 && (
