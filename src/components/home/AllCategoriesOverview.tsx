@@ -454,11 +454,10 @@ export function AllCategoriesOverview() {
                         </Button>
                         <Button
                           size="sm"
-                          className="flex-1 text-[10px] sm:text-xs text-white h-7 sm:h-8 px-2 sm:px-3 min-w-0"
+                          className="flex-1 text-[10px] sm:text-xs text-white h-7 sm:h-8 px-1.5 sm:px-3 min-w-0"
                           style={{ background: color }}
                         >
-                          <span className="truncate">계급도</span>
-                          <ArrowRight className="h-3 w-3 ml-0.5 flex-shrink-0" />
+                          계급도
                         </Button>
                       </div>
                     </div>
