@@ -217,7 +217,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           }}
           className="w-full md:w-auto"
         >
-          <TabsList className="flex w-full md:w-auto overflow-x-auto">
+          <TabsList className="flex w-full md:w-auto h-auto">
             <TabsTrigger value="all" className="flex-shrink-0">{t('tabs.all')}</TabsTrigger>
             <TabsTrigger value="hall_of_fame" className="flex-shrink-0">
               {t('tabs.hallOfFame')}
