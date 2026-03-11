@@ -343,6 +343,111 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
     );
   }
 
+  const tPromotion = useTranslations('promotion');
+
+  // 페이지별 가이드 정보 렌더링
+  const renderGuideCard = () => {
+    // HOT 계급도
+    if (activeTab === 'hot') {
+      const steps = tPromotion.raw('guide.hotSteps') as string[];
+      return (
+        <Card className="mt-6 max-w-2xl mx-auto bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-500/20">
+          <CardContent className="p-4 md:p-6">
+            <h3 className="font-bold text-base md:text-lg mb-3 flex items-center gap-2">
+              <Flame className="h-5 w-5 text-red-500" />
+              {tPromotion('guide.hotTitle')}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              {steps.map((step, idx) => (
+                <div key={idx} className="flex items-start gap-2 text-sm">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-red-500/20 text-red-600 flex items-center justify-center text-xs font-bold">
+                    {idx + 1}
+                  </span>
+                  <span className="text-muted-foreground">{step}</span>
+                </div>
+              ))}
+            </div>
+            <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 font-mono">
+              {tPromotion('guide.hotFormula')}
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    // 명예의전당
+    if (activeTab === 'hall_of_fame') {
+      const steps = tPromotion.raw('guide.hallOfFameSteps') as string[];
+      return (
+        <Card className="mt-6 max-w-2xl mx-auto bg-gradient-to-r from-amber-500/5 to-yellow-500/5 border-amber-500/20">
+          <CardContent className="p-4 md:p-6">
+            <h3 className="font-bold text-base md:text-lg mb-3 flex items-center gap-2">
+              <Crown className="h-5 w-5 text-amber-500" />
+              {tPromotion('guide.hallOfFameTitle')}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {steps.map((step, idx) => (
+                <div key={idx} className="flex items-start gap-2 text-sm">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center text-xs font-bold">
+                    {idx + 1}
+                  </span>
+                  <span className="text-muted-foreground">{step}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    // 인기순
+    if (urlSort === 'popular') {
+      return (
+        <Card className="mt-6 max-w-xl mx-auto bg-gradient-to-r from-pink-500/5 to-rose-500/5 border-pink-500/20">
+          <CardContent className="p-4">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <Heart className="h-4 w-4 text-pink-500" />
+              {tPromotion('guide.popularTitle')}
+            </h3>
+            <p className="text-sm text-muted-foreground">{tPromotion('guide.popularDesc')}</p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    // 최신순
+    if (urlSort === 'latest') {
+      return (
+        <Card className="mt-6 max-w-xl mx-auto bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border-blue-500/20">
+          <CardContent className="p-4">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <Clock className="h-4 w-4 text-blue-500" />
+              {tPromotion('guide.latestTitle')}
+            </h3>
+            <p className="text-sm text-muted-foreground">{tPromotion('guide.latestDesc')}</p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    // 조회순
+    if (urlSort === 'views') {
+      return (
+        <Card className="mt-6 max-w-xl mx-auto bg-gradient-to-r from-purple-500/5 to-violet-500/5 border-purple-500/20">
+          <CardContent className="p-4">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <Eye className="h-4 w-4 text-purple-500" />
+              {tPromotion('guide.viewsTitle')}
+            </h3>
+            <p className="text-sm text-muted-foreground">{tPromotion('guide.viewsDesc')}</p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="container py-6 max-w-6xl">
       {/* 히어로 섹션 */}
@@ -366,7 +471,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           </p>
 
           {/* 통계 & 버튼 */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             {totalCount > 0 && (
               <Badge variant="secondary" className="text-sm px-3 py-1">
                 {t('countDesc', { count: totalCount })}
@@ -377,6 +482,9 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
               {tNav('createTier')}
             </Button>
           </div>
+
+          {/* 가이드 카드 */}
+          {renderGuideCard()}
         </div>
       </section>
 
