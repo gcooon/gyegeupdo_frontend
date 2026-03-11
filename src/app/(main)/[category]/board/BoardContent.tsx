@@ -82,13 +82,16 @@ export function BoardContent({ category }: BoardContentProps) {
     product_slug: '',
   });
 
-  // URL에 ?tag= 있으면 write 다이얼로그 자동 열기
+  // URL에 ?write=true 있으면 write 다이얼로그 자동 열기
   useEffect(() => {
     if (searchParams.get('write') === 'true' && isAuthenticated) {
       const urlTag = searchParams.get('tag') as PostTag;
-      if (urlTag) {
-        setNewPost(prev => ({ ...prev, tag: urlTag }));
-      }
+      const urlProduct = searchParams.get('product') || '';
+      setNewPost(prev => ({
+        ...prev,
+        tag: urlTag || prev.tag,
+        product_slug: urlProduct || prev.product_slug,
+      }));
       setIsWriteDialogOpen(true);
     }
   }, [searchParams, isAuthenticated]);
