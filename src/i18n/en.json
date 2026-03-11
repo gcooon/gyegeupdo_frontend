@@ -90,6 +90,15 @@
     "desc": "User-created tier charts for everyone",
     "countDesc": "{count} tier charts",
     "myTitle": "My Tier Charts",
+    "pageDesc": {
+      "home": "Ramen, coffee, travel... rank anything you want",
+      "popular": "Most loved tier charts by the community",
+      "latest": "Fresh new tier charts just uploaded",
+      "views": "Most viewed tier charts",
+      "hot": "Trending tier charts right now",
+      "hallOfFame": "The best tier charts of all time",
+      "mine": "Tier charts you've created"
+    },
     "tabs": {
       "all": "All",
       "hot": "🔥 HOT",

@@ -85,6 +85,17 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
     return t('title');
   };
 
+  // 페이지 설명 결정 (URL 필터 기반)
+  const getPageDescription = () => {
+    if (initialTab === 'mine' || activeTab === 'mine') return t('pageDesc.mine');
+    if (activeTab === 'hall_of_fame') return t('pageDesc.hallOfFame');
+    if (activeTab === 'hot') return t('pageDesc.hot');
+    if (urlSort === 'popular') return t('pageDesc.popular');
+    if (urlSort === 'latest') return t('pageDesc.latest');
+    if (urlSort === 'views') return t('pageDesc.views');
+    return t('pageDesc.home');
+  };
+
   // URL 업데이트 함수
   const updateURL = useCallback((newSort?: SortOption, newTab?: TabType) => {
     const params = new URLSearchParams();
@@ -243,26 +254,51 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   return (
     <div className="container py-6 max-w-6xl">
       {/* 헤더 */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            {activeTab === 'hall_of_fame' ? (
-              <Crown className="h-7 w-7 text-amber-500" />
-            ) : activeTab === 'hot' ? (
-              <TrendingUp className="h-7 w-7 text-red-500" />
-            ) : (
-              <Sparkles className="h-7 w-7 text-accent" />
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`p-2.5 rounded-xl ${
+                activeTab === 'hall_of_fame'
+                  ? 'bg-amber-500/10'
+                  : activeTab === 'hot'
+                    ? 'bg-red-500/10'
+                    : 'bg-accent/10'
+              }`}>
+                {activeTab === 'hall_of_fame' ? (
+                  <Crown className="h-6 w-6 text-amber-500" />
+                ) : activeTab === 'hot' ? (
+                  <TrendingUp className="h-6 w-6 text-red-500" />
+                ) : urlSort === 'latest' ? (
+                  <Clock className="h-6 w-6 text-accent" />
+                ) : urlSort === 'views' ? (
+                  <Eye className="h-6 w-6 text-accent" />
+                ) : (
+                  <Sparkles className="h-6 w-6 text-accent" />
+                )}
+              </div>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold">
+                  {getPageTitle()}
+                </h1>
+              </div>
+            </div>
+            <p className="text-muted-foreground text-sm md:text-base ml-0 md:ml-14">
+              {getPageDescription()}
+            </p>
+            {totalCount > 0 && (
+              <div className="mt-3 ml-0 md:ml-14">
+                <Badge variant="secondary" className="text-xs">
+                  {t('countDesc', { count: totalCount })}
+                </Badge>
+              </div>
             )}
-            {getPageTitle()}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {totalCount > 0 ? t('countDesc', { count: totalCount }) : t('desc')}
-          </p>
+          </div>
+          <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90 shrink-0">
+            <Plus className="h-4 w-4 mr-2" />
+            {tNav('createTier')}
+          </Button>
         </div>
-        <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90">
-          <Plus className="h-4 w-4 mr-2" />
-          {tNav('createTier')}
-        </Button>
       </div>
 
       {/* 탭 & 필터 */}
