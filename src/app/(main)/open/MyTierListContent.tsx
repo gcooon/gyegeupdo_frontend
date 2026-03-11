@@ -212,7 +212,13 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         <Tabs
           value={activeTab}
           onValueChange={(v) => {
-            setActiveTab(v as TabType);
+            const newTab = v as TabType;
+            // 비로그인 상태에서 "내 계급도" 탭 클릭 시 로그인 페이지로 이동
+            if (newTab === 'mine' && !isAuthenticated) {
+              router.push('/login?redirect=/open/my');
+              return;
+            }
+            setActiveTab(newTab);
             setPage(1);
           }}
           className="w-full md:w-auto"
@@ -227,7 +233,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
             <TabsTrigger value="hot" className="shrink-0 min-h-[36px] px-3 touch-manipulation">
               {t('tabs.hot')}
             </TabsTrigger>
-            <TabsTrigger value="mine" disabled={!isAuthenticated} className="shrink-0 min-h-[36px] px-3 touch-manipulation">
+            <TabsTrigger value="mine" className="shrink-0 min-h-[36px] px-3 touch-manipulation">
               {t('tabs.mine')}
             </TabsTrigger>
           </TabsList>
