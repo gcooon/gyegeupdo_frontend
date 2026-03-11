@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { MyTierListContent } from './MyTierListContent';
+import { OpenPageContent } from './OpenPageContent';
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';
 
@@ -24,7 +24,7 @@ export default function OpenTierListPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <MyTierListContent />
+      <OpenPageContent />
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users, FileText } from 'lucide-react';
+import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users, FileText, LayoutGrid, Crown, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -31,8 +31,10 @@ const OFFICIAL_SUBMENUS = [
 
 // 오픈 계급도 메뉴
 const OPEN_TIER_MENUS = [
+  { key: 'home', labelKey: 'viewAll', href: '/open', icon: Home, isHeader: true },
   { key: 'popular', labelKey: 'popular', href: '/open?sort=popular', icon: Flame },
   { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
+  { key: 'hallOfFame', labelKey: 'hallOfFame', href: '/open?tab=hall_of_fame', icon: Crown },
   { key: 'my', labelKey: 'myTiers', href: '/open/my', icon: FileText },
 ];
 
@@ -99,6 +101,13 @@ export function Header() {
               {openCategory === 'official' && (
                 <div className="absolute top-full left-0 pt-1 w-48 z-[60]">
                   <div className="bg-card border border-border rounded-lg shadow-lg py-1">
+                  <Link
+                    href="/official"
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors border-b border-border"
+                  >
+                    <LayoutGrid className="h-4 w-4 text-amber-500" />
+                    <span>{t('viewAll')}</span>
+                  </Link>
                   {categories.map((category) => (
                     <Link
                       key={category.slug}
@@ -140,13 +149,18 @@ export function Header() {
                   <div className="bg-card border border-border rounded-lg shadow-lg py-1">
                   {OPEN_TIER_MENUS.map((menu) => {
                     const Icon = menu.icon;
+                    const isHeader = 'isHeader' in menu && menu.isHeader;
                     return (
                       <Link
                         key={menu.key}
                         href={menu.href}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                        className={`flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                          isHeader
+                            ? 'font-medium text-foreground border-b border-border hover:bg-muted'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                        }`}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className={`h-4 w-4 ${isHeader ? 'text-accent' : ''}`} />
                         {t(menu.labelKey)}
                       </Link>
                     );

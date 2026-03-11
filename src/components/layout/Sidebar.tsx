@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useCategories } from '@/hooks/useBrands';
-import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus, Users, Flame, Clock, FileText } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus, Users, Flame, Clock, FileText, LayoutGrid, Crown, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from '@/i18n';
 
@@ -25,8 +25,10 @@ const CATEGORY_MENUS = [
 
 // 오픈 계급도 서브메뉴
 const OPEN_TIER_MENUS = [
+  { key: 'home', labelKey: 'openTierHome', href: '/open', icon: Home, isHeader: true },
   { key: 'popular', labelKey: 'popular', href: '/open?sort=popular', icon: Flame },
   { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
+  { key: 'hallOfFame', labelKey: 'hallOfFame', href: '/open?tab=hall_of_fame', icon: Crown },
   { key: 'my', labelKey: 'myTiers', href: '/open/my', icon: FileText },
 ];
 
@@ -151,6 +153,20 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
               {isOfficialExpanded && (
                 <div className="ml-3 mt-1 border-l-2 border-amber-200 pl-3 space-y-1">
+                  {/* 전체 보기 링크 */}
+                  <Link
+                    href="/official"
+                    className={`
+                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                      ${pathname === '/official'
+                        ? 'bg-amber-500/20 text-amber-600'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }
+                    `}
+                  >
+                    <LayoutGrid className="h-4 w-4 text-amber-500" />
+                    <span>{t('viewAll')}</span>
+                  </Link>
                   {categories.map((category) => {
                     const isExpanded = expandedCategories.includes(category.slug);
                     const categoryPath = `/${category.slug}`;
@@ -246,9 +262,19 @@ export function Sidebar({ className = '' }: SidebarProps) {
                   {OPEN_TIER_MENUS.map((menu) => {
                     // 정확한 활성 상태 체크
                     let isActive = false;
-                    if (menu.key === 'my') {
+                    const isHeader = 'isHeader' in menu && menu.isHeader;
+                    if (menu.key === 'home') {
+                      // /open 메인 페이지 (쿼리 파라미터 없을 때)
+                      const hasSort = searchParams.get('sort');
+                      const hasTab = searchParams.get('tab');
+                      isActive = pathname === '/open' && !hasSort && !hasTab;
+                    } else if (menu.key === 'my') {
                       // /open/my 페이지
                       isActive = pathname === '/open/my' || pathname.startsWith('/open/my/');
+                    } else if (menu.key === 'hallOfFame') {
+                      // /open?tab=hall_of_fame
+                      const currentTab = searchParams.get('tab');
+                      isActive = pathname === '/open' && currentTab === 'hall_of_fame';
                     } else {
                       // /open?sort=popular 또는 /open?sort=latest
                       const currentSort = searchParams.get('sort');
@@ -261,13 +287,14 @@ export function Sidebar({ className = '' }: SidebarProps) {
                         href={menu.href}
                         className={`
                           flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          ${isHeader ? 'font-medium' : ''}
                           ${isActive
                             ? 'bg-accent text-accent-foreground font-medium'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                           }
                         `}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className={`h-4 w-4 ${isHeader && !isActive ? 'text-accent' : ''}`} />
                         {t(menu.labelKey)}
                       </Link>
                     );
