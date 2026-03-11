@@ -30,6 +30,8 @@ import {
   Clock,
   Sparkles,
   LogIn,
+  Flame,
+  Trophy,
 } from 'lucide-react';
 import type { UserTierChartListItem, UserTierChartListResponse, TierChartLanguage } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
@@ -41,9 +43,11 @@ import { useTranslations } from '@/i18n';
 
 type SortOption = 'popular' | 'latest' | 'views';
 
+type TabType = 'all' | 'hot' | 'hall_of_fame' | 'featured' | 'mine';
+
 interface MyTierListContentProps {
   initialCharts?: UserTierChartListItem[];
-  initialTab?: 'all' | 'featured' | 'mine';
+  initialTab?: TabType;
 }
 
 export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierListContentProps = {}) {
@@ -60,7 +64,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   const [sort, setSort] = useState<SortOption>('popular');
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'mine'>(initialTab);
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [languageFilter, setLanguageFilter] = useState<TierChartLanguage | 'all'>('all');
 
   const fetchCharts = useCallback(async (resetPage = false) => {
@@ -88,6 +92,10 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
       let url = `/tiers/user-charts/?${params}`;
       if (activeTab === 'mine' && isAuthenticated) {
         url = `/tiers/user-charts/my_charts/`;
+      } else if (activeTab === 'hot') {
+        url = `/tiers/user-charts/hot_charts/?limit=12`;
+      } else if (activeTab === 'hall_of_fame') {
+        url = `/tiers/user-charts/hall_of_fame/?${params}`;
       }
 
       const response = await api.get<{
@@ -210,13 +218,21 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         <Tabs
           value={activeTab}
           onValueChange={(v) => {
-            setActiveTab(v as 'all' | 'featured' | 'mine');
+            setActiveTab(v as TabType);
             setPage(1);
           }}
           className="w-full md:w-auto"
         >
-          <TabsList className="grid grid-cols-3 w-full md:w-auto">
+          <TabsList className="grid grid-cols-5 w-full md:w-auto">
             <TabsTrigger value="all">{t('tabs.all')}</TabsTrigger>
+            <TabsTrigger value="hot" className="text-orange-500">
+              <Flame className="h-4 w-4 mr-1" />
+              {t('tabs.hot')}
+            </TabsTrigger>
+            <TabsTrigger value="hall_of_fame" className="text-yellow-500">
+              <Trophy className="h-4 w-4 mr-1" />
+              {t('tabs.hallOfFame')}
+            </TabsTrigger>
             <TabsTrigger value="featured">
               <Crown className="h-4 w-4 mr-1" />
               {t('tabs.featured')}

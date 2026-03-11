@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Heart, Eye, MessageCircle, TrendingUp, Award, Star, Sparkles } from 'lucide-react';
+import { Heart, Eye, MessageCircle, TrendingUp, Award, Flame, Trophy, Sparkles } from 'lucide-react';
 import { useTranslations } from '@/i18n';
 import type { PromotionProgress as PromotionProgressType, PromotionStatus } from '@/types/tier';
 
@@ -39,10 +39,16 @@ const STATUS_STYLES: Record<
     messageKey: 'candidateMessage',
   },
   promoted: {
-    icon: <Star className="h-5 w-5" />,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500',
+    icon: <Flame className="h-5 w-5" />,
+    color: 'text-orange-500',
+    bgColor: 'bg-orange-500',
     messageKey: 'promotedMessage',
+  },
+  hall_of_fame: {
+    icon: <Trophy className="h-5 w-5" />,
+    color: 'text-yellow-500',
+    bgColor: 'bg-gradient-to-r from-yellow-500 to-amber-500',
+    messageKey: 'hallOfFameMessage',
   },
 };
 

@@ -4,3 +4,4 @@ export { TierPreviewSection } from './TierPreviewSection';
 export { DisputeSection } from './DisputeSection';
 export { ReviewFeedSection } from './ReviewFeedSection';
 export { AllCategoriesOverview } from './AllCategoriesOverview';
+export { HotOpenTierCharts } from './HotOpenTierCharts';

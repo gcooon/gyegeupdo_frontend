@@ -27,6 +27,7 @@ import type { TierLevel } from '@/lib/tier';
 import { useHomeSummary, HomeCategory, HomeDispute, HomeReview, HomeUserChart } from '@/hooks/useHome';
 import { useCategories } from '@/hooks/useBrands';
 import type { CategoryListItem, CategoryGroup } from '@/types/model';
+import { HotOpenTierCharts } from './HotOpenTierCharts';
 
 // 카테고리 티커 데이터
 const CATEGORY_TICKER = [
@@ -468,6 +469,9 @@ export function AllCategoriesOverview() {
           })}
         </div>
       </section>
+
+      {/* 🔥 HOT 오픈 계급도 섹션 */}
+      <HotOpenTierCharts />
 
       {/* 내가 만든 계급도 섹션 */}
       <section className="py-8 bg-gradient-to-r from-accent/5 to-primary/5 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8 rounded-2xl">

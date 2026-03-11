@@ -59,7 +59,7 @@ export interface TrendResponse {
 
 // ===== 승격 시스템 타입 =====
 
-export type PromotionStatus = 'normal' | 'rising' | 'candidate' | 'promoted';
+export type PromotionStatus = 'normal' | 'rising' | 'candidate' | 'promoted' | 'hall_of_fame';
 
 export interface PromotionScoreBreakdown {
   likes: number;
@@ -74,6 +74,7 @@ export interface PromotionProgress {
   status: PromotionStatus;
   status_display: string;
   score_breakdown?: PromotionScoreBreakdown;
+  hot_until?: string;  // HOT 상태일 때 만료 시간
 }
 
 // ===== 사용자 계급도 타입 =====
@@ -144,6 +145,8 @@ export interface UserTierChartListItem {
   promotion_status?: PromotionStatus;
   promotion_status_display?: string;
   promotion_progress?: Omit<PromotionProgress, 'score_breakdown'>;
+  hot_until?: string;  // HOT 만료 시간
+  hall_of_fame_at?: string;  // 명예의전당 등록 시간
   // 국제화
   language?: TierChartLanguage;
   language_display?: string;

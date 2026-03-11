@@ -88,6 +88,8 @@
     "myTitle": "내 계급도",
     "tabs": {
       "all": "전체",
+      "hot": "🔥 HOT",
+      "hallOfFame": "👑 명예의전당",
       "featured": "추천",
       "mine": "내 계급도"
     },
@@ -112,7 +114,11 @@
     "normal": "일반",
     "rising": "급상승",
     "candidate": "승급 후보",
-    "promoted": "추천",
+    "promoted": "HOT",
+    "hall_of_fame": "명예의 전당",
+    "hot": "🔥 HOT",
+    "hotDescription": "지금 가장 핫한 오픈 계급도",
+    "hallOfFameDescription": "역대 최고의 계급도 모음",
     "progressTitle": "승격 진행률",
     "target": "목표",
     "points": "점",
@@ -123,7 +129,8 @@
     "normalMessage": "50점 이상 달성 시 급상승 상태가 됩니다!",
     "risingMessage": "100점 달성 시 승급 후보가 됩니다!",
     "candidateMessage": "운영자 검토 대기 중입니다. 곧 승급될 수 있습니다!",
-    "promotedMessage": "축하합니다! 추천 계급도로 선정되었습니다!"
+    "promotedMessage": "🔥 HOT 계급도! 홈페이지에 노출 중입니다!",
+    "hallOfFameMessage": "👑 명예의 전당에 등록된 최고의 계급도입니다!"
   },
   "comment": {
     "title": "댓글",

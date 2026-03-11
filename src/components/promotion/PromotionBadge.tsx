@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Award, Star } from 'lucide-react';
+import { TrendingUp, Award, Flame, Trophy } from 'lucide-react';
 import { useTranslations } from '@/i18n';
 import type { PromotionStatus } from '@/types/tier';
 
@@ -35,8 +35,13 @@ const PROMOTION_STYLES: Record<
     show: true,
   },
   promoted: {
-    icon: <Star className="h-3 w-3" />,
-    className: 'bg-blue-500 text-white hover:bg-blue-600',
+    icon: <Flame className="h-3 w-3" />,
+    className: 'bg-orange-500 text-white hover:bg-orange-600',
+    show: true,
+  },
+  hall_of_fame: {
+    icon: <Trophy className="h-3 w-3" />,
+    className: 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white hover:from-yellow-600 hover:to-amber-600',
     show: true,
   },
 };
