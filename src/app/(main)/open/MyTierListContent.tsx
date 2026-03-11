@@ -349,7 +349,12 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   const renderGuideCard = () => {
     // HOT 계급도
     if (activeTab === 'hot') {
-      const steps = tPromotion.raw('guide.hotSteps') as string[];
+      const hotSteps = [
+        tPromotion('guide.hotStep1'),
+        tPromotion('guide.hotStep2'),
+        tPromotion('guide.hotStep3'),
+        tPromotion('guide.hotStep4'),
+      ];
       return (
         <Card className="mt-6 max-w-2xl mx-auto bg-gradient-to-r from-red-500/5 to-orange-500/5 border-red-500/20">
           <CardContent className="p-4 md:p-6">
@@ -358,7 +363,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
               {tPromotion('guide.hotTitle')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              {steps.map((step, idx) => (
+              {hotSteps.map((step, idx) => (
                 <div key={idx} className="flex items-start gap-2 text-sm">
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-red-500/20 text-red-600 flex items-center justify-center text-xs font-bold">
                     {idx + 1}
@@ -377,7 +382,12 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
 
     // 명예의전당
     if (activeTab === 'hall_of_fame') {
-      const steps = tPromotion.raw('guide.hallOfFameSteps') as string[];
+      const hallOfFameSteps = [
+        tPromotion('guide.hallOfFameStep1'),
+        tPromotion('guide.hallOfFameStep2'),
+        tPromotion('guide.hallOfFameStep3'),
+        tPromotion('guide.hallOfFameStep4'),
+      ];
       return (
         <Card className="mt-6 max-w-2xl mx-auto bg-gradient-to-r from-amber-500/5 to-yellow-500/5 border-amber-500/20">
           <CardContent className="p-4 md:p-6">
@@ -386,7 +396,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
               {tPromotion('guide.hallOfFameTitle')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {steps.map((step, idx) => (
+              {hallOfFameSteps.map((step, idx) => (
                 <div key={idx} className="flex items-start gap-2 text-sm">
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center text-xs font-bold">
                     {idx + 1}

@@ -146,20 +146,16 @@
     "hallOfFameMessage": "👑 This tier chart is in the Hall of Fame!",
     "guide": {
       "hotTitle": "🔥 How to become HOT?",
-      "hotSteps": [
-        "Earn points from likes, views, and comments",
-        "Reach 50 points to become 'Rising'",
-        "Reach 100 points to become a 'Candidate'",
-        "After admin review, get promoted to HOT!"
-      ],
+      "hotStep1": "Earn points from likes, views, and comments",
+      "hotStep2": "Reach 50 points to become 'Rising'",
+      "hotStep3": "Reach 100 points to become a 'Candidate'",
+      "hotStep4": "After admin review, get promoted to HOT!",
       "hotFormula": "Score = Likes×3 + Views×1 + Comments×2",
       "hallOfFameTitle": "👑 How to reach Hall of Fame?",
-      "hallOfFameSteps": [
-        "HOT tier charts that are loved over time",
-        "Maintain high engagement and quality",
-        "Selected by admins for Hall of Fame",
-        "Permanently preserved in Hall of Fame"
-      ],
+      "hallOfFameStep1": "HOT tier charts that are loved over time",
+      "hallOfFameStep2": "Maintain high engagement and quality",
+      "hallOfFameStep3": "Selected by admins for Hall of Fame",
+      "hallOfFameStep4": "Permanently preserved in Hall of Fame",
       "popularTitle": "❤️ What is Popular?",
       "popularDesc": "Sorted by most likes. More likes also help you get promoted to HOT!",
       "latestTitle": "🕐 What is Latest?",
