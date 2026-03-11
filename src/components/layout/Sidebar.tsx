@@ -26,9 +26,9 @@ const CATEGORY_MENUS = [
 // 오픈 계급도 서브메뉴
 const OPEN_TIER_MENUS = [
   { key: 'home', labelKey: 'openTierHome', href: '/open', icon: Home, isHeader: true },
+  { key: 'hallOfFame', labelKey: 'hallOfFame', href: '/open?tab=hall_of_fame', icon: Crown },
   { key: 'popular', labelKey: 'popular', href: '/open?sort=popular', icon: Flame },
   { key: 'latest', labelKey: 'latest', href: '/open?sort=latest', icon: Clock },
-  { key: 'hallOfFame', labelKey: 'hallOfFame', href: '/open?tab=hall_of_fame', icon: Crown },
   { key: 'my', labelKey: 'myTiers', href: '/open/my', icon: FileText },
 ];
 
