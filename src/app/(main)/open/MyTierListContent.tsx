@@ -461,9 +461,9 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   return (
     <div className="container py-6 max-w-6xl">
       {/* 히어로 섹션 */}
-      <section className="relative py-6 md:py-10 mb-8 overflow-hidden rounded-2xl">
+      <section className="relative py-8 md:py-12 mb-8 overflow-hidden">
         <div className={`absolute inset-0 bg-gradient-to-br ${theme.bgGradient} pointer-events-none`} />
-        <div className="relative text-center px-4">
+        <div className="relative text-center">
           {/* 배지 */}
           <div className={`inline-flex items-center gap-2 px-4 py-1.5 mb-4 rounded-full ${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder}`}>
             <ThemeIcon className="h-4 w-4" />
@@ -471,27 +471,28 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           </div>
 
           {/* 제목 */}
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             {getPageTitle()}
           </h1>
 
           {/* 설명 */}
-          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto mb-4">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
             {getPageDescription()}
           </p>
 
           {/* 통계 & 버튼 */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-4 mb-6">
             {totalCount > 0 && (
-              <Badge variant="secondary" className="text-sm px-3 py-1">
+              <Badge variant="secondary" className="px-3 py-1.5 text-sm font-medium">
                 {t('countDesc', { count: totalCount })}
               </Badge>
             )}
-            <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90">
-              <Plus className="h-4 w-4 mr-2" />
-              {tNav('createTier')}
-            </Button>
           </div>
+
+          <Button size="lg" onClick={handleCreateClick} className="bg-accent hover:bg-accent/90">
+            <Plus className="h-5 w-5 mr-2" />
+            {tNav('createTier')}
+          </Button>
 
           {/* 가이드 카드 */}
           {renderGuideCard()}
