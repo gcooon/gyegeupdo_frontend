@@ -48,18 +48,15 @@ export function Sidebar({ className = '' }: SidebarProps) {
     ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
     : FALLBACK_CATEGORIES;
 
-  // 공식 계급도 / 오픈 계급도 확장 상태
-  const [isOfficialExpanded, setIsOfficialExpanded] = useState(true);
-  const [isOpenTierExpanded, setIsOpenTierExpanded] = useState(false);
-
-  // 현재 경로에 따라 섹션 자동 확장
-  useEffect(() => {
-    if (pathname.startsWith('/open')) {
-      setIsOpenTierExpanded(true);
-    } else if (categories.some(c => pathname.startsWith(`/${c.slug}`))) {
-      setIsOfficialExpanded(true);
-    }
-  }, [pathname, categories]);
+  // 공식 계급도 / 오픈 계급도 확장 상태 (현재 경로에 따라 초기값 설정)
+  const [isOfficialExpanded, setIsOfficialExpanded] = useState(() => {
+    // 오픈 계급도 경로가 아니면 공식 계급도 확장
+    return !pathname.startsWith('/open');
+  });
+  const [isOpenTierExpanded, setIsOpenTierExpanded] = useState(() => {
+    // 오픈 계급도 경로이면 오픈 계급도 확장
+    return pathname.startsWith('/open');
+  });
 
   // 모바일에서 링크 클릭(경로 또는 쿼리 파라미터 변경) 시 사이드바 닫기
   const searchParamsString = searchParams.toString();
