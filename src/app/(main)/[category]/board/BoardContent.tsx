@@ -149,8 +149,13 @@ export function BoardContent({ category }: BoardContentProps) {
       refetch();
       router.push(`/${category}/board/${createdPost.id}`);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '게시글 작성에 실패했습니다.';
-      setWriteError(message);
+      // axios error의 response data에서 상세 메시지 추출
+      const axiosErr = err as { response?: { data?: { message?: string; detail?: string } } };
+      const serverMsg = axiosErr?.response?.data?.message
+        || axiosErr?.response?.data?.detail
+        || JSON.stringify(axiosErr?.response?.data)
+        || (err instanceof Error ? err.message : '게시글 작성에 실패했습니다.');
+      setWriteError(String(serverMsg));
     }
   };
 
