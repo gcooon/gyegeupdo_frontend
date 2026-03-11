@@ -30,8 +30,6 @@ import {
   Clock,
   Sparkles,
   LogIn,
-  Flame,
-  Trophy,
 } from 'lucide-react';
 import type { UserTierChartListItem, UserTierChartListResponse, TierChartLanguage } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
@@ -221,12 +219,10 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
         >
           <TabsList className="flex w-full md:w-auto overflow-x-auto">
             <TabsTrigger value="all" className="flex-shrink-0">{t('tabs.all')}</TabsTrigger>
-            <TabsTrigger value="hall_of_fame" className="flex-shrink-0 text-yellow-500">
-              <Trophy className="h-4 w-4 mr-1" />
+            <TabsTrigger value="hall_of_fame" className="flex-shrink-0">
               {t('tabs.hallOfFame')}
             </TabsTrigger>
-            <TabsTrigger value="hot" className="flex-shrink-0 text-orange-500">
-              <Flame className="h-4 w-4 mr-1" />
+            <TabsTrigger value="hot" className="flex-shrink-0">
               {t('tabs.hot')}
             </TabsTrigger>
             <TabsTrigger value="mine" className="flex-shrink-0" disabled={!isAuthenticated}>
