@@ -75,6 +75,7 @@ export function BoardContent({ category }: BoardContentProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [isWriteDialogOpen, setIsWriteDialogOpen] = useState(false);
+  const [writeError, setWriteError] = useState('');
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
@@ -111,10 +112,20 @@ export function BoardContent({ category }: BoardContentProps) {
   };
 
   const handleWritePost = async () => {
+    setWriteError('');
     const needsTitle = newPost.tag !== 'product_review';
-    if (needsTitle && !newPost.title.trim()) return;
-    if (!newPost.content.trim()) return;
-    if (newPost.tag === 'product_review' && !newPost.product_slug.trim()) return;
+    if (needsTitle && !newPost.title.trim()) {
+      setWriteError('제목을 입력해주세요.');
+      return;
+    }
+    if (!newPost.content.trim()) {
+      setWriteError('내용을 입력해주세요.');
+      return;
+    }
+    if (newPost.tag === 'product_review' && !newPost.product_slug.trim()) {
+      setWriteError('관련 제품을 선택해주세요.');
+      return;
+    }
 
     try {
       const payload: {
@@ -134,10 +145,12 @@ export function BoardContent({ category }: BoardContentProps) {
       const createdPost = await createPost.mutateAsync(payload);
       setIsWriteDialogOpen(false);
       setNewPost({ title: '', content: '', tag: 'free', product_slug: '' });
+      setWriteError('');
       refetch();
       router.push(`/${category}/board/${createdPost.id}`);
-    } catch {
-      // 에러 처리
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '게시글 작성에 실패했습니다.';
+      setWriteError(message);
     }
   };
 
@@ -240,6 +253,12 @@ export function BoardContent({ category }: BoardContentProps) {
                 />
               </div>
             </div>
+            {writeError && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{writeError}</AlertDescription>
+              </Alert>
+            )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsWriteDialogOpen(false)}>
                 취소
