@@ -30,6 +30,8 @@ import {
   Clock,
   Sparkles,
   LogIn,
+  Flame,
+  User,
 } from 'lucide-react';
 import type { UserTierChartListItem, UserTierChartListResponse, TierChartLanguage } from '@/types/tier';
 import { TIER_CONFIG, TierLevel } from '@/lib/tier';
@@ -95,6 +97,96 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
     if (urlSort === 'views') return t('pageDesc.views');
     return t('pageDesc.home');
   };
+
+  // 페이지 테마 결정 (색상, 아이콘, 배지 등)
+  const getPageTheme = () => {
+    if (initialTab === 'mine' || activeTab === 'mine') {
+      return {
+        icon: User,
+        color: 'accent',
+        bgGradient: 'from-accent/5 via-transparent to-primary/5',
+        badgeBg: 'bg-accent/10',
+        badgeText: 'text-accent',
+        badgeBorder: 'border-accent/20',
+        iconBg: 'bg-accent/20',
+        badgeLabel: t('tabs.mine'),
+      };
+    }
+    if (activeTab === 'hall_of_fame') {
+      return {
+        icon: Crown,
+        color: 'amber',
+        bgGradient: 'from-amber-500/5 via-transparent to-yellow-500/5',
+        badgeBg: 'bg-amber-500/10',
+        badgeText: 'text-amber-600',
+        badgeBorder: 'border-amber-500/20',
+        iconBg: 'bg-amber-500/20',
+        badgeLabel: t('tabs.hallOfFame'),
+      };
+    }
+    if (activeTab === 'hot') {
+      return {
+        icon: Flame,
+        color: 'red',
+        bgGradient: 'from-red-500/5 via-transparent to-orange-500/5',
+        badgeBg: 'bg-red-500/10',
+        badgeText: 'text-red-600',
+        badgeBorder: 'border-red-500/20',
+        iconBg: 'bg-red-500/20',
+        badgeLabel: t('tabs.hot'),
+      };
+    }
+    if (urlSort === 'popular') {
+      return {
+        icon: Heart,
+        color: 'pink',
+        bgGradient: 'from-pink-500/5 via-transparent to-rose-500/5',
+        badgeBg: 'bg-pink-500/10',
+        badgeText: 'text-pink-600',
+        badgeBorder: 'border-pink-500/20',
+        iconBg: 'bg-pink-500/20',
+        badgeLabel: tNav('popular'),
+      };
+    }
+    if (urlSort === 'latest') {
+      return {
+        icon: Clock,
+        color: 'blue',
+        bgGradient: 'from-blue-500/5 via-transparent to-cyan-500/5',
+        badgeBg: 'bg-blue-500/10',
+        badgeText: 'text-blue-600',
+        badgeBorder: 'border-blue-500/20',
+        iconBg: 'bg-blue-500/20',
+        badgeLabel: tNav('latest'),
+      };
+    }
+    if (urlSort === 'views') {
+      return {
+        icon: Eye,
+        color: 'purple',
+        bgGradient: 'from-purple-500/5 via-transparent to-violet-500/5',
+        badgeBg: 'bg-purple-500/10',
+        badgeText: 'text-purple-600',
+        badgeBorder: 'border-purple-500/20',
+        iconBg: 'bg-purple-500/20',
+        badgeLabel: t('sort.views'),
+      };
+    }
+    // 기본 (오픈 계급도 홈)
+    return {
+      icon: Sparkles,
+      color: 'accent',
+      bgGradient: 'from-accent/5 via-transparent to-primary/5',
+      badgeBg: 'bg-accent/10',
+      badgeText: 'text-accent',
+      badgeBorder: 'border-accent/20',
+      iconBg: 'bg-accent/20',
+      badgeLabel: t('title'),
+    };
+  };
+
+  const theme = getPageTheme();
+  const ThemeIcon = theme.icon;
 
   // URL 업데이트 함수
   const updateURL = useCallback((newSort?: SortOption, newTab?: TabType) => {
@@ -253,53 +345,40 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
 
   return (
     <div className="container py-6 max-w-6xl">
-      {/* 헤더 */}
-      <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`p-2.5 rounded-xl ${
-                activeTab === 'hall_of_fame'
-                  ? 'bg-amber-500/10'
-                  : activeTab === 'hot'
-                    ? 'bg-red-500/10'
-                    : 'bg-accent/10'
-              }`}>
-                {activeTab === 'hall_of_fame' ? (
-                  <Crown className="h-6 w-6 text-amber-500" />
-                ) : activeTab === 'hot' ? (
-                  <TrendingUp className="h-6 w-6 text-red-500" />
-                ) : urlSort === 'latest' ? (
-                  <Clock className="h-6 w-6 text-accent" />
-                ) : urlSort === 'views' ? (
-                  <Eye className="h-6 w-6 text-accent" />
-                ) : (
-                  <Sparkles className="h-6 w-6 text-accent" />
-                )}
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold">
-                  {getPageTitle()}
-                </h1>
-              </div>
-            </div>
-            <p className="text-muted-foreground text-sm md:text-base ml-0 md:ml-14">
-              {getPageDescription()}
-            </p>
-            {totalCount > 0 && (
-              <div className="mt-3 ml-0 md:ml-14">
-                <Badge variant="secondary" className="text-xs">
-                  {t('countDesc', { count: totalCount })}
-                </Badge>
-              </div>
-            )}
+      {/* 히어로 섹션 */}
+      <section className="relative py-6 md:py-10 mb-8 overflow-hidden rounded-2xl">
+        <div className={`absolute inset-0 bg-gradient-to-br ${theme.bgGradient} pointer-events-none`} />
+        <div className="relative text-center px-4">
+          {/* 배지 */}
+          <div className={`inline-flex items-center gap-2 px-4 py-1.5 mb-4 rounded-full ${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder}`}>
+            <ThemeIcon className="h-4 w-4" />
+            <span className="text-sm font-medium">{theme.badgeLabel}</span>
           </div>
-          <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90 shrink-0">
-            <Plus className="h-4 w-4 mr-2" />
-            {tNav('createTier')}
-          </Button>
+
+          {/* 제목 */}
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">
+            {getPageTitle()}
+          </h1>
+
+          {/* 설명 */}
+          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto mb-4">
+            {getPageDescription()}
+          </p>
+
+          {/* 통계 & 버튼 */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+            {totalCount > 0 && (
+              <Badge variant="secondary" className="text-sm px-3 py-1">
+                {t('countDesc', { count: totalCount })}
+              </Badge>
+            )}
+            <Button onClick={handleCreateClick} className="bg-accent hover:bg-accent/90">
+              <Plus className="h-4 w-4 mr-2" />
+              {tNav('createTier')}
+            </Button>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* 탭 & 필터 */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
