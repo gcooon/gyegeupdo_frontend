@@ -38,6 +38,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLocaleStore } from '@/store/localeStore';
 import { getCategoryInfo } from '@/config/categories';
 import type { PostListItem, PostTag } from '@/types/board';
+import { TIER_CONFIG, type TierLevel } from '@/lib/tier';
 
 const TAG_OPTIONS: { value: PostTag | 'all'; label: string }[] = [
   { value: 'all', label: '전체' },
@@ -90,13 +91,31 @@ export function BoardContent({ category }: BoardContentProps) {
   // 제품 목록 (제품후기 태그 선택 시 검색용)
   const { data: allProducts } = useCategoryProducts(category);
   const filteredProducts = useMemo(() => {
-    if (!allProducts || !productSearch.trim()) return allProducts || [];
-    const q = productSearch.toLowerCase();
-    return allProducts.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.brand?.name?.toLowerCase().includes(q)
-    );
+    if (!allProducts) return [];
+    let products = allProducts;
+    if (productSearch.trim()) {
+      const q = productSearch.toLowerCase();
+      products = products.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.brand?.name?.toLowerCase().includes(q)
+      );
+    }
+    return products;
   }, [allProducts, productSearch]);
+
+  // 등급별 그룹화
+  const groupedProducts = useMemo(() => {
+    const tiers: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
+    return tiers
+      .map(tier => ({
+        tier,
+        label: TIER_CONFIG[tier].label,
+        color: TIER_CONFIG[tier].color,
+        emoji: TIER_CONFIG[tier].emoji,
+        products: filteredProducts.filter(p => p.tier === tier),
+      }))
+      .filter(g => g.products.length > 0);
+  }, [filteredProducts]);
 
   // URL에 ?write=true 있으면 write 다이얼로그 자동 열기
   useEffect(() => {
@@ -291,23 +310,34 @@ export function BoardContent({ category }: BoardContentProps) {
                         }}
                         onFocus={() => setProductDropdownOpen(true)}
                       />
-                      {productDropdownOpen && filteredProducts.length > 0 && (
-                        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto border rounded-md bg-background shadow-lg">
-                          {filteredProducts.slice(0, 20).map((p) => (
-                            <button
-                              key={p.slug}
-                              type="button"
-                              className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between"
-                              onClick={() => {
-                                setNewPost({ ...newPost, product_slug: p.slug });
-                                setSelectedProductName(`${p.brand?.name || ''} ${p.name}`);
-                                setProductSearch('');
-                                setProductDropdownOpen(false);
-                              }}
-                            >
-                              <span>{p.brand?.name} {p.name}</span>
-                              <Badge variant="outline" className="text-xs shrink-0 ml-2">{p.tier}티어</Badge>
-                            </button>
+                      {productDropdownOpen && groupedProducts.length > 0 && (
+                        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-64 overflow-y-auto border rounded-md bg-background shadow-lg">
+                          {groupedProducts.map((group) => (
+                            <div key={group.tier}>
+                              <div className="sticky top-0 px-3 py-1.5 text-xs font-semibold bg-muted/80 backdrop-blur-sm border-b flex items-center gap-1.5" style={{ color: group.color }}>
+                                <span>{group.emoji}</span>
+                                {group.label} ({group.tier})
+                                <span className="text-muted-foreground font-normal">· {group.products.length}개</span>
+                              </div>
+                              {group.products.map((p) => (
+                                <button
+                                  key={p.slug}
+                                  type="button"
+                                  className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between"
+                                  onClick={() => {
+                                    setNewPost({ ...newPost, product_slug: p.slug });
+                                    setSelectedProductName(`${p.brand?.name || ''} ${p.name}`);
+                                    setProductSearch('');
+                                    setProductDropdownOpen(false);
+                                  }}
+                                >
+                                  <span>{p.brand?.name} {p.name}</span>
+                                  <Badge variant="outline" className="text-xs shrink-0 ml-2" style={{ borderColor: group.color, color: group.color }}>
+                                    {group.label}
+                                  </Badge>
+                                </button>
+                              ))}
+                            </div>
                           ))}
                         </div>
                       )}

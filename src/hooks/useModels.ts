@@ -72,7 +72,7 @@ export function useCategoryProducts(category: string) {
     queryKey: ['products', 'category', category],
     queryFn: async () => {
       const response = await api.get<ApiResponse<ProductListResponse>>(
-        `/products/?category=${category}&page_size=100`
+        `/products/?category=${category}&page_size=500`
       );
       return response.data.data.results;
     },
