@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { useCategory } from '@/hooks/useBrands';
 import { usePosts, useCreatePost } from '@/hooks/usePosts';
+import { useCategoryProducts } from '@/hooks/useModels';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocaleStore } from '@/store/localeStore';
 import { getCategoryInfo } from '@/config/categories';
@@ -76,12 +77,26 @@ export function BoardContent({ category }: BoardContentProps) {
   const [page, setPage] = useState(1);
   const [isWriteDialogOpen, setIsWriteDialogOpen] = useState(false);
   const [writeError, setWriteError] = useState('');
+  const [productSearch, setProductSearch] = useState('');
+  const [productDropdownOpen, setProductDropdownOpen] = useState(false);
+  const [selectedProductName, setSelectedProductName] = useState('');
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
     tag: 'free' as PostTag,
     product_slug: '',
   });
+
+  // 제품 목록 (제품후기 태그 선택 시 검색용)
+  const { data: allProducts } = useCategoryProducts(category);
+  const filteredProducts = useMemo(() => {
+    if (!allProducts || !productSearch.trim()) return allProducts || [];
+    const q = productSearch.toLowerCase();
+    return allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.brand?.name?.toLowerCase().includes(q)
+    );
+  }, [allProducts, productSearch]);
 
   // URL에 ?write=true 있으면 write 다이얼로그 자동 열기
   useEffect(() => {
@@ -93,9 +108,15 @@ export function BoardContent({ category }: BoardContentProps) {
         tag: urlTag || prev.tag,
         product_slug: urlProduct || prev.product_slug,
       }));
+      if (urlProduct && allProducts) {
+        const found = allProducts.find(p => p.slug === urlProduct);
+        if (found) {
+          setSelectedProductName(`${found.brand?.name || ''} ${found.name}`);
+        }
+      }
       setIsWriteDialogOpen(true);
     }
-  }, [searchParams, isAuthenticated]);
+  }, [searchParams, isAuthenticated, allProducts]);
 
   // API 연결
   const { data, isLoading, error, refetch } = usePosts({
@@ -238,15 +259,65 @@ export function BoardContent({ category }: BoardContentProps) {
               {/* 제품 선택 (제품후기일 때) */}
               {newPost.tag === 'product_review' && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">관련 제품 (slug)</label>
-                  <Input
-                    placeholder="예: nike-pegasus-41"
-                    value={newPost.product_slug}
-                    onChange={(e) => setNewPost({ ...newPost, product_slug: e.target.value })}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    제품 상세 페이지 URL의 마지막 부분을 입력하세요
-                  </p>
+                  <label className="text-sm font-medium">관련 제품</label>
+                  {selectedProductName ? (
+                    <div className="flex items-center gap-2 p-2 border rounded-md bg-muted/30">
+                      <Package className="h-4 w-4 text-accent shrink-0" />
+                      <span className="text-sm flex-1">{selectedProductName}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs"
+                        onClick={() => {
+                          setSelectedProductName('');
+                          setNewPost({ ...newPost, product_slug: '' });
+                          setProductSearch('');
+                        }}
+                      >
+                        변경
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="제품명을 검색하세요..."
+                        className="pl-10"
+                        value={productSearch}
+                        onChange={(e) => {
+                          setProductSearch(e.target.value);
+                          setProductDropdownOpen(true);
+                        }}
+                        onFocus={() => setProductDropdownOpen(true)}
+                      />
+                      {productDropdownOpen && filteredProducts.length > 0 && (
+                        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto border rounded-md bg-background shadow-lg">
+                          {filteredProducts.slice(0, 20).map((p) => (
+                            <button
+                              key={p.slug}
+                              type="button"
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between"
+                              onClick={() => {
+                                setNewPost({ ...newPost, product_slug: p.slug });
+                                setSelectedProductName(`${p.brand?.name || ''} ${p.name}`);
+                                setProductSearch('');
+                                setProductDropdownOpen(false);
+                              }}
+                            >
+                              <span>{p.brand?.name} {p.name}</span>
+                              <Badge variant="outline" className="text-xs shrink-0 ml-2">{p.tier}티어</Badge>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {productDropdownOpen && productSearch && filteredProducts.length === 0 && (
+                        <div className="absolute z-50 top-full left-0 right-0 mt-1 border rounded-md bg-background shadow-lg p-3 text-sm text-muted-foreground text-center">
+                          검색 결과가 없습니다
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
