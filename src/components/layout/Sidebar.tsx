@@ -61,13 +61,14 @@ export function Sidebar({ className = '' }: SidebarProps) {
     }
   }, [pathname, categories]);
 
-  // 모바일에서 링크 클릭(경로 변경) 시 사이드바 닫기
+  // 모바일에서 링크 클릭(경로 또는 쿼리 파라미터 변경) 시 사이드바 닫기
+  const searchParamsString = searchParams.toString();
   useEffect(() => {
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     if (isMobile && isOpen) {
       close();
     }
-  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pathname, searchParamsString]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 모바일에서 사이드바 열릴 때 body 스크롤 방지
   useEffect(() => {
