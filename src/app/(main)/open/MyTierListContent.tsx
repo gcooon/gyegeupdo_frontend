@@ -57,6 +57,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   const t = useTranslations('openTier');
   const tCommon = useTranslations('common');
   const tNav = useTranslations('nav');
+  const tPromotion = useTranslations('promotion');
   const [charts, setCharts] = useState<UserTierChartListItem[]>(initialCharts || []);
   const [isLoading, setIsLoading] = useState(!initialCharts?.length);
   const [page, setPage] = useState(1);
@@ -67,8 +68,8 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
   const [languageFilter, setLanguageFilter] = useState<TierChartLanguage | 'all'>('all');
 
   // URL에서 sort와 tab 파라미터 읽기
-  const urlSort = searchParams.get('sort') as SortOption | null;
-  const urlTab = searchParams.get('tab') as TabType | null;
+  const urlSort = searchParams?.get('sort') as SortOption | null;
+  const urlTab = searchParams?.get('tab') as TabType | null;
 
   // URL 파라미터 기반으로 상태 결정
   const sort: SortOption = urlSort && ['popular', 'latest', 'views'].includes(urlSort) ? urlSort : 'popular';
@@ -341,8 +342,6 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
       </div>
     );
   }
-
-  const tPromotion = useTranslations('promotion');
 
   // 페이지별 가이드 정보 렌더링
   const renderGuideCard = () => {

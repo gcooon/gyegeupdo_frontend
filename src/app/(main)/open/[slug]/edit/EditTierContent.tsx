@@ -126,8 +126,8 @@ export function EditTierContent({ slug }: EditTierContentProps) {
     setOriginalChart(chart);
     setTitle(chart.title);
     setDescription(chart.description || '');
-    setVisibility(chart.visibility);
-    setLanguage(chart.language);
+    setVisibility(chart.visibility || 'public');
+    setLanguage(chart.language || 'ko');
 
     // tier_data를 TierItemInput 형태로 변환
     const convertedData: Record<TierLevel, TierItemInput[]> = {

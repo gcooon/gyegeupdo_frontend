@@ -1,5 +1,8 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
+
+export const dynamic = 'force-dynamic';
+
 import { OpenPageContent } from './OpenPageContent';
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';

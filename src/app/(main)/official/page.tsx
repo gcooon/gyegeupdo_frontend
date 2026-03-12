@@ -1,4 +1,7 @@
 import { Metadata } from 'next';
+
+export const dynamic = 'force-dynamic';
+
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';
 import { OfficialHubContent } from './OfficialHubContent';

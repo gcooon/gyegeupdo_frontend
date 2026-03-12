@@ -59,7 +59,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
   });
 
   // 모바일에서 링크 클릭(경로 또는 쿼리 파라미터 변경) 시 사이드바 닫기
-  const searchParamsString = searchParams.toString();
+  const searchParamsString = searchParams?.toString() || '';
   useEffect(() => {
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
     if (isMobile && isOpen) {
@@ -263,19 +263,19 @@ export function Sidebar({ className = '' }: SidebarProps) {
                     const isHeader = 'isHeader' in menu && menu.isHeader;
                     if (menu.key === 'home') {
                       // /open 메인 페이지 (쿼리 파라미터 없을 때)
-                      const hasSort = searchParams.get('sort');
-                      const hasTab = searchParams.get('tab');
+                      const hasSort = searchParams?.get('sort');
+                      const hasTab = searchParams?.get('tab');
                       isActive = pathname === '/open' && !hasSort && !hasTab;
                     } else if (menu.key === 'my') {
                       // /open/my 페이지
                       isActive = pathname === '/open/my' || pathname.startsWith('/open/my/');
                     } else if (menu.key === 'hallOfFame') {
                       // /open?tab=hall_of_fame
-                      const currentTab = searchParams.get('tab');
+                      const currentTab = searchParams?.get('tab');
                       isActive = pathname === '/open' && currentTab === 'hall_of_fame';
                     } else {
                       // /open?sort=popular 또는 /open?sort=latest
-                      const currentSort = searchParams.get('sort');
+                      const currentSort = searchParams?.get('sort');
                       isActive = pathname === '/open' && currentSort === menu.key;
                     }
                     const Icon = menu.icon;

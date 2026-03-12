@@ -1,5 +1,8 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
+
+export const dynamic = 'force-dynamic';
+
 import { MyTierListContent } from '../MyTierListContent';
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';

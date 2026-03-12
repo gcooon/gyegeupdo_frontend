@@ -39,7 +39,7 @@ export function BadgeGrid({ showLocked = true, category = 'all' }: BadgeGridProp
   // 진행률 계산
   const getProgress = (badge: Badge): number => {
     let current = 0;
-    let target = badge.requirement.value;
+    const target = badge.requirement.value;
 
     switch (badge.requirement.type) {
       case 'reviews':

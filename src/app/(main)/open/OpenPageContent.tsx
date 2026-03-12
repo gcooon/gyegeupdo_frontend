@@ -7,8 +7,8 @@ import { MyTierListContent } from './MyTierListContent';
 
 export function OpenPageContent() {
   const searchParams = useSearchParams();
-  const hasSort = searchParams.get('sort');
-  const hasTab = searchParams.get('tab');
+  const hasSort = searchParams?.get('sort');
+  const hasTab = searchParams?.get('tab');
 
   // URL 파라미터가 있으면 해당 필터된 목록만 표시
   // URL 파라미터가 없으면 (홈) 전체 섹션 표시

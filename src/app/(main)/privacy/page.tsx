@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: '개인정보처리방침 | 계급도',
   description: '계급도 서비스의 개인정보처리방침입니다.',

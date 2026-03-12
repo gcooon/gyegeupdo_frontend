@@ -72,7 +72,7 @@ export function BoardContent({ category }: BoardContentProps) {
   const config = getCategoryInfo(categoryData || category);
 
   // URL 파라미터에서 초기 태그 읽기
-  const initialTag = (searchParams.get('tag') as PostTag) || 'all';
+  const initialTag = (searchParams?.get('tag') as PostTag) || 'all';
   const [selectedTag, setSelectedTag] = useState<PostTag | 'all'>(initialTag);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -119,9 +119,9 @@ export function BoardContent({ category }: BoardContentProps) {
 
   // URL에 ?write=true 있으면 write 다이얼로그 자동 열기
   useEffect(() => {
-    if (searchParams.get('write') === 'true' && isAuthenticated) {
-      const urlTag = searchParams.get('tag') as PostTag;
-      const urlProduct = searchParams.get('product') || '';
+    if (searchParams?.get('write') === 'true' && isAuthenticated) {
+      const urlTag = searchParams?.get('tag') as PostTag;
+      const urlProduct = searchParams?.get('product') || '';
       setNewPost(prev => ({
         ...prev,
         tag: urlTag || prev.tag,

@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    // Disable static generation for problematic pages
+    workerThreads: false,
+    cpus: 1,
+  },
 };
 
 export default nextConfig;

@@ -1,8 +1,11 @@
+import { NextPage } from 'next';
 import Link from 'next/link';
 
-export const dynamic = 'force-dynamic';
+interface ErrorProps {
+  statusCode?: number;
+}
 
-export default function NotFound() {
+const Error: NextPage<ErrorProps> = ({ statusCode }) => {
   return (
     <div style={{
       display: 'flex',
@@ -14,13 +17,13 @@ export default function NotFound() {
       padding: '2rem'
     }}>
       <div style={{ fontSize: '6rem', fontWeight: 'bold', color: '#ccc', marginBottom: '1rem' }}>
-        404
+        {statusCode || 'Error'}
       </div>
       <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-        페이지를 찾을 수 없습니다
+        오류가 발생했습니다
       </h2>
       <p style={{ color: '#666', marginBottom: '1.5rem' }}>
-        요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+        요청하신 페이지를 처리하는 중 문제가 발생했습니다.
       </p>
       <Link
         href="/"
@@ -38,4 +41,11 @@ export default function NotFound() {
       </Link>
     </div>
   );
-}
+};
+
+Error.getInitialProps = ({ res, err }) => {
+  const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
+  return { statusCode };
+};
+
+export default Error;
