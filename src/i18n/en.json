@@ -126,7 +126,8 @@
   "promotion": {
     "normal": "Normal",
     "rising": "Rising",
-    "candidate": "Candidate",
+    "candidate": "Hall of Fame Candidate",
+    "candidateShort": "HoF Cand.",
     "promoted": "HOT",
     "hall_of_fame": "Hall of Fame",
     "hot": "🔥 HOT",
@@ -246,6 +247,7 @@
     "badge": "User Created",
     "title": "Create Your Own Tier Chart!",
     "subtitle": "Ramen, coffee, travel destinations... rank anything you want",
+    "subtitleReward": "Hall of Fame charts share ad revenue!",
     "totalCharts": "Popular: {count}",
     "hallOfFame": "Hall of Fame: {count}",
     "totalViews": "Views: {count}",
