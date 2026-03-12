@@ -483,48 +483,16 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
 
     setIsDownloading(true);
     try {
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(tierGridRef.current, {
+      const { toPng } = await import('html-to-image');
+      const dataUrl = await toPng(tierGridRef.current, {
         backgroundColor: '#ffffff',
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        onclone: (clonedDoc) => {
-          // oklab 색상을 지원하지 않는 html2canvas를 위해 스타일 변환
-          const allElements = clonedDoc.querySelectorAll('*');
-          allElements.forEach((el) => {
-            const computed = window.getComputedStyle(el);
-            const styles = ['color', 'backgroundColor', 'borderColor'];
-            styles.forEach((prop) => {
-              const value = computed.getPropertyValue(prop.replace(/([A-Z])/g, '-$1').toLowerCase());
-              if (value && value.includes('oklab')) {
-                (el as HTMLElement).style.setProperty(
-                  prop.replace(/([A-Z])/g, '-$1').toLowerCase(),
-                  prop === 'backgroundColor' ? '#ffffff' : '#000000'
-                );
-              }
-            });
-          });
-        },
+        pixelRatio: 2,
+        skipFonts: true,
       });
-
-      // Add watermark
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.font = '16px Pretendard, sans-serif';
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        ctx.textAlign = 'right';
-        ctx.fillText('tier-chart.com', canvas.width - 20, canvas.height - 20);
-
-        const now = new Date();
-        const dateStr = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
-        ctx.fillText(dateStr, canvas.width - 20, canvas.height - 44);
-      }
 
       const link = document.createElement('a');
       link.download = `계급도_${category}_${new Date().toISOString().split('T')[0]}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);

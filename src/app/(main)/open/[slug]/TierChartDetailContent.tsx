@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { ko, enUS } from 'date-fns/locale';
-import html2canvas from 'html2canvas';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/lib/api';
 import { useTranslations } from '@/i18n';
@@ -233,34 +232,16 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
 
     setIsDownloading(true);
     try {
-      const canvas = await html2canvas(tierListRef.current, {
+      const { toPng } = await import('html-to-image');
+      const dataUrl = await toPng(tierListRef.current, {
         backgroundColor: '#1F2937',
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        onclone: (clonedDoc) => {
-          // oklab 색상을 지원하지 않는 html2canvas를 위해 스타일 변환
-          const allElements = clonedDoc.querySelectorAll('*');
-          allElements.forEach((el) => {
-            const computed = window.getComputedStyle(el);
-            const styles = ['color', 'backgroundColor', 'borderColor'];
-            styles.forEach((prop) => {
-              const value = computed.getPropertyValue(prop.replace(/([A-Z])/g, '-$1').toLowerCase());
-              if (value && value.includes('oklab')) {
-                (el as HTMLElement).style.setProperty(
-                  prop.replace(/([A-Z])/g, '-$1').toLowerCase(),
-                  prop === 'backgroundColor' ? '#1F2937' : '#ffffff'
-                );
-              }
-            });
-          });
-        },
+        pixelRatio: 2,
+        skipFonts: true,
       });
 
       const link = document.createElement('a');
       link.download = `${chart?.title || '계급도'}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
