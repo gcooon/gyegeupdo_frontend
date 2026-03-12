@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useTranslations } from '@/i18n';
 import { useLocaleStore } from '@/store/localeStore';
+import { NAV_CATEGORIES } from '@/config/categories';
 
 export function Footer() {
   const t = useTranslations('footer');
@@ -26,47 +27,28 @@ export function Footer() {
             </p>
           </div>
 
-          <div>
-            <h3 className="font-semibold mb-3">👟 {t('runningShoes')}</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="/running-shoes/tier" className="hover:text-foreground transition-colors">
-                  {t('viewTier')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/running-shoes/quiz" className="hover:text-foreground transition-colors">
-                  {t('quiz')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/running-shoes/compare" className="hover:text-foreground transition-colors">
-                  {t('compare')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-3">🍗 {t('chicken')}</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link href="/chicken/tier" className="hover:text-foreground transition-colors">
-                  {t('viewTier')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/chicken/quiz" className="hover:text-foreground transition-colors">
-                  {t('quiz')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/chicken/compare" className="hover:text-foreground transition-colors">
-                  {t('compare')}
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {NAV_CATEGORIES.slice(0, 2).map((category) => (
+            <div key={category.slug}>
+              <h3 className="font-semibold mb-3">{category.icon} {category.name}</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href={`/${category.slug}/tier`} className="hover:text-foreground transition-colors">
+                    {t('viewTier')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/${category.slug}/quiz`} className="hover:text-foreground transition-colors">
+                    {t('quiz')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/${category.slug}/compare`} className="hover:text-foreground transition-colors">
+                    {t('compare')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          ))}
 
           <div>
             <h3 className="font-semibold mb-3">{t('info')}</h3>
