@@ -240,11 +240,21 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         allowTaint: true,
         logging: false,
         onclone: (clonedDoc) => {
-          // 클론된 DOM에서 스타일 적용 확인
-          const target = clonedDoc.querySelector('[data-tier-chart]');
-          if (target) {
-            (target as HTMLElement).style.transform = 'none';
-          }
+          // oklab 색상을 지원하지 않는 html2canvas를 위해 스타일 변환
+          const allElements = clonedDoc.querySelectorAll('*');
+          allElements.forEach((el) => {
+            const computed = window.getComputedStyle(el);
+            const styles = ['color', 'backgroundColor', 'borderColor'];
+            styles.forEach((prop) => {
+              const value = computed.getPropertyValue(prop.replace(/([A-Z])/g, '-$1').toLowerCase());
+              if (value && value.includes('oklab')) {
+                (el as HTMLElement).style.setProperty(
+                  prop.replace(/([A-Z])/g, '-$1').toLowerCase(),
+                  prop === 'backgroundColor' ? '#1F2937' : '#ffffff'
+                );
+              }
+            });
+          });
         },
       });
 
