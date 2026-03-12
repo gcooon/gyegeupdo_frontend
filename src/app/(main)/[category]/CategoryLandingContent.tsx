@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useBrands, useCategory } from '@/hooks/useBrands';
 import { useCategoryProducts } from '@/hooks/useModels';
@@ -436,6 +436,7 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
   const { data: categoryData = initialCategory } = useCategory(category, initialCategory);
   const { data: products = [], isLoading: isProductsLoading } = useCategoryProducts(category);
   const tierGridRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // API 데이터 기반으로 설정 추출
   const config = useMemo(() => getCategoryConfig(categoryData), [categoryData]);
@@ -475,13 +476,20 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
   const reviews = REVIEW_DATA[category] || [];
 
   const handleDownloadImage = async () => {
-    if (!tierGridRef.current) return;
+    if (!tierGridRef.current) {
+      alert('캡처할 영역을 찾을 수 없습니다.');
+      return;
+    }
 
+    setIsDownloading(true);
     try {
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(tierGridRef.current, {
         backgroundColor: '#ffffff',
         scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
       });
 
       // Add watermark
@@ -502,7 +510,10 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
-      // html2canvas not available
+      console.error('Image generation failed:', err);
+      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -619,9 +630,13 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleDownloadImage}>
-              <Download className="h-4 w-4 mr-2" />
-              이미지 저장
+            <Button variant="outline" size="sm" onClick={handleDownloadImage} disabled={isDownloading}>
+              {isDownloading ? (
+                <span className="h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Download className="h-4 w-4 mr-2" />
+              )}
+              {isDownloading ? '생성 중...' : '이미지 저장'}
             </Button>
             <ShareButtons
               title={`${config.name} 계급도 - 계급도`}
