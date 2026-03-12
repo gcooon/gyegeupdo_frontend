@@ -325,10 +325,10 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       </div>
 
       {/* 티어 차트 */}
-      <div ref={tierListRef} data-tier-chart className="rounded-2xl overflow-hidden shadow-lg mb-6">
+      <div ref={tierListRef} data-tier-chart className="rounded-xl overflow-hidden shadow-lg mb-6 border border-border">
         {/* 제목 */}
-        <div className="bg-gradient-to-r from-accent to-primary p-4 text-center">
-          <h2 className="text-xl font-bold text-white">{chart.title}</h2>
+        <div className="bg-slate-800 px-4 py-3">
+          <h2 className="text-lg font-bold text-white text-center">{chart.title}</h2>
         </div>
 
         {/* 티어 */}

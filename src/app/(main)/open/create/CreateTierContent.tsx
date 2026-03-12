@@ -306,7 +306,7 @@ export function CreateTierContent() {
           </Link>
         </Button>
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center">
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -444,7 +444,7 @@ export function CreateTierContent() {
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !title.trim() || filledItems < 1}
-            className="h-12 px-8 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold text-base shadow-lg shadow-blue-500/25 disabled:opacity-50 disabled:shadow-none"
+            className="h-12 px-8 bg-accent hover:bg-accent/90 text-white font-bold text-base shadow-lg shadow-accent/25 disabled:opacity-50 disabled:shadow-none"
           >
             {isSubmitting ? (
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -593,8 +593,8 @@ const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<H
   return (
     <div className="rounded-xl overflow-hidden shadow-xl bg-white border border-gray-200">
       {/* 제목 */}
-      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 text-center">
-        <h2 className="text-xl font-bold text-white">{title}</h2>
+      <div className="bg-slate-800 px-4 py-3">
+        <h2 className="text-lg font-bold text-white text-center">{title}</h2>
       </div>
 
       {/* 티어 */}
