@@ -255,6 +255,7 @@ export function CreateTierContent() {
               ref={tierListRef}
               title={title}
               tierData={tierData}
+              authorName={createdChart.user_nickname}
             />
 
             {/* 액션 버튼 */}
@@ -587,9 +588,10 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
 interface TierPreviewProps {
   title: string;
   tierData: Record<TierLevel, TierItemInput[]>;
+  authorName?: string;
 }
 
-const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<HTMLDivElement> }) => {
+const TierPreview = ({ title, tierData, authorName }: TierPreviewProps & { ref?: React.Ref<HTMLDivElement> }) => {
   return (
     <div className="rounded-xl overflow-hidden shadow-xl bg-white border border-gray-200">
       {/* 제목 */}
@@ -642,7 +644,7 @@ const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<H
 
       {/* 워터마크 */}
       <div className="bg-gray-50 text-center py-2 text-xs text-gray-400 border-t">
-        gyegeupdo.kr
+        tier-chart.com{authorName && ` · by ${authorName}`}
       </div>
     </div>
   );

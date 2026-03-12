@@ -375,7 +375,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
 
         {/* 워터마크 */}
         <div className="bg-muted/50 text-center py-2 text-xs text-muted-foreground">
-          tier-chart.com
+          tier-chart.com · by {chart.user_nickname}
         </div>
       </div>
 
