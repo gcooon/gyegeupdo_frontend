@@ -579,7 +579,9 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
-      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      console.error('Image generation failed:', err);
+      alert(`이미지 생성 실패: ${errorMessage}`);
     } finally {
       setIsDownloading(false);
     }

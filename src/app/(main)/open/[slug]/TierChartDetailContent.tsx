@@ -253,8 +253,9 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
       console.error('Image generation failed:', err);
-      alert(t('imageGenFailed'));
+      alert(`이미지 생성 실패: ${errorMessage}`);
     } finally {
       setIsDownloading(false);
     }

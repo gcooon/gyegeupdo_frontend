@@ -510,8 +510,9 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
       console.error('Image generation failed:', err);
-      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+      alert(`이미지 생성 실패: ${errorMessage}`);
     } finally {
       setIsDownloading(false);
     }
