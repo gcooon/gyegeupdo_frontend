@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -91,16 +92,13 @@ export function ShareButtons({
     // 카카오 SDK 미로드/미초기화 시: 클립보드 복사 후 카카오톡 열기 안내
     navigator.clipboard.writeText(shareUrl).then(() => {
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      toast.success('링크가 복사되었습니다! 카카오톡에서 붙여넣기 해주세요.');
       if (isMobile) {
         // 모바일: 카카오톡 앱 열기 시도
-        alert('링크가 복사되었습니다!\n카카오톡에서 붙여넣기 해주세요.');
         window.location.href = 'kakaotalk://';
-      } else {
-        // 데스크톱: 안내 메시지
-        alert('링크가 복사되었습니다!\n카카오톡에서 붙여넣기 해주세요.');
       }
     }).catch(() => {
-      alert('링크 복사에 실패했습니다. 주소창에서 직접 복사해주세요.');
+      toast.error('링크 복사에 실패했습니다. 주소창에서 직접 복사해주세요.');
     });
   };
 

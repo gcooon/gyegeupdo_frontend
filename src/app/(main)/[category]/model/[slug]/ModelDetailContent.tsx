@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useProduct } from '@/hooks/useModels';
 import { useAuth } from '@/hooks/useAuth';
 import { useProductDispute, useCreateDispute, useDisputeVote } from '@/hooks/useDisputes';
@@ -368,13 +369,13 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
   // 투표 처리
   const handleVote = async (voteType: 'support' | 'oppose') => {
     if (!isAuthenticated) {
-      alert('로그인이 필요합니다.');
+      toast.warning('로그인이 필요합니다.');
       return;
     }
 
     // 이미 투표했으면 무시
     if (userVote) {
-      alert('이미 투표하셨습니다.');
+      toast.info('이미 투표하셨습니다.');
       return;
     }
 
@@ -393,8 +394,9 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
           vote: voteType,
         });
         refetchDispute();
+        toast.success('투표가 완료되었습니다.');
       } catch {
-        alert('투표 중 오류가 발생했습니다.');
+        toast.error('투표 중 오류가 발생했습니다.');
       }
     }
   };
@@ -413,8 +415,9 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
       setDisputeReason('');
       setDisputeType(null);
       refetchDispute();
+      toast.success('이의제기가 등록되었습니다.');
     } catch {
-      alert('이의제기 생성 중 오류가 발생했습니다.');
+      toast.error('이의제기 생성 중 오류가 발생했습니다.');
     }
   };
 

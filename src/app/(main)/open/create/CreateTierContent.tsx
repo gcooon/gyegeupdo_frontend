@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -198,7 +199,7 @@ export function CreateTierContent() {
   // 이미지 다운로드
   const handleDownload = async () => {
     if (!tierListRef.current) {
-      alert('캡처할 영역을 찾을 수 없습니다.');
+      toast.error('캡처할 영역을 찾을 수 없습니다.');
       return;
     }
 
@@ -215,8 +216,9 @@ export function CreateTierContent() {
       link.download = `${title || '계급도'}.png`;
       link.href = dataUrl;
       link.click();
+      toast.success('이미지가 다운로드되었습니다.');
     } catch {
-      alert(t('imageGenFailed'));
+      toast.error(t('imageGenFailed'));
     } finally {
       setIsDownloading(false);
     }

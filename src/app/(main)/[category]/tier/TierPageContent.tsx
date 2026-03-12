@@ -2,6 +2,7 @@
 
 import { useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useBrands, useCategory } from '@/hooks/useBrands';
 import { useCategoryProducts } from '@/hooks/useModels';
 import { TierGrid } from '@/components/tier/TierGrid';
@@ -545,7 +546,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
     const targetRef = activeTab === 'brand' ? tierGridRef : usageGridRef;
 
     if (!targetRef.current) {
-      alert('캡처할 영역을 찾을 수 없습니다.');
+      toast.error('캡처할 영역을 찾을 수 없습니다.');
       return;
     }
 
@@ -563,8 +564,9 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       link.download = `계급도_${category}_${tabLabel}_${new Date().toISOString().split('T')[0]}.png`;
       link.href = dataUrl;
       link.click();
+      toast.success('이미지가 다운로드되었습니다.');
     } catch {
-      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+      toast.error('이미지 생성에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsDownloading(false);
     }

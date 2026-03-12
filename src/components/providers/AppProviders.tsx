@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { Footer } from '@/components/layout/Footer';
 import { useSidebarStore } from '@/store/sidebarStore';
+import { Toaster } from '@/components/ui/sonner';
 
 // Dynamically import components that use router hooks
 const Header = dynamic(
@@ -78,6 +79,7 @@ export function AppProviders({ children }: AppProvidersProps) {
       <Suspense fallback={null}>
         <MobileNav />
       </Suspense>
+      <Toaster richColors position="top-center" />
     </QueryClientProvider>
   );
 }

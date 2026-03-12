@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -52,7 +52,7 @@ export function TierVoteButton({
       return;
     }
     if (userVote) {
-      alert('이미 이 제품에 투표하셨습니다.');
+      toast.info('이미 이 제품에 투표하셨습니다.');
       return;
     }
     setSelectedVote(voteType);

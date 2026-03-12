@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -80,7 +81,7 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
   const handleComplete = () => {
     const assignedCount = items.filter((item) => item.tier !== null).length;
     if (assignedCount < 3) {
-      alert('최소 3개 이상의 항목을 배치해주세요!');
+      toast.warning('최소 3개 이상의 항목을 배치해주세요!');
       return;
     }
     setIsComplete(true);
@@ -101,7 +102,7 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
   // 이미지 다운로드
   const handleDownload = async () => {
     if (!tierListRef.current) {
-      alert('캡처할 영역을 찾을 수 없습니다.');
+      toast.error('캡처할 영역을 찾을 수 없습니다.');
       return;
     }
 
@@ -118,8 +119,9 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
       link.download = `나의_${categoryName}_계급도.png`;
       link.href = dataUrl;
       link.click();
+      toast.success('이미지가 다운로드되었습니다.');
     } catch {
-      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+      toast.error('이미지 생성에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsDownloading(false);
     }

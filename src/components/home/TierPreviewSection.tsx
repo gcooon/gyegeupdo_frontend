@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronUp, ChevronDown, Crown, Medal, Award } from 'lucide-react';
@@ -180,7 +181,7 @@ function TierModelCard({ model, tier, rank }: TierModelCardProps) {
   const handleVoteClick = (e: React.MouseEvent, voteType: 'up' | 'down') => {
     e.preventDefault();
     e.stopPropagation();
-    alert(`${model.name}에 ${voteType === 'up' ? 'UP' : 'DOWN'} 투표하려면 로그인이 필요합니다.`);
+    toast.warning(`${model.name}에 ${voteType === 'up' ? 'UP' : 'DOWN'} 투표하려면 로그인이 필요합니다.`);
   };
 
   return (

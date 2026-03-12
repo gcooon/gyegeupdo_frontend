@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import { Brand } from '@/types/model';
 import { TierBadge } from './TierBadge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,7 +28,7 @@ export function BrandTierCard({ brand, category, showVoteButtons = true }: Brand
     e.preventDefault();
     e.stopPropagation();
     // TODO: API 연동 - 로그인 체크 후 투표 처리
-    alert(`${brand.name}에 ${voteType === 'up' ? 'UP' : 'DOWN'} 투표하려면 로그인이 필요합니다.`);
+    toast.warning(`${brand.name}에 ${voteType === 'up' ? 'UP' : 'DOWN'} 투표하려면 로그인이 필요합니다.`);
   };
 
   return (
