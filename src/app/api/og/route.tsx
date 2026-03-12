@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import { getCategoryInfo } from '@/config/categories';
 
 export const runtime = 'edge';
 
@@ -49,7 +50,8 @@ function generateDefaultOG({
   subtitle: string;
   category: string;
 }) {
-  const categoryEmoji = category === 'running-shoes' ? '👟' : category === 'chicken' ? '🍗' : '🏆';
+  const categoryInfo = getCategoryInfo(category);
+  const categoryEmoji = categoryInfo.icon;
 
   return new ImageResponse(
     (
@@ -253,7 +255,8 @@ function generateMyTierOG({
 
   // 티어별로 그룹화
   const tiers = ['S', 'A', 'B', 'C', 'D'];
-  const categoryEmoji = category === 'running-shoes' ? '👟' : category === 'chicken' ? '🍗' : '🏆';
+  const categoryInfo = getCategoryInfo(category);
+  const categoryEmoji = categoryInfo.icon;
 
   return new ImageResponse(
     (
