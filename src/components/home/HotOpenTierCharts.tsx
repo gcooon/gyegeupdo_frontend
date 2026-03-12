@@ -28,8 +28,8 @@ export function HotOpenTierCharts() {
         if (response.data.success) {
           setHotCharts(response.data.data);
         }
-      } catch (error) {
-        console.error('Failed to fetch HOT charts:', error);
+      } catch {
+        // API 실패 시 빈 목록 유지
       } finally {
         setIsLoading(false);
       }

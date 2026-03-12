@@ -563,10 +563,8 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       link.download = `계급도_${category}_${tabLabel}_${new Date().toISOString().split('T')[0]}.png`;
       link.href = dataUrl;
       link.click();
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      console.error('Image generation failed:', err);
-      alert(`이미지 생성 실패: ${errorMessage}`);
+    } catch {
+      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsDownloading(false);
     }

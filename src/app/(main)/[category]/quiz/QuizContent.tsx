@@ -114,8 +114,7 @@ export function QuizContent({ category }: QuizContentProps) {
           addPoints(POINT_ACTIONS.complete_quiz);
           incrementStat('quizzes');
         }
-      } catch (error) {
-        console.error('Quiz submission failed:', error);
+      } catch {
         // 에러 시에도 결과 화면 표시 (빈 추천)
         setIsComplete(true);
       } finally {

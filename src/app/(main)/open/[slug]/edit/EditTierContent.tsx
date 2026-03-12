@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,50 +19,51 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ShareButtons } from '@/components/share/ShareButtons';
-import { Confetti } from '@/components/effects/Confetti';
 import {
   Plus,
   X,
-  Save,
   Eye,
   EyeOff,
   Loader2,
-  GripVertical,
   Sparkles,
-  Crown,
-  Medal,
-  Award,
-  Download,
   ChevronLeft,
-  Trash2,
+  Save,
+  AlertCircle,
 } from 'lucide-react';
-import { TIER_CONFIG, TierLevel } from '@/lib/tier';
+import { TierLevel } from '@/lib/tier';
 import type { TierChartItem, TierChartData, UserTierChart, TierChartLanguage } from '@/types/tier';
 import { LANGUAGE_OPTIONS } from '@/types/tier';
 import Link from 'next/link';
 import { useTranslations } from '@/i18n';
-
-const TIER_ICONS: Record<TierLevel, React.ElementType> = {
-  S: Crown,
-  A: Medal,
-  B: Award,
-  C: Sparkles,
-  D: Sparkles,
-};
+import { getMockUserTierChart } from '@/lib/mockUserTierCharts';
 
 const TIERS: TierLevel[] = ['S', 'A', 'B', 'C', 'D'];
+
+// 계급도 스타일 색상
+const TIER_COLORS: Record<TierLevel, { bg: string; text: string; light: string; label: string; emoji: string }> = {
+  S: { bg: '#FFD700', text: '#000', light: '#FFFBEB', label: '황제', emoji: '👑' },
+  A: { bg: '#9370DB', text: '#FFF', light: '#FAF5FF', label: '왕', emoji: '🏰' },
+  B: { bg: '#4169E1', text: '#FFF', light: '#EFF6FF', label: '양반', emoji: '🎓' },
+  C: { bg: '#3CB371', text: '#FFF', light: '#ECFDF5', label: '중인', emoji: '🏠' },
+  D: { bg: '#8B7355', text: '#FFF', light: '#FAF5F0', label: '평민', emoji: '🌾' },
+};
 
 interface TierItemInput extends TierChartItem {
   id: string;
 }
 
-export function CreateTierContent() {
+interface EditTierContentProps {
+  slug: string;
+}
+
+export function EditTierContent({ slug }: EditTierContentProps) {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const t = useTranslations('tierChart');
   const tCommon = useTranslations('common');
 
+  const [isLoadingChart, setIsLoadingChart] = useState(true);
+  const [originalChart, setOriginalChart] = useState<UserTierChart | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState<'public' | 'private'>('public');
@@ -76,19 +77,86 @@ export function CreateTierContent() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [createdChart, setCreatedChart] = useState<UserTierChart | null>(null);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
 
-  const tierListRef = useRef<HTMLDivElement>(null);
+  // 기존 계급도 데이터 로드
+  useEffect(() => {
+    const fetchChart = async () => {
+      try {
+        // Mock 데이터 확인
+        const mockChart = getMockUserTierChart(slug);
+        if (mockChart) {
+          if (!mockChart.is_owner) {
+            setError('본인이 작성한 계급도만 수정할 수 있습니다.');
+            return;
+          }
+          initializeFromChart(mockChart);
+          return;
+        }
+
+        const response = await api.get<{
+          success: boolean;
+          data: UserTierChart;
+          message: string;
+        }>(`/tiers/user-charts/${slug}/`);
+
+        if (response.data.success) {
+          const chart = response.data.data;
+          if (!chart.is_owner) {
+            setError('본인이 작성한 계급도만 수정할 수 있습니다.');
+            return;
+          }
+          initializeFromChart(chart);
+        } else {
+          setError(response.data.message || '계급도를 찾을 수 없습니다.');
+        }
+      } catch {
+        setError('계급도를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoadingChart(false);
+      }
+    };
+
+    if (!authLoading && isAuthenticated) {
+      fetchChart();
+    }
+  }, [slug, authLoading, isAuthenticated]);
+
+  // 차트 데이터로 폼 초기화
+  const initializeFromChart = (chart: UserTierChart) => {
+    setOriginalChart(chart);
+    setTitle(chart.title);
+    setDescription(chart.description || '');
+    setVisibility(chart.visibility);
+    setLanguage(chart.language);
+
+    // tier_data를 TierItemInput 형태로 변환
+    const convertedData: Record<TierLevel, TierItemInput[]> = {
+      S: [],
+      A: [],
+      B: [],
+      C: [],
+      D: [],
+    };
+
+    const chartTierData = chart.tier_data as TierChartData;
+    for (const tier of TIERS) {
+      const items = chartTierData[tier] || [];
+      convertedData[tier] = items.map((item, idx) => ({
+        id: `${tier}-${idx}-${Date.now()}`,
+        name: item.name,
+        reason: item.reason || '',
+      }));
+    }
+
+    setTierData(convertedData);
+  };
 
   // 인증 체크
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push('/login?redirect=/open/create');
+      router.push(`/login?redirect=/open/${slug}/edit`);
     }
-  }, [authLoading, isAuthenticated, router]);
+  }, [authLoading, isAuthenticated, router, slug]);
 
   // 새 아이템 추가
   const addItem = (tier: TierLevel) => {
@@ -134,7 +202,6 @@ export function CreateTierContent() {
   };
 
   // 총 아이템 수
-  const totalItems = Object.values(tierData).reduce((sum, items) => sum + items.length, 0);
   const filledItems = Object.values(tierData)
     .flat()
     .filter((item) => item.name.trim() !== '').length;
@@ -169,11 +236,11 @@ export function CreateTierContent() {
     setError(null);
 
     try {
-      const response = await api.post<{
+      const response = await api.patch<{
         success: boolean;
         data: UserTierChart;
         message: string;
-      }>('/tiers/user-charts/', {
+      }>(`/tiers/user-charts/${slug}/`, {
         title: title.trim(),
         description: description.trim(),
         tier_data: apiTierData,
@@ -182,47 +249,18 @@ export function CreateTierContent() {
       });
 
       if (response.data.success) {
-        setCreatedChart(response.data.data);
-        setSuccess(true);
-        setShowConfetti(true);
+        router.push(`/open/${slug}`);
       } else {
         setError(response.data.message || t('saveFailed'));
       }
-    } catch (err) {
+    } catch {
       setError(t('saveFailed'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 이미지 다운로드
-  const handleDownload = async () => {
-    if (!tierListRef.current) {
-      alert('캡처할 영역을 찾을 수 없습니다.');
-      return;
-    }
-
-    setIsDownloading(true);
-    try {
-      const { toPng } = await import('html-to-image');
-      const dataUrl = await toPng(tierListRef.current, {
-        backgroundColor: '#1F2937',
-        pixelRatio: 2,
-        skipFonts: true,
-      });
-
-      const link = document.createElement('a');
-      link.download = `${title || '계급도'}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch {
-      alert(t('imageGenFailed'));
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
-  if (authLoading) {
+  if (authLoading || isLoadingChart) {
     return (
       <div className="container py-12 flex justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-accent" />
@@ -230,79 +268,28 @@ export function CreateTierContent() {
     );
   }
 
-  // 성공 화면
-  if (success && createdChart) {
+  if (error && !originalChart) {
     return (
-      <>
-        <Confetti isActive={showConfetti} onComplete={() => setShowConfetti(false)} />
-        <div className="container py-6 max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <div className="text-center py-8">
-              <Sparkles className="h-16 w-16 text-accent mx-auto mb-4" />
-              <h1 className="text-2xl font-bold mb-2">{t('created')}</h1>
-              <p className="text-muted-foreground">
-                {t('shareDesc')}
-              </p>
-            </div>
-
-            {/* 미리보기 */}
-            <TierPreview
-              ref={tierListRef}
-              title={title}
-              tierData={tierData}
-              authorName={createdChart.user_nickname}
-            />
-
-            {/* 액션 버튼 */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button
-                onClick={handleDownload}
-                disabled={isDownloading}
-                variant="outline"
-                className="flex-1"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                {isDownloading ? tCommon('loading') : t('downloadImage')}
-              </Button>
-              <ShareButtons
-                title={createdChart.title}
-                description={createdChart.description || t('shareCreated')}
-                variant="compact"
-                className="flex-1"
-              />
-            </div>
-
-            <div className="flex justify-center gap-4 pt-4">
-              <Button variant="outline" asChild>
-                <Link href="/open">
-                  {t('backToList')}
-                </Link>
-              </Button>
-              <Button asChild className="bg-accent hover:bg-accent/90">
-                <Link href={`/open/${createdChart.slug}`}>
-                  <Eye className="h-4 w-4 mr-2" />
-                  {t('viewChart')}
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </>
+      <div className="container py-12 max-w-4xl">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button asChild className="mt-4">
+          <Link href="/open">{t('backToList')}</Link>
+        </Button>
+      </div>
     );
   }
 
   return (
     <div className="container py-6 max-w-4xl">
-      {/* 헤더 - 더 임팩트 있게 */}
+      {/* 헤더 */}
       <div className="mb-8">
         <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
-          <Link href="/open">
+          <Link href={`/open/${slug}`}>
             <ChevronLeft className="h-4 w-4 mr-1" />
-            {t('backToList')}
+            {tCommon('back')}
           </Link>
         </Button>
         <div className="flex items-center gap-3 mb-2">
@@ -311,10 +298,10 @@ export function CreateTierContent() {
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-gray-800">
-              {t('create')}
+              계급도 수정
             </h1>
             <p className="text-gray-500 text-sm md:text-base">
-              {t('createDesc')}
+              기존 계급도를 수정합니다
             </p>
           </div>
         </div>
@@ -327,7 +314,7 @@ export function CreateTierContent() {
       )}
 
       <div className="space-y-6">
-        {/* 기본 정보 - 깔끔한 스타일 */}
+        {/* 기본 정보 */}
         <Card className="border-gray-200 shadow-sm">
           <CardHeader className="border-b bg-gray-50/50">
             <CardTitle className="text-lg font-bold text-gray-800">{t('basicInfo')}</CardTitle>
@@ -407,7 +394,7 @@ export function CreateTierContent() {
           </CardContent>
         </Card>
 
-        {/* 티어 입력 - TierMaker 스타일 */}
+        {/* 티어 입력 */}
         <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-gray-50 to-white border-b">
             <div>
@@ -419,7 +406,7 @@ export function CreateTierContent() {
             </Badge>
           </CardHeader>
           <CardContent className="p-0">
-            <div ref={tierListRef} className="rounded-b-xl overflow-hidden shadow-inner">
+            <div className="rounded-b-xl overflow-hidden shadow-inner">
               {TIERS.map((tier) => (
                 <TierRow
                   key={tier}
@@ -429,17 +416,16 @@ export function CreateTierContent() {
                   onUpdateItem={(id, field, value) => updateItem(tier, id, field, value)}
                   onRemoveItem={(id) => removeItem(tier, id)}
                   onMoveItem={(id, toTier) => moveItem(tier, toTier, id)}
-                  t={t}
                 />
               ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* 제출 버튼 - 더 눈에 띄게 */}
+        {/* 제출 버튼 */}
         <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
           <Button variant="outline" asChild className="h-12 px-6 border-gray-300">
-            <Link href="/open">{tCommon('cancel')}</Link>
+            <Link href={`/open/${slug}`}>{tCommon('cancel')}</Link>
           </Button>
           <Button
             onClick={handleSubmit}
@@ -449,9 +435,9 @@ export function CreateTierContent() {
             {isSubmitting ? (
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
             ) : (
-              <Sparkles className="h-5 w-5 mr-2" />
+              <Save className="h-5 w-5 mr-2" />
             )}
-            {t('saveChart')}
+            저장하기
           </Button>
         </div>
       </div>
@@ -466,24 +452,14 @@ interface TierRowProps {
   onUpdateItem: (id: string, field: keyof TierChartItem, value: string) => void;
   onRemoveItem: (id: string) => void;
   onMoveItem: (id: string, toTier: TierLevel) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
-// 계급도 스타일 색상 (한국 계급 테마)
-const TIER_COLORS: Record<TierLevel, { bg: string; text: string; light: string; label: string; emoji: string }> = {
-  S: { bg: '#FFD700', text: '#000', light: '#FFFBEB', label: '황제', emoji: '👑' },
-  A: { bg: '#9370DB', text: '#FFF', light: '#FAF5FF', label: '왕', emoji: '🏰' },
-  B: { bg: '#4169E1', text: '#FFF', light: '#EFF6FF', label: '양반', emoji: '🎓' },
-  C: { bg: '#3CB371', text: '#FFF', light: '#ECFDF5', label: '중인', emoji: '🏠' },
-  D: { bg: '#8B7355', text: '#FFF', light: '#FAF5F0', label: '평민', emoji: '🌾' },
-};
-
-function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveItem, t }: TierRowProps) {
+function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveItem }: TierRowProps) {
   const colors = TIER_COLORS[tier];
 
   return (
     <div className="flex border-b border-gray-200 last:border-b-0">
-      {/* 티어 라벨 - 한국 계급 스타일 */}
+      {/* 티어 라벨 */}
       <div
         className="w-16 md:w-20 flex flex-col items-center justify-center shrink-0 py-2"
         style={{ backgroundColor: colors.bg }}
@@ -497,7 +473,7 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
         </span>
       </div>
 
-      {/* 아이템 영역 - 밝은 테마 */}
+      {/* 아이템 영역 */}
       <div
         className="flex-1 p-2 min-h-[70px]"
         style={{ backgroundColor: colors.light }}
@@ -582,69 +558,3 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
     </div>
   );
 }
-
-// 티어 미리보기 (이미지 생성용) - 한국 계급 스타일
-interface TierPreviewProps {
-  title: string;
-  tierData: Record<TierLevel, TierItemInput[]>;
-  authorName?: string;
-}
-
-const TierPreview = ({ title, tierData, authorName }: TierPreviewProps & { ref?: React.Ref<HTMLDivElement> }) => {
-  return (
-    <div className="rounded-xl overflow-hidden shadow-xl bg-white border border-gray-200">
-      {/* 제목 */}
-      <div className="bg-slate-800 px-4 py-3">
-        <h2 className="text-lg font-bold text-white text-center">{title}</h2>
-      </div>
-
-      {/* 티어 */}
-      {TIERS.map((tier) => {
-        const colors = TIER_COLORS[tier];
-        const items = tierData[tier].filter((item) => item.name.trim());
-
-        return (
-          <div key={tier} className="flex border-b border-gray-200 last:border-b-0">
-            {/* 티어 라벨 */}
-            <div
-              className="w-16 md:w-20 flex flex-col items-center justify-center shrink-0 py-2"
-              style={{ backgroundColor: colors.bg }}
-            >
-              <span className="text-base">{colors.emoji}</span>
-              <span
-                className="font-bold text-xs md:text-sm"
-                style={{ color: colors.text }}
-              >
-                {colors.label}
-              </span>
-            </div>
-
-            {/* 아이템 */}
-            <div
-              className="flex-1 p-2 flex flex-wrap gap-1.5 items-center min-h-[50px]"
-              style={{ backgroundColor: colors.light }}
-            >
-              {items.length > 0 ? (
-                items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white px-3 py-1.5 rounded-md text-xs font-medium text-gray-800 shadow-sm border border-gray-100"
-                  >
-                    {item.name}
-                  </div>
-                ))
-              ) : (
-                <span className="text-gray-400 text-xs italic">-</span>
-              )}
-            </div>
-          </div>
-        );
-      })}
-
-      {/* 워터마크 */}
-      <div className="bg-gray-50 text-center py-2 text-xs text-gray-400 border-t">
-        tier-chart.com{authorName && ` · by ${authorName}`}
-      </div>
-    </div>
-  );
-};

@@ -118,8 +118,7 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
       link.download = `나의_${categoryName}_계급도.png`;
       link.href = dataUrl;
       link.click();
-    } catch (err) {
-      console.error('Image generation failed:', err);
+    } catch {
       alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsDownloading(false);

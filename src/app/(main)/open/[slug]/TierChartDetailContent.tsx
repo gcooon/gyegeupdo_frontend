@@ -69,6 +69,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
   const [isDownloading, setIsDownloading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // 댓글 상태
   const [comments, setComments] = useState<TierChartComment[]>(initialChart?.comments || []);
@@ -150,7 +151,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         setLikeCount(response.data.data.like_count);
       }
     } catch {
-      // 에러 무시
+      setActionError(t('likeFailed') || '좋아요 처리에 실패했습니다.');
     } finally {
       setIsLiking(false);
     }
@@ -178,7 +179,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         }
       }
     } catch {
-      // 에러 무시
+      setActionError(tComment('submitFailed') || '댓글 작성에 실패했습니다.');
     } finally {
       setIsSubmittingComment(false);
     }
@@ -199,7 +200,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         }
       }
     } catch {
-      // 에러 무시
+      setActionError(tComment('deleteFailed') || '댓글 삭제에 실패했습니다.');
     }
   };
 
@@ -216,7 +217,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         router.push('/open');
       }
     } catch {
-      alert(t('deleteFailed'));
+      setActionError(t('deleteFailed') || '계급도 삭제에 실패했습니다.');
     } finally {
       setIsDeleting(false);
       setShowDeleteDialog(false);
@@ -226,7 +227,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
   // 이미지 다운로드
   const handleDownload = async () => {
     if (!tierListRef.current) {
-      alert('캡처할 영역을 찾을 수 없습니다.');
+      setActionError(t('downloadError') || '캡처할 영역을 찾을 수 없습니다.');
       return;
     }
 
@@ -243,10 +244,8 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       link.download = `${chart?.title || '계급도'}.png`;
       link.href = dataUrl;
       link.click();
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      console.error('Image generation failed:', err);
-      alert(`이미지 생성 실패: ${errorMessage}`);
+    } catch {
+      setActionError(t('downloadFailed') || '이미지 생성에 실패했습니다.');
     } finally {
       setIsDownloading(false);
     }
@@ -323,6 +322,24 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
           </span>
         </div>
       </div>
+
+      {/* 액션 에러 알림 */}
+      {actionError && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>{actionError}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setActionError(null)}
+              className="h-auto p-1 ml-2"
+            >
+              ✕
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* 티어 차트 */}
       <div ref={tierListRef} data-tier-chart className="rounded-xl overflow-hidden shadow-lg mb-6 border border-border">

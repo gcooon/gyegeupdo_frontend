@@ -16,7 +16,7 @@ export default function Error({
   const tCommon = useTranslations('common');
 
   useEffect(() => {
-    console.error(error);
+    // Error is handled by the error boundary
   }, [error]);
 
   return (

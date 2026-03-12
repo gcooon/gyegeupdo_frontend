@@ -52,8 +52,7 @@ export async function fetchCategories(): Promise<Category[]> {
     if (!response.ok) throw new Error('Failed to fetch categories');
     const data: ApiResponse<CategoryListResponse> = await response.json();
     return data.data.results;
-  } catch (error) {
-    console.error('Failed to fetch categories:', error);
+  } catch {
     return [];
   }
 }
@@ -70,8 +69,7 @@ export async function fetchCategory(slug: string): Promise<Category | null> {
     if (!response.ok) throw new Error(`Failed to fetch category ${slug}`);
     const data: ApiResponse<Category> = await response.json();
     return data.data;
-  } catch (error) {
-    console.error(`Failed to fetch category ${slug}:`, error);
+  } catch {
     return null;
   }
 }

@@ -270,8 +270,7 @@ export function MyTierListContent({ initialCharts, initialTab = 'all' }: MyTierL
           setHasNext(data.has_next);
         }
       }
-    } catch (error) {
-      console.error('Failed to fetch charts:', error);
+    } catch {
       // API 실패 시 mock 데이터 fallback
       const mockData = getMockUserTierCharts();
       setCharts(mockData.items);
