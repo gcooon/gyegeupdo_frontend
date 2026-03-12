@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,11 +41,16 @@ export function TierVoteButton({
   isLoggedIn = false,
   onVote,
 }: TierVoteButtonProps) {
+  const pathname = usePathname();
   const [showVoteDialog, setShowVoteDialog] = useState(false);
   const [showCommentsDialog, setShowCommentsDialog] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [selectedVote, setSelectedVote] = useState<VoteType | null>(null);
   const [comment, setComment] = useState('');
+
+  // 로그인/회원가입 후 현재 페이지로 돌아오기 위한 redirect URL
+  const loginUrl = `/login?redirect=${encodeURIComponent(pathname || '/')}`;
+  const signupUrl = `/signup?redirect=${encodeURIComponent(pathname || '/')}`;
 
   const handleVoteClick = (voteType: VoteType) => {
     if (!isLoggedIn) {
@@ -257,12 +263,12 @@ export function TierVoteButton({
                 취소
               </Button>
               <Button className="flex-1 bg-accent hover:bg-accent/90" asChild>
-                <Link href="/login">로그인</Link>
+                <Link href={loginUrl}>로그인</Link>
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
               계정이 없으신가요?{' '}
-              <Link href="/signup" className="text-accent hover:underline">
+              <Link href={signupUrl} className="text-accent hover:underline">
                 회원가입
               </Link>
             </p>

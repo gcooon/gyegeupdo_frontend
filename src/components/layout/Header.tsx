@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users, FileText, LayoutGrid, Crown, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,6 +48,7 @@ const MOBILE_QUICK_MENUS = [
 
 export function Header() {
   const { toggle } = useSidebarStore();
+  const pathname = usePathname();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const { data: apiCategories } = useCategories();
@@ -55,6 +57,10 @@ export function Header() {
   const categories = (apiCategories && apiCategories.length > 0)
     ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
     : FALLBACK_CATEGORIES;
+
+  // 로그인/회원가입 후 현재 페이지로 돌아오기 위한 redirect URL
+  const loginUrl = `/login?redirect=${encodeURIComponent(pathname || '/')}`;
+  const signupUrl = `/signup?redirect=${encodeURIComponent(pathname || '/')}`;
 
   const handleLogout = () => {
     logout();
@@ -239,10 +245,10 @@ export function Header() {
           ) : (
             <>
               <Button variant="ghost" size="sm" className="px-2 md:px-3 text-xs md:text-sm" asChild>
-                <Link href="/login">{tCommon('login')}</Link>
+                <Link href={loginUrl}>{tCommon('login')}</Link>
               </Button>
               <Button size="sm" className="bg-accent hover:bg-accent/90 px-2 md:px-3 text-xs md:text-sm" asChild>
-                <Link href="/signup">{tCommon('signup')}</Link>
+                <Link href={signupUrl}>{tCommon('signup')}</Link>
               </Button>
             </>
           )}

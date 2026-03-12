@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { useTranslations } from '@/i18n';
 
 export function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('auth');
   const [formData, setFormData] = useState({
@@ -23,12 +24,15 @@ export function LoginContent() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 이미 로그인되어 있으면 메인으로 리다이렉트
+  // 로그인 후 리다이렉트할 URL (기본값: /)
+  const redirectUrl = searchParams?.get('redirect') || searchParams?.get('next') || '/';
+
+  // 이미 로그인되어 있으면 리다이렉트
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
-      router.push('/');
+      router.push(redirectUrl);
     }
-  }, [isAuthenticated, authLoading, router]);
+  }, [isAuthenticated, authLoading, router, redirectUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -45,7 +49,7 @@ export function LoginContent() {
 
     try {
       await login(formData.email, formData.password);
-      router.push('/');
+      router.push(redirectUrl);
     } catch {
       setError(t('errorInvalidCredentials'));
     } finally {
