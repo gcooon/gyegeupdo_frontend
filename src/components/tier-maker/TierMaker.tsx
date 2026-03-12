@@ -101,7 +101,10 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
 
   // 이미지 다운로드
   const handleDownload = async () => {
-    if (!tierListRef.current) return;
+    if (!tierListRef.current) {
+      alert('캡처할 영역을 찾을 수 없습니다.');
+      return;
+    }
 
     setIsDownloading(true);
     try {
@@ -109,13 +112,16 @@ export function TierMaker({ category, categoryName, initialItems, onSave }: Tier
         backgroundColor: '#1F2937',
         scale: 2,
         useCORS: true,
+        allowTaint: true,
+        logging: false,
       });
 
       const link = document.createElement('a');
       link.download = `나의_${categoryName}_계급도.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-    } catch (error) {
+    } catch (err) {
+      console.error('Image generation failed:', err);
       alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsDownloading(false);

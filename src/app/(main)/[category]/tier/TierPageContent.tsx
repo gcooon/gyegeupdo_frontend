@@ -445,6 +445,9 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
   const { data: categoryData = initialCategory, isLoading: isCategoryLoading } = useCategory(category, initialCategory);
   const { data: products = [], isLoading: isProductsLoading } = useCategoryProducts(category);
   const tierGridRef = useRef<HTMLDivElement>(null);
+  const usageGridRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<'usage' | 'brand'>('usage');
+  const [isDownloading, setIsDownloading] = useState(false);
   const t = useTranslations('officialTier');
   const tCommon = useTranslations('common');
 
@@ -539,13 +542,22 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
   ];
 
   const handleDownloadImage = async () => {
-    if (!tierGridRef.current) return;
+    const targetRef = activeTab === 'brand' ? tierGridRef : usageGridRef;
 
+    if (!targetRef.current) {
+      alert('캡처할 영역을 찾을 수 없습니다.');
+      return;
+    }
+
+    setIsDownloading(true);
     try {
       const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(tierGridRef.current, {
+      const canvas = await html2canvas(targetRef.current, {
         backgroundColor: '#ffffff',
         scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
       });
 
       // Add watermark
@@ -562,11 +574,14 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       }
 
       const link = document.createElement('a');
-      link.download = `계급도_${category}_${new Date().toISOString().split('T')[0]}.png`;
+      const tabLabel = activeTab === 'brand' ? '브랜드' : '용도별';
+      link.download = `계급도_${category}_${tabLabel}_${new Date().toISOString().split('T')[0]}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
-      // html2canvas not available
+      alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -604,9 +619,13 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
               </Badge>
             )}
           </Button>
-          <Button variant="outline" size="sm" onClick={handleDownloadImage}>
-            <Download className="h-4 w-4 mr-2" />
-            {t('downloadImage')}
+          <Button variant="outline" size="sm" onClick={handleDownloadImage} disabled={isDownloading}>
+            {isDownloading ? (
+              <span className="h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-2" />
+            )}
+            {isDownloading ? '생성 중...' : t('downloadImage')}
           </Button>
           <ShareButtons
             title={`${categoryData?.name || '제품'} 계급도 - 계급도`}
@@ -679,7 +698,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
       )}
 
       {/* View Tabs */}
-      <Tabs defaultValue="usage" className="w-full">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'usage' | 'brand')} className="w-full">
         <TabsList className="mb-6 w-full grid grid-cols-2 h-14 p-1 bg-muted/80 rounded-xl">
           <TabsTrigger
             value="usage"
@@ -696,7 +715,7 @@ export function TierPageContent({ category, initialBrands, initialCategory }: Ti
         </TabsList>
 
         <TabsContent value="usage">
-          <div className="space-y-8">
+          <div ref={usageGridRef} className="space-y-8 bg-background p-4 rounded-2xl">
             {USAGE_CATEGORIES.map((usage: { key: string; label: string; description: string; icon: string }) => {
               const usageTiers = usageTierData[usage.key] || {};
 

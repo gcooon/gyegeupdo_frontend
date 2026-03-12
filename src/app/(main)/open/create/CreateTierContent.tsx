@@ -198,7 +198,10 @@ export function CreateTierContent() {
 
   // 이미지 다운로드
   const handleDownload = async () => {
-    if (!tierListRef.current) return;
+    if (!tierListRef.current) {
+      alert('캡처할 영역을 찾을 수 없습니다.');
+      return;
+    }
 
     setIsDownloading(true);
     try {
@@ -206,13 +209,16 @@ export function CreateTierContent() {
         backgroundColor: '#1F2937',
         scale: 2,
         useCORS: true,
+        allowTaint: true,
+        logging: false,
       });
 
       const link = document.createElement('a');
       link.download = `${title || '계급도'}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-    } catch {
+    } catch (err) {
+      console.error('Image generation failed:', err);
       alert(t('imageGenFailed'));
     } finally {
       setIsDownloading(false);

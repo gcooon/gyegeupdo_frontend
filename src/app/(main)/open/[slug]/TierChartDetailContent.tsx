@@ -226,7 +226,10 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
 
   // 이미지 다운로드
   const handleDownload = async () => {
-    if (!tierListRef.current) return;
+    if (!tierListRef.current) {
+      alert('캡처할 영역을 찾을 수 없습니다.');
+      return;
+    }
 
     setIsDownloading(true);
     try {
@@ -234,13 +237,23 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
         backgroundColor: '#1F2937',
         scale: 2,
         useCORS: true,
+        allowTaint: true,
+        logging: false,
+        onclone: (clonedDoc) => {
+          // 클론된 DOM에서 스타일 적용 확인
+          const target = clonedDoc.querySelector('[data-tier-chart]');
+          if (target) {
+            (target as HTMLElement).style.transform = 'none';
+          }
+        },
       });
 
       const link = document.createElement('a');
       link.download = `${chart?.title || '계급도'}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-    } catch {
+    } catch (err) {
+      console.error('Image generation failed:', err);
       alert(t('imageGenFailed'));
     } finally {
       setIsDownloading(false);
@@ -320,7 +333,7 @@ export function TierChartDetailContent({ slug, initialChart }: TierChartDetailCo
       </div>
 
       {/* 티어 차트 */}
-      <div ref={tierListRef} className="rounded-2xl overflow-hidden shadow-lg mb-6">
+      <div ref={tierListRef} data-tier-chart className="rounded-2xl overflow-hidden shadow-lg mb-6">
         {/* 제목 */}
         <div className="bg-gradient-to-r from-accent to-primary p-4 text-center">
           <h2 className="text-xl font-bold text-white">{chart.title}</h2>
