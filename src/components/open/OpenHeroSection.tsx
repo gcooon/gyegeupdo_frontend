@@ -62,8 +62,12 @@ export function OpenHeroSection() {
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
           {t('title')}
         </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-2">
           {t('subtitle')}
+        </p>
+        <p className="text-sm md:text-base text-amber-600 font-medium max-w-xl mx-auto mb-6 flex items-center justify-center gap-1.5">
+          <Crown className="h-4 w-4 text-amber-500 shrink-0" />
+          <span>{t('subtitleReward')}</span>
         </p>
 
         {/* 통계 */}

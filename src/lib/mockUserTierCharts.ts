@@ -21,7 +21,7 @@ function calculatePromotionProgress(
 
   if (score >= 100) {
     status = 'candidate';
-    statusDisplay = '승급 후보';
+    statusDisplay = '명예의전당 후보';
     targetScore = null;
     progressPercent = 100;
   } else if (score >= 50) {
@@ -169,7 +169,7 @@ const MOCK_CHARTS: UserTierChart[] = [
     // 승격 시스템: 128*3 + 1420*0.1 + 3*5 = 384 + 142 + 15 = 541점
     promotion_score: 541,
     promotion_status: 'candidate',
-    promotion_status_display: '승급 후보',
+    promotion_status_display: '명예의전당 후보',
     promotion_progress: calculatePromotionProgress(128, 1420, 3),
   },
   {
@@ -217,7 +217,7 @@ const MOCK_CHARTS: UserTierChart[] = [
     // 승격 시스템: 95*3 + 890*0.1 + 2*5 = 285 + 89 + 10 = 384점
     promotion_score: 384,
     promotion_status: 'candidate',
-    promotion_status_display: '승급 후보',
+    promotion_status_display: '명예의전당 후보',
     promotion_progress: calculatePromotionProgress(95, 890, 2),
   },
   {
@@ -262,7 +262,7 @@ const MOCK_CHARTS: UserTierChart[] = [
     // 승격 시스템: 67*3 + 654*0.1 + 2*5 = 201 + 65.4 + 10 = 276.4점
     promotion_score: 276.4,
     promotion_status: 'candidate',
-    promotion_status_display: '승급 후보',
+    promotion_status_display: '명예의전당 후보',
     promotion_progress: calculatePromotionProgress(67, 654, 2),
   },
   {
@@ -308,7 +308,7 @@ const MOCK_CHARTS: UserTierChart[] = [
     // 승격 시스템: 54*3 + 432*0.1 + 2*5 = 162 + 43.2 + 10 = 215.2점
     promotion_score: 215.2,
     promotion_status: 'candidate',
-    promotion_status_display: '승급 후보',
+    promotion_status_display: '명예의전당 후보',
     promotion_progress: calculatePromotionProgress(54, 432, 2),
   },
 ];

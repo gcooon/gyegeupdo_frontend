@@ -55,12 +55,20 @@ export function PromotionBadge({ status, statusDisplay, size = 'default' }: Prom
   }
 
   const sizeClasses = size === 'sm' ? 'text-[10px] px-1.5 py-0' : 'text-xs';
-  const label = statusDisplay || t(status);
+
+  // 모바일 친화적: 작은 사이즈에서 candidate는 축약형 사용
+  const getLabel = () => {
+    if (statusDisplay) return statusDisplay;
+    if (size === 'sm' && status === 'candidate') {
+      return t('candidateShort');
+    }
+    return t(status);
+  };
 
   return (
-    <Badge className={`${style.className} ${sizeClasses} flex items-center gap-1`}>
+    <Badge className={`${style.className} ${sizeClasses} flex items-center gap-1 whitespace-nowrap shrink-0`}>
       {style.icon}
-      <span>{label}</span>
+      <span>{getLabel()}</span>
     </Badge>
   );
 }

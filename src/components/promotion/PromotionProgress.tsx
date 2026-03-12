@@ -67,17 +67,17 @@ export function PromotionProgress({ progress }: PromotionProgressProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* 상태 표시 */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium text-white ${style.bgColor}`}>
+            <span className={`px-2 py-1 rounded-full text-[11px] md:text-xs font-medium text-white whitespace-nowrap ${style.bgColor}`}>
               {progress.status_display || t(progress.status)}
             </span>
-            <span className="text-sm font-semibold">
+            <span className="text-sm font-semibold whitespace-nowrap">
               {progress.current_score.toFixed(1)}{t('points')}
             </span>
           </div>
           {progress.target_score && (
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
               {t('target')}: {progress.target_score}{t('points')}
             </span>
           )}
