@@ -297,21 +297,27 @@ export function CreateTierContent() {
 
   return (
     <div className="container py-6 max-w-4xl">
-      {/* 헤더 */}
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild className="mb-4">
+      {/* 헤더 - 더 임팩트 있게 */}
+      <div className="mb-8">
+        <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
           <Link href="/open">
             <ChevronLeft className="h-4 w-4 mr-1" />
             {t('backToList')}
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Sparkles className="h-7 w-7 text-accent" />
-          {t('create')}
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          {t('createDesc')}
-        </p>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-pink-500 flex items-center justify-center">
+            <Sparkles className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-black text-gray-800">
+              {t('create')}
+            </h1>
+            <p className="text-gray-500 text-sm md:text-base">
+              {t('createDesc')}
+            </p>
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -321,51 +327,57 @@ export function CreateTierContent() {
       )}
 
       <div className="space-y-6">
-        {/* 기본 정보 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{t('basicInfo')}</CardTitle>
+        {/* 기본 정보 - 깔끔한 스타일 */}
+        <Card className="border-gray-200 shadow-sm">
+          <CardHeader className="border-b bg-gray-50/50">
+            <CardTitle className="text-lg font-bold text-gray-800">{t('basicInfo')}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5 pt-6">
             <div className="space-y-2">
-              <Label htmlFor="title">{t('titleLabel')} *</Label>
+              <Label htmlFor="title" className="text-sm font-semibold text-gray-700">
+                {t('titleLabel')} <span className="text-accent">*</span>
+              </Label>
               <Input
                 id="title"
                 placeholder={t('titlePlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}
+                className="h-12 text-base border-gray-200 focus:border-accent focus:ring-accent/20"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">{t('descLabel')}</Label>
+              <Label htmlFor="description" className="text-sm font-semibold text-gray-700">
+                {t('descLabel')}
+              </Label>
               <Textarea
                 id="description"
                 placeholder={t('descPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
+                className="border-gray-200 focus:border-accent focus:ring-accent/20 resize-none"
               />
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-6 pt-2">
               <div className="space-y-2">
-                <Label>{t('visibility')}</Label>
+                <Label className="text-sm font-semibold text-gray-700">{t('visibility')}</Label>
                 <Select value={visibility} onValueChange={(v) => setVisibility(v as 'public' | 'private')}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[150px] h-11 border-gray-200">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="public">
                       <span className="flex items-center gap-2">
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-4 w-4 text-green-500" />
                         {t('public')}
                       </span>
                     </SelectItem>
                     <SelectItem value="private">
                       <span className="flex items-center gap-2">
-                        <EyeOff className="h-4 w-4" />
+                        <EyeOff className="h-4 w-4 text-gray-400" />
                         {t('private')}
                       </span>
                     </SelectItem>
@@ -374,16 +386,16 @@ export function CreateTierContent() {
               </div>
 
               <div className="space-y-2">
-                <Label>{t('language')}</Label>
+                <Label className="text-sm font-semibold text-gray-700">{t('language')}</Label>
                 <Select value={language} onValueChange={(v) => setLanguage(v as TierChartLanguage)}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-[160px] h-11 border-gray-200">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {LANGUAGE_OPTIONS.map((lang) => (
                       <SelectItem key={lang.code} value={lang.code}>
                         <span className="flex items-center gap-2">
-                          <span>{lang.flag}</span>
+                          <span className="text-lg">{lang.flag}</span>
                           {lang.name}
                         </span>
                       </SelectItem>
@@ -395,14 +407,19 @@ export function CreateTierContent() {
           </CardContent>
         </Card>
 
-        {/* 티어 입력 */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">{t('tierConfig')}</CardTitle>
-            <Badge variant="secondary">{t('itemCount', { count: filledItems })}</Badge>
+        {/* 티어 입력 - TierMaker 스타일 */}
+        <Card className="overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-gray-50 to-white border-b">
+            <div>
+              <CardTitle className="text-xl font-bold text-gray-800">{t('tierConfig')}</CardTitle>
+              <p className="text-sm text-gray-500 mt-1">각 티어에 항목을 추가하세요</p>
+            </div>
+            <Badge className="bg-accent text-white px-3 py-1 text-sm font-semibold">
+              {filledItems}개 항목
+            </Badge>
           </CardHeader>
-          <CardContent>
-            <div ref={tierListRef} className="rounded-xl overflow-hidden">
+          <CardContent className="p-0">
+            <div ref={tierListRef} className="rounded-b-xl overflow-hidden shadow-inner">
               {TIERS.map((tier) => (
                 <TierRow
                   key={tier}
@@ -419,20 +436,20 @@ export function CreateTierContent() {
           </CardContent>
         </Card>
 
-        {/* 제출 버튼 */}
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" asChild>
+        {/* 제출 버튼 - 더 눈에 띄게 */}
+        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+          <Button variant="outline" asChild className="h-12 px-6 border-gray-300">
             <Link href="/open">{tCommon('cancel')}</Link>
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !title.trim() || filledItems < 1}
-            className="bg-accent hover:bg-accent/90 min-w-[120px]"
+            className="h-12 px-8 bg-gradient-to-r from-accent to-pink-500 hover:from-accent/90 hover:to-pink-500/90 text-white font-bold text-base shadow-lg shadow-accent/25 disabled:opacity-50 disabled:shadow-none"
           >
             {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
             ) : (
-              <Save className="h-4 w-4 mr-2" />
+              <Sparkles className="h-5 w-5 mr-2" />
             )}
             {t('saveChart')}
           </Button>
@@ -452,113 +469,123 @@ interface TierRowProps {
   t: (key: string, params?: Record<string, string | number>) => string;
 }
 
+// TierMaker 스타일 색상 (더 선명하고 구분되는 색상)
+const TIER_COLORS: Record<TierLevel, { bg: string; text: string; light: string }> = {
+  S: { bg: '#FF7F7F', text: '#000', light: '#FFF0F0' },  // 레드/핑크
+  A: { bg: '#FFBF7F', text: '#000', light: '#FFF8F0' },  // 오렌지
+  B: { bg: '#FFDF7F', text: '#000', light: '#FFFCF0' },  // 옐로우
+  C: { bg: '#7FFF7F', text: '#000', light: '#F0FFF0' },  // 그린
+  D: { bg: '#7FBFFF', text: '#000', light: '#F0F8FF' },  // 블루
+};
+
 function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveItem, t }: TierRowProps) {
-  const config = TIER_CONFIG[tier];
-  const TierIcon = TIER_ICONS[tier];
+  const colors = TIER_COLORS[tier];
 
   return (
-    <div className="flex min-h-[100px]">
-      {/* 티어 라벨 */}
+    <div className="flex border-b-2 border-white last:border-b-0">
+      {/* 티어 라벨 - TierMaker 스타일 */}
       <div
-        className="w-20 md:w-24 flex flex-col items-center justify-center shrink-0 relative border-r-2 border-white/30"
-        style={{ background: config.gradient }}
+        className="w-20 md:w-28 flex items-center justify-center shrink-0 py-4"
+        style={{ backgroundColor: colors.bg }}
       >
-        <div className="absolute inset-0 bg-black/20" />
-        <span className="text-xl relative z-10">
-          {config.emoji}
-        </span>
         <span
-          className="font-black text-lg md:text-xl relative z-10"
-          style={{
-            color: '#fff',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)'
-          }}
+          className="font-black text-3xl md:text-4xl tracking-tight"
+          style={{ color: colors.text }}
         >
-          {config.label}
-        </span>
-        <span
-          className="text-[10px] font-bold relative z-10"
-          style={{
-            color: '#fff',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
-          }}
-        >
-          ({tier}티어)
+          {tier}
         </span>
       </div>
 
-      {/* 아이템 영역 */}
-      <div className="flex-1 p-3 bg-slate-800/50 space-y-2">
-        <AnimatePresence>
-          {items.map((item) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="flex items-start gap-2 bg-slate-700/50 rounded-lg p-2"
-            >
-              <GripVertical className="h-5 w-5 text-slate-500 mt-2 shrink-0" />
-              <div className="flex-1 space-y-2">
-                <Input
-                  placeholder={t('itemName')}
-                  value={item.name}
-                  onChange={(e) => onUpdateItem(item.id, 'name', e.target.value)}
-                  className="bg-slate-600/50 border-slate-500"
-                />
-                <Input
-                  placeholder={t('itemReason')}
-                  value={item.reason || ''}
-                  onChange={(e) => onUpdateItem(item.id, 'reason', e.target.value)}
-                  className="bg-slate-600/50 border-slate-500 text-sm"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <Select onValueChange={(v) => onMoveItem(item.id, v as TierLevel)}>
-                  <SelectTrigger className="w-[70px] h-8 text-xs">
-                    <SelectValue placeholder={t('move')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TIERS.filter((t) => t !== tier).map((t) => (
-                      <SelectItem key={t} value={t}>
-                        <span
-                          className="font-bold"
-                          style={{ color: TIER_CONFIG[t].color }}
-                        >
-                          {TIER_CONFIG[t].label}
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onRemoveItem(item.id)}
-                  className="h-8 px-2 text-red-400 hover:text-red-300 hover:bg-red-500/20"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+      {/* 아이템 영역 - 밝은 테마 */}
+      <div
+        className="flex-1 p-3 min-h-[100px]"
+        style={{ backgroundColor: colors.light }}
+      >
+        <div className="space-y-3">
+          <AnimatePresence>
+            {items.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="group"
+              >
+                <div className="flex items-center gap-2 p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all">
+                  {/* 순서 표시 */}
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                    style={{ backgroundColor: colors.bg, color: colors.text }}
+                  >
+                    {index + 1}
+                  </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onAddItem}
-          className="w-full border-2 border-dashed border-slate-600 hover:border-accent text-slate-400 hover:text-accent"
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          {t('addItem')}
-        </Button>
+                  {/* 입력 필드 */}
+                  <div className="flex-1 space-y-2">
+                    <Input
+                      placeholder="항목 이름을 입력하세요"
+                      value={item.name}
+                      onChange={(e) => onUpdateItem(item.id, 'name', e.target.value)}
+                      className="border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-accent/20 font-medium text-gray-800 placeholder:text-gray-400"
+                    />
+                    <Input
+                      placeholder="선정 이유 (선택사항)"
+                      value={item.reason || ''}
+                      onChange={(e) => onUpdateItem(item.id, 'reason', e.target.value)}
+                      className="border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-accent/20 text-sm text-gray-600 placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  {/* 액션 버튼 */}
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Select onValueChange={(v) => onMoveItem(item.id, v as TierLevel)}>
+                      <SelectTrigger className="w-16 h-8 text-xs border-gray-200 bg-white">
+                        <SelectValue placeholder="이동" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TIERS.filter((t) => t !== tier).map((t) => (
+                          <SelectItem key={t} value={t}>
+                            <span
+                              className="font-bold px-2 py-0.5 rounded"
+                              style={{ backgroundColor: TIER_COLORS[t].bg }}
+                            >
+                              {t}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onRemoveItem(item.id)}
+                      className="h-8 w-8 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {/* 항목 추가 버튼 - 더 눈에 띄게 */}
+          <Button
+            variant="outline"
+            onClick={onAddItem}
+            className="w-full h-12 border-2 border-dashed border-gray-300 hover:border-accent hover:bg-accent/5 text-gray-500 hover:text-accent rounded-xl transition-all"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            <span className="font-medium">항목 추가</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
 
-// 티어 미리보기 (이미지 생성용)
+// 티어 미리보기 (이미지 생성용) - TierMaker 스타일
 interface TierPreviewProps {
   title: string;
   tierData: Record<TierLevel, TierItemInput[]>;
@@ -566,47 +593,48 @@ interface TierPreviewProps {
 
 const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<HTMLDivElement> }) => {
   return (
-    <div className="rounded-xl overflow-hidden shadow-lg bg-slate-900">
+    <div className="rounded-2xl overflow-hidden shadow-2xl bg-white border border-gray-200">
       {/* 제목 */}
-      <div className="bg-gradient-to-r from-accent to-primary p-4 text-center">
-        <h2 className="text-xl font-bold text-white">{title}</h2>
+      <div className="bg-gradient-to-r from-accent to-pink-500 p-5 text-center">
+        <h2 className="text-2xl font-black text-white tracking-tight">{title}</h2>
       </div>
 
       {/* 티어 */}
       {TIERS.map((tier) => {
-        const config = TIER_CONFIG[tier];
+        const colors = TIER_COLORS[tier];
         const items = tierData[tier].filter((item) => item.name.trim());
 
         return (
-          <div key={tier} className="flex min-h-[60px]">
+          <div key={tier} className="flex border-b-2 border-white last:border-b-0">
+            {/* 티어 라벨 */}
             <div
-              className="w-20 flex flex-col items-center justify-center shrink-0 relative border-r-2 border-white/30"
-              style={{ background: config.gradient }}
+              className="w-20 md:w-24 flex items-center justify-center shrink-0 py-4"
+              style={{ backgroundColor: colors.bg }}
             >
-              <div className="absolute inset-0 bg-black/20" />
-              <span className="text-lg relative z-10">{config.emoji}</span>
               <span
-                className="font-black text-lg relative z-10"
-                style={{
-                  color: '#fff',
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)'
-                }}
+                className="font-black text-3xl md:text-4xl"
+                style={{ color: colors.text }}
               >
-                {config.label}
+                {tier}
               </span>
             </div>
-            <div className="flex-1 p-2 bg-slate-800/50 flex flex-wrap gap-2 items-center">
+
+            {/* 아이템 */}
+            <div
+              className="flex-1 p-3 flex flex-wrap gap-2 items-center min-h-[60px]"
+              style={{ backgroundColor: colors.light }}
+            >
               {items.length > 0 ? (
                 items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white/10 px-3 py-1.5 rounded-lg text-sm text-white"
+                    className="bg-white px-4 py-2 rounded-lg text-sm font-medium text-gray-800 shadow-sm border border-gray-100"
                   >
                     {item.name}
                   </div>
                 ))
               ) : (
-                <span className="text-slate-500 text-sm">-</span>
+                <span className="text-gray-400 text-sm italic">항목 없음</span>
               )}
             </div>
           </div>
@@ -614,7 +642,7 @@ const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<H
       })}
 
       {/* 워터마크 */}
-      <div className="bg-slate-900 text-center py-2 text-xs text-slate-500">
+      <div className="bg-gray-50 text-center py-3 text-xs text-gray-400 border-t">
         tier-chart.com
       </div>
     </div>
