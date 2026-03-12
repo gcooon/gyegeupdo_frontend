@@ -469,39 +469,40 @@ interface TierRowProps {
   t: (key: string, params?: Record<string, string | number>) => string;
 }
 
-// TierMaker 스타일 색상 (더 선명하고 구분되는 색상)
-const TIER_COLORS: Record<TierLevel, { bg: string; text: string; light: string }> = {
-  S: { bg: '#FF7F7F', text: '#000', light: '#FFF0F0' },  // 레드/핑크
-  A: { bg: '#FFBF7F', text: '#000', light: '#FFF8F0' },  // 오렌지
-  B: { bg: '#FFDF7F', text: '#000', light: '#FFFCF0' },  // 옐로우
-  C: { bg: '#7FFF7F', text: '#000', light: '#F0FFF0' },  // 그린
-  D: { bg: '#7FBFFF', text: '#000', light: '#F0F8FF' },  // 블루
+// 계급도 스타일 색상 (한국 계급 테마)
+const TIER_COLORS: Record<TierLevel, { bg: string; text: string; light: string; label: string; emoji: string }> = {
+  S: { bg: '#FFD700', text: '#000', light: '#FFFBEB', label: '황제', emoji: '👑' },
+  A: { bg: '#9370DB', text: '#FFF', light: '#FAF5FF', label: '왕', emoji: '🏰' },
+  B: { bg: '#4169E1', text: '#FFF', light: '#EFF6FF', label: '양반', emoji: '🎓' },
+  C: { bg: '#3CB371', text: '#FFF', light: '#ECFDF5', label: '중인', emoji: '🏠' },
+  D: { bg: '#8B7355', text: '#FFF', light: '#FAF5F0', label: '평민', emoji: '🌾' },
 };
 
 function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveItem, t }: TierRowProps) {
   const colors = TIER_COLORS[tier];
 
   return (
-    <div className="flex border-b-2 border-white last:border-b-0">
-      {/* 티어 라벨 - TierMaker 스타일 */}
+    <div className="flex border-b border-gray-200 last:border-b-0">
+      {/* 티어 라벨 - 한국 계급 스타일 */}
       <div
-        className="w-20 md:w-28 flex items-center justify-center shrink-0 py-4"
+        className="w-16 md:w-20 flex flex-col items-center justify-center shrink-0 py-2"
         style={{ backgroundColor: colors.bg }}
       >
+        <span className="text-lg">{colors.emoji}</span>
         <span
-          className="font-black text-3xl md:text-4xl tracking-tight"
+          className="font-bold text-sm md:text-base"
           style={{ color: colors.text }}
         >
-          {tier}
+          {colors.label}
         </span>
       </div>
 
       {/* 아이템 영역 - 밝은 테마 */}
       <div
-        className="flex-1 p-3 min-h-[100px]"
+        className="flex-1 p-2 min-h-[70px]"
         style={{ backgroundColor: colors.light }}
       >
-        <div className="space-y-3">
+        <div className="space-y-2">
           <AnimatePresence>
             {items.map((item, index) => (
               <motion.div
@@ -512,45 +513,42 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
                 transition={{ duration: 0.15 }}
                 className="group"
               >
-                <div className="flex items-center gap-2 p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all">
+                <div className="flex items-center gap-2 p-2 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all">
                   {/* 순서 표시 */}
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                     style={{ backgroundColor: colors.bg, color: colors.text }}
                   >
                     {index + 1}
                   </div>
 
                   {/* 입력 필드 */}
-                  <div className="flex-1 space-y-2">
+                  <div className="flex-1 flex gap-2">
                     <Input
-                      placeholder="항목 이름을 입력하세요"
+                      placeholder="항목 이름"
                       value={item.name}
                       onChange={(e) => onUpdateItem(item.id, 'name', e.target.value)}
-                      className="border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-accent/20 font-medium text-gray-800 placeholder:text-gray-400"
+                      className="h-8 border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-accent/20 font-medium text-sm text-gray-800 placeholder:text-gray-400"
                     />
                     <Input
-                      placeholder="선정 이유 (선택사항)"
+                      placeholder="이유 (선택)"
                       value={item.reason || ''}
                       onChange={(e) => onUpdateItem(item.id, 'reason', e.target.value)}
-                      className="border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-accent/20 text-sm text-gray-600 placeholder:text-gray-400"
+                      className="h-8 border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-accent/20 text-sm text-gray-600 placeholder:text-gray-400 hidden md:block"
                     />
                   </div>
 
                   {/* 액션 버튼 */}
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Select onValueChange={(v) => onMoveItem(item.id, v as TierLevel)}>
-                      <SelectTrigger className="w-16 h-8 text-xs border-gray-200 bg-white">
+                      <SelectTrigger className="w-14 h-7 text-xs border-gray-200 bg-white">
                         <SelectValue placeholder="이동" />
                       </SelectTrigger>
                       <SelectContent>
                         {TIERS.filter((t) => t !== tier).map((t) => (
                           <SelectItem key={t} value={t}>
-                            <span
-                              className="font-bold px-2 py-0.5 rounded"
-                              style={{ backgroundColor: TIER_COLORS[t].bg }}
-                            >
-                              {t}
+                            <span className="text-xs">
+                              {TIER_COLORS[t].emoji} {TIER_COLORS[t].label}
                             </span>
                           </SelectItem>
                         ))}
@@ -560,9 +558,9 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
                       variant="ghost"
                       size="sm"
                       onClick={() => onRemoveItem(item.id)}
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                      className="h-7 w-7 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-3 w-3" />
                     </Button>
                   </div>
                 </div>
@@ -570,14 +568,14 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
             ))}
           </AnimatePresence>
 
-          {/* 항목 추가 버튼 - 더 눈에 띄게 */}
+          {/* 항목 추가 버튼 */}
           <Button
             variant="outline"
             onClick={onAddItem}
-            className="w-full h-12 border-2 border-dashed border-gray-300 hover:border-accent hover:bg-accent/5 text-gray-500 hover:text-accent rounded-xl transition-all"
+            className="w-full h-9 border border-dashed border-gray-300 hover:border-accent hover:bg-accent/5 text-gray-500 hover:text-accent rounded-lg transition-all text-sm"
           >
-            <Plus className="h-5 w-5 mr-2" />
-            <span className="font-medium">항목 추가</span>
+            <Plus className="h-4 w-4 mr-1" />
+            추가
           </Button>
         </div>
       </div>
@@ -585,7 +583,7 @@ function TierRow({ tier, items, onAddItem, onUpdateItem, onRemoveItem, onMoveIte
   );
 }
 
-// 티어 미리보기 (이미지 생성용) - TierMaker 스타일
+// 티어 미리보기 (이미지 생성용) - 한국 계급 스타일
 interface TierPreviewProps {
   title: string;
   tierData: Record<TierLevel, TierItemInput[]>;
@@ -593,10 +591,10 @@ interface TierPreviewProps {
 
 const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<HTMLDivElement> }) => {
   return (
-    <div className="rounded-2xl overflow-hidden shadow-2xl bg-white border border-gray-200">
+    <div className="rounded-xl overflow-hidden shadow-xl bg-white border border-gray-200">
       {/* 제목 */}
-      <div className="bg-gradient-to-r from-accent to-pink-500 p-5 text-center">
-        <h2 className="text-2xl font-black text-white tracking-tight">{title}</h2>
+      <div className="bg-gradient-to-r from-accent to-pink-500 p-4 text-center">
+        <h2 className="text-xl font-bold text-white">{title}</h2>
       </div>
 
       {/* 티어 */}
@@ -605,36 +603,37 @@ const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<H
         const items = tierData[tier].filter((item) => item.name.trim());
 
         return (
-          <div key={tier} className="flex border-b-2 border-white last:border-b-0">
+          <div key={tier} className="flex border-b border-gray-200 last:border-b-0">
             {/* 티어 라벨 */}
             <div
-              className="w-20 md:w-24 flex items-center justify-center shrink-0 py-4"
+              className="w-16 md:w-20 flex flex-col items-center justify-center shrink-0 py-2"
               style={{ backgroundColor: colors.bg }}
             >
+              <span className="text-base">{colors.emoji}</span>
               <span
-                className="font-black text-3xl md:text-4xl"
+                className="font-bold text-xs md:text-sm"
                 style={{ color: colors.text }}
               >
-                {tier}
+                {colors.label}
               </span>
             </div>
 
             {/* 아이템 */}
             <div
-              className="flex-1 p-3 flex flex-wrap gap-2 items-center min-h-[60px]"
+              className="flex-1 p-2 flex flex-wrap gap-1.5 items-center min-h-[50px]"
               style={{ backgroundColor: colors.light }}
             >
               {items.length > 0 ? (
                 items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white px-4 py-2 rounded-lg text-sm font-medium text-gray-800 shadow-sm border border-gray-100"
+                    className="bg-white px-3 py-1.5 rounded-md text-xs font-medium text-gray-800 shadow-sm border border-gray-100"
                   >
                     {item.name}
                   </div>
                 ))
               ) : (
-                <span className="text-gray-400 text-sm italic">항목 없음</span>
+                <span className="text-gray-400 text-xs italic">-</span>
               )}
             </div>
           </div>
@@ -642,8 +641,8 @@ const TierPreview = ({ title, tierData }: TierPreviewProps & { ref?: React.Ref<H
       })}
 
       {/* 워터마크 */}
-      <div className="bg-gray-50 text-center py-3 text-xs text-gray-400 border-t">
-        tier-chart.com
+      <div className="bg-gray-50 text-center py-2 text-xs text-gray-400 border-t">
+        gyegeupdo.kr
       </div>
     </div>
   );
