@@ -24,11 +24,16 @@ import {
   Plus,
 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
-import { useHomeSummary, HomeCategory, HomeDispute, HomeReview, HomeUserChart } from '@/hooks/useHome';
+import { TIER_CONFIG } from '@/lib/tier';
+import { useHomeSummary, HomeCategory, HomeDispute, HomeUserChart } from '@/hooks/useHome';
 import { useCategories } from '@/hooks/useBrands';
+import { usePosts } from '@/hooks/usePosts';
 import type { CategoryListItem, CategoryGroup } from '@/types/model';
+import type { PostListItem } from '@/types/board';
 import { HotOpenTierCharts } from './HotOpenTierCharts';
 import { NAV_CATEGORIES } from '@/config/categories';
+import { formatDistanceToNow } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 // 홈페이지에서 사용할 기본 카테고리
 const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
@@ -184,6 +189,12 @@ export function AllCategoriesOverview() {
   const { data: homeSummary, isLoading } = useHomeSummary();
   const { data: apiCategories } = useCategories();
 
+  // 최신 리뷰 4개를 /posts/ API에서 직접 가져옴
+  const { data: postsData } = usePosts({
+    tag: 'product_review',
+    page_size: 4,
+  });
+
   // API 카테고리를 CategoryListItem 형태로 변환
   const categoryCards: CategoryListItem[] = (apiCategories || []).map((c) => ({
     id: c.id,
@@ -240,9 +251,8 @@ export function AllCategoriesOverview() {
         days_left: d.daysLeft,
       }));
 
-  // 리뷰 데이터 - API 데이터 유무 플래그 추가
-  // 실제 API 데이터만 사용 (Mock 데이터 제거)
-  const reviews: HomeReview[] = homeSummary?.reviews || [];
+  // 리뷰 데이터 - /posts/ API에서 직접 가져온 데이터 사용
+  const reviewPosts: PostListItem[] = postsData?.results || [];
 
   const userCharts: HomeUserChart[] = homeSummary?.user_charts?.length
     ? homeSummary.user_charts
@@ -518,69 +528,96 @@ export function AllCategoriesOverview() {
         </Card>
 
         {/* 리뷰 그리드 */}
-        {reviews.length > 0 ? (
+        {reviewPosts.length > 0 ? (
           <>
             <div className="grid md:grid-cols-2 gap-4">
-              {reviews.map((review) => (
-                <Link key={review.id} href={`/${review.category}/board/${review.id}`}>
-                  <Card className="card-base hover:border-accent/50 transition-colors h-full">
-                    <CardContent className="p-4">
-                      {/* 헤더 */}
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">{review.category_icon}</span>
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-xs font-medium text-primary">
-                              {review.user.name?.[0] || '?'}
-                            </span>
+              {reviewPosts.map((post) => {
+                // 카테고리 아이콘 찾기
+                const categoryInfo = NAV_CATEGORIES.find((c) => c.slug === post.category_slug);
+                const categoryIcon = categoryInfo?.icon || '📦';
+
+                // 티어 배경색
+                const getTierBgColor = (tier: string) => {
+                  switch (tier) {
+                    case 'S': return 'rgb(255, 215, 0)';
+                    case 'A': return TIER_CONFIG.A.color;
+                    case 'B': return TIER_CONFIG.B.color;
+                    case 'C': return TIER_CONFIG.C.color;
+                    case 'D': return TIER_CONFIG.D.color;
+                    default: return TIER_CONFIG.C.color;
+                  }
+                };
+
+                return (
+                  <Link key={post.id} href={`/${post.category_slug}/board/${post.id}`}>
+                    <Card className="card-base hover:border-accent/50 transition-colors h-full">
+                      <CardContent className="p-4">
+                        {/* 헤더 */}
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">{categoryIcon}</span>
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <span className="text-xs font-medium text-primary">
+                                {post.user.username?.[0] || '?'}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm">{post.user.username}</p>
+                              {post.user.badge && post.user.badge !== 'none' && (
+                                <p className="text-[10px] text-muted-foreground">{post.user.badge}</p>
+                              )}
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium text-sm">{review.user.name}</p>
-                            {review.user.type && (
-                              <p className="text-[10px] text-muted-foreground">{review.user.type}</p>
+                          <span className="text-[10px] text-muted-foreground">
+                            {formatDistanceToNow(new Date(post.created_at), { addSuffix: false, locale: ko })}
+                          </span>
+                        </div>
+
+                        {/* 제품 정보 (있는 경우에만 표시) */}
+                        {post.product_info && post.product_info.name && (
+                          <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+                            <span>{post.product_info.brand_name} {post.product_info.name}</span>
+                            {post.product_info.tier && (
+                              <span
+                                className={`inline-flex items-center justify-center rounded-lg font-bold shadow-sm min-w-[24px] h-6 px-1.5 text-xs ${
+                                  post.product_info.tier === 'S' ? 'text-black animate-pulse' : 'text-white'
+                                }`}
+                                style={{ background: getTierBgColor(post.product_info.tier) }}
+                              >
+                                {post.product_info.tier}
+                              </span>
                             )}
                           </div>
+                        )}
+
+                        {/* 별점 (rating이 있는 경우에만 표시) */}
+                        {post.rating && post.rating > 0 && (
+                          <div className="mb-2">
+                            <StarRating rating={post.rating} />
+                          </div>
+                        )}
+
+                        {/* 내용 미리보기 */}
+                        <p className="text-sm text-foreground/90 mb-3 line-clamp-2">
+                          {post.content_preview}
+                        </p>
+
+                        {/* 액션 */}
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <ThumbsUp className="h-3.5 w-3.5" />
+                            <span>{post.like_count}</span>
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MessageCircle className="h-3.5 w-3.5" />
+                            <span>{post.comment_count}</span>
+                          </span>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">{review.created_at}</span>
-                      </div>
-
-                      {/* 제품 정보 (있는 경우에만 표시) */}
-                      {review.product && review.product.name && (
-                        <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-                          <span>{review.product.brand} {review.product.name}</span>
-                          {review.product.tier && ['S', 'A', 'B', 'C', 'D'].includes(review.product.tier) && (
-                            <TierBadge tier={review.product.tier as TierLevel} size="sm" showLabel={false} />
-                          )}
-                        </div>
-                      )}
-
-                      {/* 별점 (rating이 있는 경우에만 표시) */}
-                      {review.rating > 0 && (
-                        <div className="mb-2">
-                          <StarRating rating={review.rating} />
-                        </div>
-                      )}
-
-                      {/* 제목 또는 내용 */}
-                      <p className="text-sm text-foreground/90 mb-3 line-clamp-2">
-                        {review.tag === 'product_review' ? review.content : review.title || review.content}
-                      </p>
-
-                      {/* 액션 */}
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <ThumbsUp className="h-3.5 w-3.5" />
-                          <span>{review.likes}</span>
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MessageCircle className="h-3.5 w-3.5" />
-                          <span>{review.comments}</span>
-                        </span>
-                      </div>
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
+                );
+              })}
             </div>
 
             <div className="mt-4 text-center">
