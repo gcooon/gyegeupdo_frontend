@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, QueryClient } from '@tanstack/react-query';
 import api, { ApiResponse } from '@/lib/api';
 import {
   Post,
@@ -19,6 +19,28 @@ interface PostFilters {
   search?: string;
   page?: number;
   page_size?: number;
+}
+
+// 게시글 목록 프리페치 (호버 시 사용)
+export async function prefetchPosts(queryClient: QueryClient, category: string) {
+  const filters = { category };
+
+  // 이미 캐시에 있으면 프리페치 스킵
+  const existingData = queryClient.getQueryData(['posts', filters]);
+  if (existingData) return;
+
+  await queryClient.prefetchQuery({
+    queryKey: ['posts', filters],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.append('category', category);
+      const response = await api.get<ApiResponse<PostListResponse>>(
+        `/posts/?${params.toString()}`
+      );
+      return response.data.data;
+    },
+    staleTime: 30 * 1000,
+  });
 }
 
 // 게시글 목록 조회

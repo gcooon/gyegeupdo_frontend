@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { ko, enUS } from 'date-fns/locale';
 import { Card, CardContent } from '@/components/ui/card';
@@ -33,7 +34,7 @@ import {
   Star,
 } from 'lucide-react';
 import { useCategory, useCategories } from '@/hooks/useBrands';
-import { usePosts, useCreatePost } from '@/hooks/usePosts';
+import { usePosts, useCreatePost, prefetchPosts } from '@/hooks/usePosts';
 import { useCategoryProducts } from '@/hooks/useModels';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocaleStore } from '@/store/localeStore';
@@ -58,6 +59,7 @@ interface BoardContentProps {
 export function BoardContent({ category }: BoardContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const { data: categoryData } = useCategory(category);
   const { data: allCategories } = useCategories();
   const { isAuthenticated } = useAuth();
@@ -65,6 +67,13 @@ export function BoardContent({ category }: BoardContentProps) {
   const t = useTranslations('board');
   const tCommon = useTranslations('common');
   const config = getCategoryInfo(categoryData || category);
+
+  // 카테고리 탭 호버 시 해당 게시판 데이터 프리페치
+  const handleCategoryHover = useCallback((categorySlug: string) => {
+    if (categorySlug !== category) {
+      prefetchPosts(queryClient, categorySlug);
+    }
+  }, [queryClient, category]);
 
   // URL 파라미터에서 초기 태그 읽기
   const initialTag = (searchParams?.get('tag') as PostTag) || 'all';
@@ -242,6 +251,8 @@ export function BoardContent({ category }: BoardContentProps) {
               <Link
                 key={cat.slug}
                 href={`/${cat.slug}/board`}
+                prefetch={true}
+                onMouseEnter={() => handleCategoryHover(cat.slug)}
                 className={`
                   flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all
                   ${cat.slug === category
