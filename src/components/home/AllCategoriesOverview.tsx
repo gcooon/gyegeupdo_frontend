@@ -430,11 +430,11 @@ export function AllCategoriesOverview() {
                         </div>
                       </div>
 
-                      {/* 통계 - 유효한 데이터만 표시 (0보다 크고 100 미만일 때) */}
-                      {(category.product_count !== undefined && category.product_count > 0 && category.product_count < 100) && (
+                      {/* 통계 - 유효한 데이터만 표시 */}
+                      {(category.product_count !== undefined && category.product_count > 0) && (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
                           <span>{category.product_count}개 제품</span>
-                          {category.brand_count !== undefined && category.brand_count > 0 && category.brand_count < 100 && (
+                          {category.brand_count !== undefined && category.brand_count > 0 && (
                             <>
                               <span className="text-muted">·</span>
                               <span>{category.brand_count}개 브랜드</span>
