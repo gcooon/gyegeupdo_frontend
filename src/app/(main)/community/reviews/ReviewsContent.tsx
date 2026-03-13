@@ -6,7 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ko, enUS } from 'date-fns/locale';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import {
   MessageSquare,
   ThumbsUp,
@@ -14,6 +14,7 @@ import {
   Loader2,
   AlertCircle,
   PenLine,
+  Search,
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { usePosts } from '@/hooks/usePosts';
@@ -21,7 +22,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLocaleStore } from '@/store/localeStore';
 import { useTranslations } from '@/i18n';
 import { NAV_CATEGORIES } from '@/config/categories';
-import { TIER_CONFIG, type TierLevel } from '@/lib/tier';
+import { TIER_CONFIG } from '@/lib/tier';
 import type { PostListItem } from '@/types/board';
 
 // 카테고리 필터 옵션 (전체 + 활성화된 카테고리들)
@@ -37,12 +38,14 @@ export function ReviewsContent() {
   const tCommon = useTranslations('common');
 
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
 
   // 카테고리 필터가 'all'이면 category 파라미터 없이, 아니면 해당 카테고리로 필터
   const { data, isLoading, error, refetch } = usePosts({
     category: selectedCategory !== 'all' ? selectedCategory : undefined,
     tag: 'product_review',
+    search: searchQuery || undefined,
     page,
     page_size: 20,
   });
@@ -50,6 +53,12 @@ export function ReviewsContent() {
   const handleCategoryChange = (slug: string) => {
     setSelectedCategory(slug);
     setPage(1);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(1);
+    refetch();
   };
 
   const posts = data?.results || [];
@@ -67,15 +76,34 @@ export function ReviewsContent() {
             모든 카테고리의 실제 사용자 리뷰를 확인하세요
           </p>
         </div>
-        {isAuthenticated && (
-          <Link href={`/${NAV_CATEGORIES[0].slug}/board?tag=product_review&write=true`}>
-            <Button className="gap-2">
+        <Button className="gap-2" disabled={!isAuthenticated} asChild={isAuthenticated}>
+          {isAuthenticated ? (
+            <Link href={`/${NAV_CATEGORIES[0].slug}/board?tag=product_review&write=true`}>
               <PenLine className="h-4 w-4" />
-              리뷰 작성
-            </Button>
-          </Link>
-        )}
+              글쓰기
+            </Link>
+          ) : (
+            <>
+              <PenLine className="h-4 w-4" />
+              글쓰기
+            </>
+          )}
+        </Button>
       </div>
+
+      {/* 로그인 안내 */}
+      {!isAuthenticated && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            글을 작성하려면{' '}
+            <Link href="/login?redirect=/community/reviews" className="text-accent underline">
+              로그인
+            </Link>
+            이 필요합니다.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* 카테고리 필터 탭 */}
       <div className="flex gap-2 flex-wrap">
@@ -92,6 +120,26 @@ export function ReviewsContent() {
           </Button>
         ))}
       </div>
+
+      {/* 검색 */}
+      <Card>
+        <CardContent className="p-4">
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="검색어를 입력하세요"
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Button type="submit" variant="outline">
+              검색
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
       {/* 로딩 */}
       {isLoading && (
@@ -126,9 +174,11 @@ export function ReviewsContent() {
                 <CardContent className="p-8 text-center">
                   <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">
-                    {selectedCategory === 'all'
-                      ? '아직 작성된 리뷰가 없습니다. 첫 번째 리뷰를 작성해보세요!'
-                      : '해당 카테고리에 작성된 리뷰가 없습니다.'}
+                    {searchQuery
+                      ? '검색 결과가 없습니다.'
+                      : selectedCategory === 'all'
+                        ? '아직 작성된 리뷰가 없습니다. 첫 번째 리뷰를 작성해보세요!'
+                        : '해당 카테고리에 작성된 리뷰가 없습니다.'}
                   </p>
                 </CardContent>
               </Card>
