@@ -291,8 +291,10 @@ export function AllCategoriesOverview() {
         days_left: d.daysLeft,
       }));
 
-  const reviews: HomeReview[] = homeSummary?.reviews?.length
-    ? homeSummary.reviews
+  // 리뷰 데이터 - API 데이터 유무 플래그 추가
+  const hasApiReviews = Boolean(homeSummary?.reviews?.length);
+  const reviews: HomeReview[] = hasApiReviews
+    ? homeSummary!.reviews
     : ALL_RECENT_REVIEWS.map(r => ({
         id: r.id,
         category: r.category,
@@ -428,18 +430,18 @@ export function AllCategoriesOverview() {
                         </div>
                       </div>
 
-                      {/* 통계 */}
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                        {category.product_count !== undefined && (
+                      {/* 통계 - 유효한 데이터만 표시 (0보다 크고 100 미만일 때) */}
+                      {(category.product_count !== undefined && category.product_count > 0 && category.product_count < 100) && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
                           <span>{category.product_count}개 제품</span>
-                        )}
-                        {category.brand_count !== undefined && (
-                          <span className="text-muted">·</span>
-                        )}
-                        {category.brand_count !== undefined && (
-                          <span>{category.brand_count}개 브랜드</span>
-                        )}
-                      </div>
+                          {category.brand_count !== undefined && category.brand_count > 0 && category.brand_count < 100 && (
+                            <>
+                              <span className="text-muted">·</span>
+                              <span>{category.brand_count}개 브랜드</span>
+                            </>
+                          )}
+                        </div>
+                      )}
 
                       {/* 액션 버튼 */}
                       <div className="flex gap-1.5">
@@ -604,14 +606,21 @@ export function AllCategoriesOverview() {
                   <span className="text-[10px] text-muted-foreground">{review.created_at}</span>
                 </div>
 
-                {/* 제품 링크 */}
-                <Link
-                  href={`/${review.category}/model/${review.product.slug}`}
-                  className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground hover:text-accent transition-colors"
-                >
-                  <span>{review.product.brand} {review.product.name}</span>
-                  <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
-                </Link>
+                {/* 제품 정보 - API 데이터일 때만 링크 활성화 */}
+                {hasApiReviews ? (
+                  <Link
+                    href={`/${review.category}/model/${review.product.slug}`}
+                    className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground hover:text-accent transition-colors"
+                  >
+                    <span>{review.product.brand} {review.product.name}</span>
+                    <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+                    <span>{review.product.brand} {review.product.name}</span>
+                    <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
+                  </div>
+                )}
 
                 {/* 별점 */}
                 <div className="mb-2">
