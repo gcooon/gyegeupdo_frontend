@@ -32,7 +32,7 @@ import {
   Package,
   Star,
 } from 'lucide-react';
-import { useCategory } from '@/hooks/useBrands';
+import { useCategory, useCategories } from '@/hooks/useBrands';
 import { usePosts, useCreatePost } from '@/hooks/usePosts';
 import { useCategoryProducts } from '@/hooks/useModels';
 import { useAuth } from '@/hooks/useAuth';
@@ -59,6 +59,7 @@ export function BoardContent({ category }: BoardContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: categoryData } = useCategory(category);
+  const { data: allCategories } = useCategories();
   const { isAuthenticated } = useAuth();
   const { locale } = useLocaleStore();
   const t = useTranslations('board');
@@ -233,6 +234,30 @@ export function BoardContent({ category }: BoardContentProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* 카테고리 탭 네비게이션 */}
+      {allCategories && allCategories.length > 1 && (
+        <div className="overflow-x-auto no-scrollbar -mx-4 px-4">
+          <div className="flex gap-2 min-w-max pb-2">
+            {allCategories.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/${cat.slug}/board`}
+                className={`
+                  flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all
+                  ${cat.slug === category
+                    ? 'bg-accent text-white shadow-sm'
+                    : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }
+                `}
+              >
+                <span>{cat.icon}</span>
+                <span>{cat.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 헤더 */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
