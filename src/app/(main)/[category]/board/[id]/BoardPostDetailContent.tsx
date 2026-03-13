@@ -31,6 +31,7 @@ import {
   Loader2,
   Send,
   AlertCircle,
+  Star,
 } from 'lucide-react';
 import { useCategory } from '@/hooks/useBrands';
 import {
@@ -181,6 +182,51 @@ export function BoardPostDetailContent({ category, postId }: BoardPostDetailCont
 
           {/* 제목 */}
           <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
+
+          {/* 제품 정보 및 별점 (제품후기일 때만 표시) */}
+          {post.tag === 'product_review' && post.product_info && (
+            <div className="mb-4 p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <Link
+                  href={`/${category}/product/${post.product_info.slug}`}
+                  className="flex items-center gap-2 hover:text-primary transition-colors"
+                >
+                  <span className="font-medium">{post.product_info.brand_name}</span>
+                  <span className="text-muted-foreground">·</span>
+                  <span>{post.product_info.name}</span>
+                  {post.product_info.tier && (
+                    <Badge
+                      variant="outline"
+                      className={`ml-1 ${
+                        post.product_info.tier === 'S' ? 'border-amber-500 text-amber-500' :
+                        post.product_info.tier === 'A' ? 'border-emerald-500 text-emerald-500' :
+                        post.product_info.tier === 'B' ? 'border-blue-500 text-blue-500' :
+                        post.product_info.tier === 'C' ? 'border-slate-400 text-slate-400' :
+                        'border-red-400 text-red-400'
+                      }`}
+                    >
+                      {post.product_info.tier}
+                    </Badge>
+                  )}
+                </Link>
+                {post.rating && (
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-5 w-5 ${
+                          star <= post.rating!
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'fill-muted text-muted'
+                        }`}
+                      />
+                    ))}
+                    <span className="ml-1 text-sm font-medium">{post.rating}/5</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* 작성자 정보 */}
           <div className="flex items-center justify-between pb-4 border-b mb-6">

@@ -40,6 +40,7 @@ export interface Post {
   is_notice: boolean;
   is_owner: boolean;
   is_liked: boolean;
+  rating?: number | null;
   created_at: string;
   updated_at: string;
 }
