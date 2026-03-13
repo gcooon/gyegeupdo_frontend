@@ -324,5 +324,88 @@
       "writeButton": "리뷰 작성하기",
       "viewMore": "더 많은 리뷰 보기 →"
     }
+  },
+  "board": {
+    "title": "게시판",
+    "categoryTitle": "{name} 게시판",
+    "desc": "{name}에 대한 자유로운 이야기와 리뷰를 나눠보세요",
+    "tags": {
+      "all": "전체",
+      "free": "자유토론",
+      "product_review": "제품후기",
+      "question": "질문"
+    },
+    "write": "글쓰기",
+    "noPostsTitle": "아직 게시글이 없습니다",
+    "noPostsDesc": "첫 번째 게시글을 작성해보세요!",
+    "writeTitle": "새 글 작성",
+    "relatedProduct": "관련 제품",
+    "change": "변경",
+    "searchProductPlaceholder": "제품명을 검색하세요...",
+    "noSearchResults": "검색 결과가 없습니다",
+    "titleLabel": "제목",
+    "optional": "(선택)",
+    "autoGeneratePlaceholder": "비워두면 자동 생성됩니다",
+    "titlePlaceholder": "제목을 입력하세요",
+    "contentLabel": "내용",
+    "contentPlaceholder": "내용을 입력하세요",
+    "tagSelect": "태그 선택",
+    "cancel": "취소",
+    "submitting": "작성 중...",
+    "submitPost": "작성하기",
+    "loginRequiredPrefix": "글을 작성하려면 ",
+    "loginRequiredSuffix": "이 필요합니다.",
+    "loginLink": "로그인",
+    "searchPlaceholder": "검색어를 입력하세요",
+    "searchButton": "검색",
+    "loadError": "게시글을 불러오는 중 오류가 발생했습니다.",
+    "emptyPosts": "아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!",
+    "notice": "공지",
+    "submit": "등록"
+  },
+  "mypage": {
+    "title": "마이페이지",
+    "profile": "프로필",
+    "settings": "설정",
+    "logout": "로그아웃",
+    "levelPoints": "레벨 & 포인트",
+    "nextLevel": "다음 레벨까지",
+    "stats": {
+      "reviews": "작성 리뷰",
+      "votes": "투표 참여",
+      "tierCharts": "만든 계급도",
+      "streak": "연속 방문"
+    },
+    "badges": {
+      "title": "획득 뱃지",
+      "empty": "아직 획득한 뱃지가 없습니다",
+      "emptyDesc": "활동을 통해 뱃지를 모아보세요!"
+    },
+    "quickLinks": {
+      "title": "빠른 링크",
+      "myTierCharts": "내가 만든 계급도",
+      "myTierChartsDesc": "나만의 계급도를 확인하고 관리하세요",
+      "createTierChart": "새 계급도 만들기",
+      "createTierChartDesc": "나만의 계급도를 만들어보세요"
+    }
+  },
+  "colosseum": {
+    "title": "콜로세움",
+    "subtitle": "등급 이의제기 투표",
+    "description": "커뮤니티의 힘으로 제품 등급을 조정합니다.",
+    "voteGuide": "투표 참여 방법",
+    "voteStep1": "아래 이의제기 목록에서 관심 있는 제품을 선택하세요",
+    "voteStep2": "제품 상세 페이지에서 상향/하향 투표에 참여하세요",
+    "voteStep3": "1주일 동안 투표를 취합하여 관리자가 등급을 조정합니다",
+    "allCategories": "전체",
+    "noDisputes": "진행 중인 이의제기가 없습니다",
+    "noDisputesDesc": "현재 투표가 진행 중인 이의제기가 없습니다.",
+    "howToRequest": "이의제기를 신청하고 싶으신가요?",
+    "howToRequestDesc": "각 제품 상세 페이지에서 UP/DOWN 투표를 통해 이의제기를 신청할 수 있습니다. 30명 이상의 찬성을 받으면 콜로세움에 등록됩니다.",
+    "support": "찬성",
+    "oppose": "반대",
+    "voting": "투표 진행 중",
+    "votesCount": "{count}명 투표",
+    "viewOpinions": "의견 보기"
   }
 }

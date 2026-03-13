@@ -324,5 +324,88 @@
       "writeButton": "Write Review",
       "viewMore": "View more reviews →"
     }
+  },
+  "board": {
+    "title": "Board",
+    "categoryTitle": "{name} Board",
+    "desc": "Share your thoughts and reviews about {name}",
+    "tags": {
+      "all": "All",
+      "free": "Free Discussion",
+      "product_review": "Product Review",
+      "question": "Question"
+    },
+    "write": "Write",
+    "noPostsTitle": "No posts yet",
+    "noPostsDesc": "Be the first to write a post!",
+    "writeTitle": "Write Post",
+    "relatedProduct": "Related Product",
+    "change": "Change",
+    "searchProductPlaceholder": "Search for a product...",
+    "noSearchResults": "No results found",
+    "titleLabel": "Title",
+    "optional": "(optional)",
+    "autoGeneratePlaceholder": "Leave empty for auto-generation",
+    "titlePlaceholder": "Enter title",
+    "contentLabel": "Content",
+    "contentPlaceholder": "Enter content",
+    "tagSelect": "Select tag",
+    "cancel": "Cancel",
+    "submitting": "Submitting...",
+    "submitPost": "Submit",
+    "loginRequiredPrefix": "",
+    "loginRequiredSuffix": " required to write posts.",
+    "loginLink": "Login",
+    "searchPlaceholder": "Search posts...",
+    "searchButton": "Search",
+    "loadError": "Failed to load posts.",
+    "emptyPosts": "No posts yet. Be the first to write!",
+    "notice": "Notice",
+    "submit": "Submit"
+  },
+  "mypage": {
+    "title": "My Page",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "levelPoints": "Level & Points",
+    "nextLevel": "Next level in",
+    "stats": {
+      "reviews": "Reviews",
+      "votes": "Votes",
+      "tierCharts": "Tier Charts",
+      "streak": "Day Streak"
+    },
+    "badges": {
+      "title": "Earned Badges",
+      "empty": "No badges yet",
+      "emptyDesc": "Earn badges through activities!"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "myTierCharts": "My Tier Charts",
+      "myTierChartsDesc": "View and manage your tier charts",
+      "createTierChart": "Create Tier Chart",
+      "createTierChartDesc": "Create your own tier chart"
+    }
+  },
+  "colosseum": {
+    "title": "Colosseum",
+    "subtitle": "Tier Dispute Voting",
+    "description": "Adjust product tiers through community voting.",
+    "voteGuide": "How to Vote",
+    "voteStep1": "Select a product from the dispute list below",
+    "voteStep2": "Vote for upgrade or downgrade on the product detail page",
+    "voteStep3": "Votes are collected for one week and the admin adjusts the tier",
+    "allCategories": "All",
+    "noDisputes": "No active disputes",
+    "noDisputesDesc": "There are no disputes currently in voting.",
+    "howToRequest": "Want to request a dispute?",
+    "howToRequestDesc": "You can request a dispute through UP/DOWN voting on each product detail page. If 30 or more people support it, it will be registered in the Colosseum.",
+    "support": "Support",
+    "oppose": "Oppose",
+    "voting": "Voting in Progress",
+    "votesCount": "{count} votes",
+    "viewOpinions": "View Opinions"
   }
 }

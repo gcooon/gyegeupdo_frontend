@@ -39,24 +39,15 @@ import { useLocaleStore } from '@/store/localeStore';
 import { getCategoryInfo } from '@/config/categories';
 import type { PostListItem, PostTag } from '@/types/board';
 import { TIER_CONFIG, type TierLevel } from '@/lib/tier';
+import { useTranslations } from '@/i18n';
 
-const TAG_OPTIONS: { value: PostTag | 'all'; label: string }[] = [
-  { value: 'all', label: '전체' },
-  { value: 'free', label: '자유토론' },
-  { value: 'product_review', label: '제품후기' },
-  { value: 'question', label: '질문' },
-];
+// 태그 키 배열 (i18n에서 라벨 가져올 때 사용)
+const TAG_KEYS: (PostTag | 'all')[] = ['all', 'free', 'product_review', 'question'];
 
 const TAG_BADGE_STYLES: Record<PostTag, string> = {
   free: 'bg-blue-100 text-blue-700 border-blue-200',
   product_review: 'bg-green-100 text-green-700 border-green-200',
   question: 'bg-orange-100 text-orange-700 border-orange-200',
-};
-
-const TAG_LABELS: Record<PostTag, string> = {
-  free: '자유토론',
-  product_review: '제품후기',
-  question: '질문',
 };
 
 interface BoardContentProps {
@@ -69,6 +60,8 @@ export function BoardContent({ category }: BoardContentProps) {
   const { data: categoryData } = useCategory(category);
   const { isAuthenticated } = useAuth();
   const { locale } = useLocaleStore();
+  const t = useTranslations('board');
+  const tCommon = useTranslations('common');
   const config = getCategoryInfo(categoryData || category);
 
   // URL 파라미터에서 초기 태그 읽기
@@ -239,37 +232,37 @@ export function BoardContent({ category }: BoardContentProps) {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <span>{config.icon}</span>
-            {config.name} 게시판
+            {t('categoryTitle', { name: config.name })}
           </h1>
           <p className="text-muted-foreground mt-1">
-            {config.name}에 대한 자유로운 이야기와 리뷰를 나눠보세요
+            {t('desc', { name: config.name })}
           </p>
         </div>
         <Dialog open={isWriteDialogOpen} onOpenChange={setIsWriteDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2" disabled={!isAuthenticated}>
               <PenLine className="h-4 w-4" />
-              글쓰기
+              {t('write')}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>새 글 작성</DialogTitle>
+              <DialogTitle>{t('writeTitle')}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
               {/* 태그 선택 */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">태그</label>
+                <label className="text-sm font-medium">{t('tagSelect')}</label>
                 <div className="flex gap-2">
-                  {TAG_OPTIONS.filter(t => t.value !== 'all').map((tag) => (
+                  {TAG_KEYS.filter(key => key !== 'all').map((tagKey) => (
                     <Button
-                      key={tag.value}
+                      key={tagKey}
                       type="button"
-                      variant={newPost.tag === tag.value ? 'default' : 'outline'}
+                      variant={newPost.tag === tagKey ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() => setNewPost({ ...newPost, tag: tag.value as PostTag })}
+                      onClick={() => setNewPost({ ...newPost, tag: tagKey as PostTag })}
                     >
-                      {tag.label}
+                      {t(`tags.${tagKey}`)}
                     </Button>
                   ))}
                 </div>
@@ -278,7 +271,7 @@ export function BoardContent({ category }: BoardContentProps) {
               {/* 제품 선택 (제품후기일 때) */}
               {newPost.tag === 'product_review' && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">관련 제품</label>
+                  <label className="text-sm font-medium">{t('relatedProduct')}</label>
                   {selectedProductName ? (
                     <div className="flex items-center gap-2 p-2 border rounded-md bg-muted/30">
                       <Package className="h-4 w-4 text-accent shrink-0" />
@@ -294,14 +287,14 @@ export function BoardContent({ category }: BoardContentProps) {
                           setProductSearch('');
                         }}
                       >
-                        변경
+                        {t('change')}
                       </Button>
                     </div>
                   ) : (
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="제품명을 검색하세요..."
+                        placeholder={t('searchProductPlaceholder')}
                         className="pl-10"
                         value={productSearch}
                         onChange={(e) => {
@@ -343,7 +336,7 @@ export function BoardContent({ category }: BoardContentProps) {
                       )}
                       {productDropdownOpen && productSearch && filteredProducts.length === 0 && (
                         <div className="absolute z-50 top-full left-0 right-0 mt-1 border rounded-md bg-background shadow-lg p-3 text-sm text-muted-foreground text-center">
-                          검색 결과가 없습니다
+                          {t('noSearchResults')}
                         </div>
                       )}
                     </div>
@@ -354,10 +347,10 @@ export function BoardContent({ category }: BoardContentProps) {
               {/* 제목 (제품후기는 선택사항) */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  제목 {newPost.tag === 'product_review' && <span className="text-muted-foreground">(선택)</span>}
+                  {t('titleLabel')} {newPost.tag === 'product_review' && <span className="text-muted-foreground">{t('optional')}</span>}
                 </label>
                 <Input
-                  placeholder={newPost.tag === 'product_review' ? '비워두면 자동 생성됩니다' : '제목을 입력하세요'}
+                  placeholder={newPost.tag === 'product_review' ? t('autoGeneratePlaceholder') : t('titlePlaceholder')}
                   value={newPost.title}
                   onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
                 />
@@ -365,9 +358,9 @@ export function BoardContent({ category }: BoardContentProps) {
 
               {/* 내용 */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">내용</label>
+                <label className="text-sm font-medium">{t('contentLabel')}</label>
                 <Textarea
-                  placeholder="내용을 입력하세요"
+                  placeholder={t('contentPlaceholder')}
                   rows={8}
                   value={newPost.content}
                   onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
@@ -382,7 +375,7 @@ export function BoardContent({ category }: BoardContentProps) {
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsWriteDialogOpen(false)}>
-                취소
+                {t('cancel')}
               </Button>
               <Button
                 onClick={handleWritePost}
@@ -391,10 +384,10 @@ export function BoardContent({ category }: BoardContentProps) {
                 {createPost.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    작성 중...
+                    {t('submitting')}
                   </>
                 ) : (
-                  '작성하기'
+                  t('submitPost')
                 )}
               </Button>
             </DialogFooter>
@@ -407,25 +400,25 @@ export function BoardContent({ category }: BoardContentProps) {
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            글을 작성하려면{' '}
+            {t('loginRequiredPrefix')}
             <Link href={`/login?redirect=/${category}/board`} className="text-accent underline">
-              로그인
+              {t('loginLink')}
             </Link>
-            이 필요합니다.
+            {t('loginRequiredSuffix')}
           </AlertDescription>
         </Alert>
       )}
 
       {/* 태그 필터 탭 */}
       <div className="flex gap-2 flex-wrap">
-        {TAG_OPTIONS.map((tag) => (
+        {TAG_KEYS.map((tagKey) => (
           <Button
-            key={tag.value}
-            variant={selectedTag === tag.value ? 'default' : 'outline'}
+            key={tagKey}
+            variant={selectedTag === tagKey ? 'default' : 'outline'}
             size="sm"
-            onClick={() => handleTagChange(tag.value)}
+            onClick={() => handleTagChange(tagKey)}
           >
-            {tag.label}
+            {t(`tags.${tagKey}`)}
           </Button>
         ))}
       </div>
@@ -437,14 +430,14 @@ export function BoardContent({ category }: BoardContentProps) {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="검색어를 입력하세요"
+                placeholder={t('searchPlaceholder')}
                 className="pl-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Button type="submit" variant="outline">
-              검색
+              {t('searchButton')}
             </Button>
           </form>
         </CardContent>
@@ -462,9 +455,9 @@ export function BoardContent({ category }: BoardContentProps) {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            게시글을 불러오는 중 오류가 발생했습니다.
+            {t('loadError')}
             <Button variant="link" onClick={() => refetch()} className="p-0 h-auto ml-2">
-              다시 시도
+              {tCommon('retry')}
             </Button>
           </AlertDescription>
         </Alert>
@@ -494,8 +487,8 @@ export function BoardContent({ category }: BoardContentProps) {
                   <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">
                     {searchQuery
-                      ? '검색 결과가 없습니다.'
-                      : '아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!'}
+                      ? t('noSearchResults')
+                      : t('emptyPosts')}
                   </p>
                 </CardContent>
               </Card>
@@ -511,7 +504,7 @@ export function BoardContent({ category }: BoardContentProps) {
                 disabled={page === 1}
                 onClick={() => setPage(p => p - 1)}
               >
-                이전
+                {tCommon('prev')}
               </Button>
               <span className="flex items-center px-3 text-sm text-muted-foreground">
                 {page} / {Math.ceil(data.count / 20)}
@@ -522,7 +515,7 @@ export function BoardContent({ category }: BoardContentProps) {
                 disabled={!data.next}
                 onClick={() => setPage(p => p + 1)}
               >
-                다음
+                {tCommon('next')}
               </Button>
             </div>
           )}
@@ -541,6 +534,7 @@ function PostCard({
   category: string;
   locale: string;
 }) {
+  const t = useTranslations('board');
   const getBadgeVariant = (badge: string) => {
     switch (badge) {
       case 'verified':
@@ -569,12 +563,12 @@ function PostCard({
               <div className="flex items-center gap-2 mb-1">
                 {post.is_notice && (
                   <Badge variant="secondary" className="text-xs">
-                    공지
+                    {t('notice')}
                   </Badge>
                 )}
                 {post.tag && (
                   <Badge variant="outline" className={`text-xs ${TAG_BADGE_STYLES[post.tag]}`}>
-                    {TAG_LABELS[post.tag]}
+                    {t(`tags.${post.tag}`)}
                   </Badge>
                 )}
                 {post.product_info && (

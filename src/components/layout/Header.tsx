@@ -24,10 +24,10 @@ const FALLBACK_CATEGORIES = NAV_CATEGORIES;
 
 // 공식 계급도 서브메뉴 (카테고리 선택 후) - 나중에 사용할 수 있으므로 유지
 const OFFICIAL_SUBMENUS = [
-  { key: 'tier', label: '계급도 보기', icon: Trophy },
-  { key: 'quiz', label: '3분 진단', icon: Sparkles },
-  { key: 'compare', label: 'VS 비교', icon: GitCompare },
-  { key: 'board', label: '게시판', icon: MessageSquare },
+  { key: 'tier', labelKey: 'viewTier', icon: Trophy },
+  { key: 'quiz', labelKey: 'quiz', icon: Sparkles },
+  { key: 'compare', labelKey: 'compare', icon: GitCompare },
+  { key: 'board', labelKey: 'board', icon: MessageSquare },
 ];
 
 // 오픈 계급도 메뉴
