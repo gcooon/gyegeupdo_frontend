@@ -584,92 +584,100 @@ function PostCard({
     }
   };
 
+  // 카테고리 아이콘 가져오기
+  const categoryConfig = getCategoryInfo(category);
+  const categoryIcon = categoryConfig?.icon || '📦';
+
+  // 티어 배경색 (S티어는 금색)
+  const getTierBgColor = (tier: string) => {
+    switch (tier) {
+      case 'S': return 'rgb(255, 215, 0)';
+      case 'A': return TIER_CONFIG.A.color;
+      case 'B': return TIER_CONFIG.B.color;
+      case 'C': return TIER_CONFIG.C.color;
+      case 'D': return TIER_CONFIG.D.color;
+      default: return TIER_CONFIG.C.color;
+    }
+  };
+
   // 제품 후기 스타일 (메인화면과 동일한 리뷰 카드 스타일)
   if (post.tag === 'product_review' && post.product_info) {
     return (
       <Link href={`/${category}/board/${post.id}`}>
         <Card className="card-base hover:border-accent/50 transition-colors">
           <CardContent className="p-4">
-            <div className="flex gap-3">
-              {/* 사용자 아바타 */}
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/30 to-primary/20 flex items-center justify-center shrink-0">
-                <span className="text-sm font-semibold text-accent">
-                  {post.user.username.charAt(0).toUpperCase()}
-                </span>
-              </div>
-
-              {/* 컨텐츠 */}
-              <div className="flex-1 min-w-0">
-                {/* 사용자 정보 */}
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-sm">{post.user.username}</span>
+            {/* 헤더: 카테고리 아이콘 + 아바타 + 닉네임 + 시간 */}
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-base">{categoryIcon}</span>
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-xs font-medium text-primary">
+                    {post.user.username.charAt(0)}
+                  </span>
+                </div>
+                <div>
+                  <p className="font-medium text-sm">{post.user.username}</p>
                   {post.user.badge && post.user.badge !== 'none' && (
-                    <Badge className={`text-[10px] px-1 py-0 ${getBadgeVariant(post.user.badge)}`}>
-                      {post.user.badge}
-                    </Badge>
+                    <p className="text-[10px] text-muted-foreground">{post.user.badge}</p>
                   )}
-                  <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(post.created_at), {
-                      addSuffix: true,
-                      locale: locale === 'ko' ? ko : enUS,
-                    })}
-                  </span>
-                </div>
-
-                {/* 제품명 + 티어 */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm font-semibold">
-                    {post.product_info.brand_name} {post.product_info.name}
-                  </span>
-                  {post.product_info.tier && (
-                    <Badge
-                      variant="outline"
-                      className="text-xs px-1.5 py-0"
-                      style={{
-                        borderColor: TIER_CONFIG[post.product_info.tier]?.color,
-                        color: TIER_CONFIG[post.product_info.tier]?.color,
-                      }}
-                    >
-                      {post.product_info.tier}
-                    </Badge>
-                  )}
-                </div>
-
-                {/* 별점 */}
-                {post.rating && (
-                  <div className="flex items-center gap-0.5 mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-3.5 w-3.5 ${
-                          star <= post.rating!
-                            ? 'fill-yellow-400 text-yellow-400'
-                            : 'text-muted-foreground/30'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* 내용 미리보기 */}
-                {post.content_preview && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                    {post.content_preview}
-                  </p>
-                )}
-
-                {/* 좋아요/댓글 */}
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <ThumbsUp className="h-3 w-3" />
-                    {post.like_count}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MessageSquare className="h-3 w-3" />
-                    {post.comment_count}
-                  </span>
                 </div>
               </div>
+              <span className="text-[10px] text-muted-foreground">
+                {formatDistanceToNow(new Date(post.created_at), {
+                  addSuffix: false,
+                  locale: locale === 'ko' ? ko : enUS,
+                })}
+              </span>
+            </div>
+
+            {/* 제품명 + 티어 배지 */}
+            <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+              <span>{post.product_info.brand_name} {post.product_info.name}</span>
+              {post.product_info.tier && (
+                <span
+                  className={`inline-flex items-center justify-center rounded-lg font-bold shadow-sm min-w-[24px] h-6 px-1.5 text-xs ${
+                    post.product_info.tier === 'S' ? 'text-black animate-pulse' : 'text-white'
+                  }`}
+                  style={{ background: getTierBgColor(post.product_info.tier) }}
+                >
+                  {post.product_info.tier}
+                </span>
+              )}
+            </div>
+
+            {/* 별점 */}
+            <div className="mb-2">
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-3.5 w-3.5 ${
+                      post.rating && star <= post.rating
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-muted-foreground/30'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 내용 미리보기 */}
+            {post.content_preview && (
+              <p className="text-sm text-foreground/90 mb-3 line-clamp-2">
+                {post.content_preview}
+              </p>
+            )}
+
+            {/* 좋아요/댓글 버튼 */}
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <button className="flex items-center gap-1 hover:text-accent transition-colors">
+                <ThumbsUp className="h-3.5 w-3.5" />
+                <span>{post.like_count}</span>
+              </button>
+              <button className="flex items-center gap-1 hover:text-accent transition-colors">
+                <MessageSquare className="h-3.5 w-3.5" />
+                <span>{post.comment_count}</span>
+              </button>
             </div>
           </CardContent>
         </Card>
