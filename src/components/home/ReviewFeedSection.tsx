@@ -96,7 +96,7 @@ export function ReviewFeedSection() {
             <p className="text-muted-foreground">실제 러너들의 솔직한 후기</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review`}>전체 리뷰 보기</Link>
+            <Link href="/community/reviews">전체 리뷰 보기</Link>
           </Button>
         </div>
 
@@ -184,7 +184,7 @@ export function ReviewFeedSection() {
         {/* More Reviews Link */}
         <div className="mt-6 text-center">
           <Link
-            href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review`}
+            href="/community/reviews"
             className="text-sm text-muted-foreground hover:text-accent transition-colors"
           >
             더 많은 리뷰 보기 →

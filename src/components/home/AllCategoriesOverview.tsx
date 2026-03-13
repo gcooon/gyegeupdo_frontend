@@ -562,7 +562,7 @@ export function AllCategoriesOverview() {
             <p className="text-muted-foreground">전체 카테고리 최신 후기</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review`}>전체 리뷰 보기</Link>
+            <Link href="/community/reviews">전체 리뷰 보기</Link>
           </Button>
         </div>
 
@@ -647,7 +647,7 @@ export function AllCategoriesOverview() {
         </div>
 
         <div className="mt-4 text-center">
-          <Link href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review`} className="text-sm text-muted-foreground hover:text-accent transition-colors">
+          <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
             더 많은 리뷰 보기 →
           </Link>
         </div>
