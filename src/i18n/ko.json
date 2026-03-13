@@ -361,7 +361,8 @@
     "loadError": "게시글을 불러오는 중 오류가 발생했습니다.",
     "emptyPosts": "아직 게시글이 없습니다. 첫 번째 글을 작성해보세요!",
     "notice": "공지",
-    "submit": "등록"
+    "submit": "등록",
+    "rating": "평점"
   },
   "mypage": {
     "title": "마이페이지",

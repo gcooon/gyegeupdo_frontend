@@ -361,7 +361,8 @@
     "loadError": "Failed to load posts.",
     "emptyPosts": "No posts yet. Be the first to write!",
     "notice": "Notice",
-    "submit": "Submit"
+    "submit": "Submit",
+    "rating": "Rating"
   },
   "mypage": {
     "title": "My Page",

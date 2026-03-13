@@ -22,6 +22,7 @@ export interface PostProductInfo {
   name: string;
   slug: string;
   brand_name: string;
+  tier?: 'S' | 'A' | 'B' | 'C' | 'D';
 }
 
 export interface Post {
@@ -56,6 +57,8 @@ export interface PostListItem {
   comment_count: number;
   is_notice: boolean;
   created_at: string;
+  rating?: number | null;
+  content_preview?: string | null;
 }
 
 export interface PostListResponse {
@@ -77,6 +80,7 @@ export interface CreatePostPayload {
   category_slug: string;
   tag?: PostTag;
   product_slug?: string;
+  rating?: number;
 }
 
 export interface UpdatePostPayload {

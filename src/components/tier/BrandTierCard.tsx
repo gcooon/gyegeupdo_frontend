@@ -14,15 +14,10 @@ interface BrandTierCardProps {
   showVoteButtons?: boolean;
 }
 
-// Mock vote data - 실제로는 API에서 가져옴
-const getMockVotes = (brandId: number) => ({
-  upVotes: Math.floor(Math.random() * 50) + 5,
-  downVotes: Math.floor(Math.random() * 30) + 2,
-});
-
 export function BrandTierCard({ brand, category, showVoteButtons = true }: BrandTierCardProps) {
   const href = category ? `/${category}/brand/${brand.slug}` : `/brand/${brand.slug}`;
-  const votes = getMockVotes(brand.id);
+  // TODO: 브랜드 티어 투표 API 연동 후 실제 데이터 사용
+  const votes = { upVotes: 0, downVotes: 0 };
 
   const handleVoteClick = (e: React.MouseEvent, voteType: 'up' | 'down') => {
     e.preventDefault();

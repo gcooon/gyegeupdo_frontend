@@ -30,6 +30,7 @@ import {
   Loader2,
   AlertCircle,
   Package,
+  Star,
 } from 'lucide-react';
 import { useCategory } from '@/hooks/useBrands';
 import { usePosts, useCreatePost } from '@/hooks/usePosts';
@@ -79,6 +80,7 @@ export function BoardContent({ category }: BoardContentProps) {
     content: '',
     tag: 'free' as PostTag,
     product_slug: '',
+    rating: 0,
   });
 
   // 제품 목록 (제품후기 태그 선택 시 검색용)
@@ -167,6 +169,7 @@ export function BoardContent({ category }: BoardContentProps) {
         tag: PostTag;
         title?: string;
         product_slug?: string;
+        rating?: number;
       } = {
         content: newPost.content,
         category_slug: category,
@@ -174,10 +177,13 @@ export function BoardContent({ category }: BoardContentProps) {
       };
       if (newPost.title.trim()) payload.title = newPost.title;
       if (newPost.product_slug) payload.product_slug = newPost.product_slug;
+      if (newPost.tag === 'product_review' && newPost.rating > 0) {
+        payload.rating = newPost.rating;
+      }
 
       const createdPost = await createPost.mutateAsync(payload);
       setIsWriteDialogOpen(false);
-      setNewPost({ title: '', content: '', tag: 'free', product_slug: '' });
+      setNewPost({ title: '', content: '', tag: 'free', product_slug: '', rating: 0 });
       setWriteError('');
       refetch();
       router.push(`/${category}/board/${createdPost.id}`);
@@ -341,6 +347,36 @@ export function BoardContent({ category }: BoardContentProps) {
                       )}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* 별점 (제품후기일 때) */}
+              {newPost.tag === 'product_review' && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t('rating')}</label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setNewPost({ ...newPost, rating: star })}
+                        className="p-1 hover:scale-110 transition-transform"
+                      >
+                        <Star
+                          className={`h-6 w-6 ${
+                            star <= newPost.rating
+                              ? 'fill-yellow-400 text-yellow-400'
+                              : 'text-muted-foreground'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                    {newPost.rating > 0 && (
+                      <span className="ml-2 text-sm text-muted-foreground self-center">
+                        {newPost.rating}/5
+                      </span>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -548,6 +584,100 @@ function PostCard({
     }
   };
 
+  // 제품 후기 스타일 (메인화면과 동일한 리뷰 카드 스타일)
+  if (post.tag === 'product_review' && post.product_info) {
+    return (
+      <Link href={`/${category}/board/${post.id}`}>
+        <Card className="card-base hover:border-accent/50 transition-colors">
+          <CardContent className="p-4">
+            <div className="flex gap-3">
+              {/* 사용자 아바타 */}
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/30 to-primary/20 flex items-center justify-center shrink-0">
+                <span className="text-sm font-semibold text-accent">
+                  {post.user.username.charAt(0).toUpperCase()}
+                </span>
+              </div>
+
+              {/* 컨텐츠 */}
+              <div className="flex-1 min-w-0">
+                {/* 사용자 정보 */}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-medium text-sm">{post.user.username}</span>
+                  {post.user.badge && post.user.badge !== 'none' && (
+                    <Badge className={`text-[10px] px-1 py-0 ${getBadgeVariant(post.user.badge)}`}>
+                      {post.user.badge}
+                    </Badge>
+                  )}
+                  <span className="text-xs text-muted-foreground">
+                    {formatDistanceToNow(new Date(post.created_at), {
+                      addSuffix: true,
+                      locale: locale === 'ko' ? ko : enUS,
+                    })}
+                  </span>
+                </div>
+
+                {/* 제품명 + 티어 */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm font-semibold">
+                    {post.product_info.brand_name} {post.product_info.name}
+                  </span>
+                  {post.product_info.tier && (
+                    <Badge
+                      variant="outline"
+                      className="text-xs px-1.5 py-0"
+                      style={{
+                        borderColor: TIER_CONFIG[post.product_info.tier]?.color,
+                        color: TIER_CONFIG[post.product_info.tier]?.color,
+                      }}
+                    >
+                      {post.product_info.tier}
+                    </Badge>
+                  )}
+                </div>
+
+                {/* 별점 */}
+                {post.rating && (
+                  <div className="flex items-center gap-0.5 mb-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-3.5 w-3.5 ${
+                          star <= post.rating!
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-muted-foreground/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* 내용 미리보기 */}
+                {post.content_preview && (
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                    {post.content_preview}
+                  </p>
+                )}
+
+                {/* 좋아요/댓글 */}
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <ThumbsUp className="h-3 w-3" />
+                    {post.like_count}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageSquare className="h-3 w-3" />
+                    {post.comment_count}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+    );
+  }
+
+  // 기본 스타일 (자유토론, 질문)
   return (
     <Link href={`/${category}/board/${post.id}`}>
       <Card

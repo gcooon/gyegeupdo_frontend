@@ -136,6 +136,8 @@ export interface Product {
   price_min: number;
   price_max: number;
   review_count: number;
+  view_count: number;
+  like_count: number;
   trend?: 'up' | 'down' | 'stable';
   specs: Record<string, string>;
   scores: Record<string, number>;
@@ -187,6 +189,7 @@ export interface ProductDetail extends Omit<Product, 'specs' | 'scores'> {
     title: string;
     description: string;
   };
+  is_liked?: boolean;
 }
 
 export interface ProductListResponse {

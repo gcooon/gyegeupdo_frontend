@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { ApiResponse } from '@/lib/api';
 import { Product, ProductListResponse, ProductDetail, ProductFilters } from '@/types/model';
 
@@ -77,6 +77,26 @@ export function useCategoryProducts(category: string) {
       return response.data.data.results;
     },
     enabled: !!category,
+  });
+}
+
+// 제품 좋아요 훅
+export function useProductLike() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      const response = await api.post<ApiResponse<{ is_liked: boolean; like_count: number }>>(
+        `/products/${slug}/like/`
+      );
+      return response.data.data;
+    },
+    onSuccess: (data, slug) => {
+      // 제품 상세 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ['product', slug] });
+      // 제품 목록 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
   });
 }
 
