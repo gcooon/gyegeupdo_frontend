@@ -40,6 +40,8 @@ export function usePosts(filters?: PostFilters) {
       );
       return response.data.data;
     },
+    staleTime: 30 * 1000, // 30초간 캐시 (게시판은 자주 업데이트됨)
+    gcTime: 5 * 60 * 1000, // 5분간 가비지 컬렉션 유예
   });
 }
 
@@ -52,6 +54,8 @@ export function usePost(postId: number | string) {
       return response.data.data;
     },
     enabled: !!postId,
+    staleTime: 60 * 1000, // 1분간 캐시
+    gcTime: 5 * 60 * 1000, // 5분간 가비지 컬렉션 유예
   });
 }
 
@@ -130,6 +134,8 @@ export function usePostComments(postId: number | string, page = 1) {
       return response.data.data;
     },
     enabled: !!postId,
+    staleTime: 30 * 1000, // 30초간 캐시
+    gcTime: 5 * 60 * 1000, // 5분간 가비지 컬렉션 유예
   });
 }
 
