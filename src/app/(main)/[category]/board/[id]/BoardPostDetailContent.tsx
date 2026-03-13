@@ -188,7 +188,7 @@ export function BoardPostDetailContent({ category, postId }: BoardPostDetailCont
             <div className="mb-4 p-4 bg-muted/50 rounded-lg">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <Link
-                  href={`/${category}/product/${post.product_info.slug}`}
+                  href={`/${category}/model/${post.product_info.slug}`}
                   className="flex items-center gap-2 hover:text-primary transition-colors"
                 >
                   <span className="font-medium">{post.product_info.brand_name}</span>
