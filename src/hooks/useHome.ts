@@ -48,6 +48,8 @@ export interface HomeReview {
   id: number;
   category: string;
   category_icon: string;
+  tag: 'free' | 'product_review' | 'question';
+  title: string;
   user: {
     name: string;
     type: string;
@@ -55,9 +57,9 @@ export interface HomeReview {
   product: {
     name: string;
     brand: string;
-    tier: TierLevel;
+    tier: TierLevel | '';
     slug: string;
-  };
+  } | null;
   rating: number;
   content: string;
   likes: number;

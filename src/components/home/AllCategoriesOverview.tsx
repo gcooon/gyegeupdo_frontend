@@ -166,57 +166,6 @@ const ALL_HOT_DISPUTES = [
   },
 ];
 
-// 전체 카테고리 최신 리뷰 데이터
-const ALL_RECENT_REVIEWS = [
-  {
-    id: 1,
-    category: 'running-shoes',
-    categoryIcon: '👟',
-    user: { name: '러닝좋아', type: '평발 / 넓은 발' },
-    model: { name: '노바블라스트 5', brand: '아식스', tier: 'S' as TierLevel, slug: 'novablast-5' },
-    rating: 5,
-    content: '2025년 최고의 데일리 러닝화! 쿠셔닝과 반발력의 완벽한 균형. 공홈 마비될 정도로 인기 있는 이유를 알겠어요.',
-    likes: 156,
-    comments: 23,
-    createdAt: '2시간 전',
-  },
-  {
-    id: 101,
-    category: 'chicken',
-    categoryIcon: '🍗',
-    user: { name: '치킨마스터', type: '매운맛 좋아함' },
-    model: { name: '뿌링클', brand: 'BHC', tier: 'S' as TierLevel, slug: 'bhc-puringkle' },
-    rating: 5,
-    content: '치즈 시즈닝이 정말 맛있어요. 맥주 안주로 최고입니다. 재주문 확정!',
-    likes: 32,
-    comments: 7,
-    createdAt: '1시간 전',
-  },
-  {
-    id: 2,
-    category: 'running-shoes',
-    categoryIcon: '👟',
-    user: { name: '마라토너K', type: '보통 / 보통 발' },
-    model: { name: '메타스피드 스카이 도쿄', brand: '아식스', tier: 'S' as TierLevel, slug: 'metaspeed-sky-tokyo' },
-    rating: 5,
-    content: '아식스가 레이싱화 왕좌 탈환! FF LEAP 폼 반발력이 미쳤어요. 서브3 도전하시는 분들 강추합니다.',
-    likes: 87,
-    comments: 15,
-    createdAt: '5시간 전',
-  },
-  {
-    id: 102,
-    category: 'chicken',
-    categoryIcon: '🍗',
-    user: { name: '야식킹', type: '바삭함 선호' },
-    model: { name: '황금올리브치킨', brand: 'BBQ', tier: 'S' as TierLevel, slug: 'bbq-golden-olive' },
-    rating: 5,
-    content: '올리브유로 튀겨서 담백하고 바삭해요. 치킨 본연의 맛을 느끼기 좋습니다.',
-    likes: 28,
-    comments: 4,
-    createdAt: '3시간 전',
-  },
-];
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -292,26 +241,8 @@ export function AllCategoriesOverview() {
       }));
 
   // 리뷰 데이터 - API 데이터 유무 플래그 추가
-  const hasApiReviews = Boolean(homeSummary?.reviews?.length);
-  const reviews: HomeReview[] = hasApiReviews
-    ? homeSummary!.reviews
-    : ALL_RECENT_REVIEWS.map(r => ({
-        id: r.id,
-        category: r.category,
-        category_icon: r.categoryIcon,
-        user: r.user,
-        product: {
-          name: r.model.name,
-          brand: r.model.brand,
-          tier: r.model.tier,
-          slug: r.model.slug,
-        },
-        rating: r.rating,
-        content: r.content,
-        likes: r.likes,
-        comments: r.comments,
-        created_at: r.createdAt,
-      }));
+  // 실제 API 데이터만 사용 (Mock 데이터 제거)
+  const reviews: HomeReview[] = homeSummary?.reviews || [];
 
   const userCharts: HomeUserChart[] = homeSummary?.user_charts?.length
     ? homeSummary.user_charts
@@ -587,70 +518,92 @@ export function AllCategoriesOverview() {
         </Card>
 
         {/* 리뷰 그리드 */}
-        <div className="grid md:grid-cols-2 gap-4">
-          {reviews.map((review) => (
-            <Card key={review.id} className="card-base">
-              <CardContent className="p-4">
-                {/* 헤더 */}
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">{review.category_icon}</span>
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-xs font-medium text-primary">{review.user.name[0]}</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{review.user.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{review.user.type}</p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] text-muted-foreground">{review.created_at}</span>
-                </div>
+        {reviews.length > 0 ? (
+          <>
+            <div className="grid md:grid-cols-2 gap-4">
+              {reviews.map((review) => (
+                <Link key={review.id} href={`/${review.category}/board/${review.id}`}>
+                  <Card className="card-base hover:border-accent/50 transition-colors h-full">
+                    <CardContent className="p-4">
+                      {/* 헤더 */}
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{review.category_icon}</span>
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-xs font-medium text-primary">
+                              {review.user.name?.[0] || '?'}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{review.user.name}</p>
+                            {review.user.type && (
+                              <p className="text-[10px] text-muted-foreground">{review.user.type}</p>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground">{review.created_at}</span>
+                      </div>
 
-                {/* 제품 정보 - API 데이터일 때만 링크 활성화 */}
-                {hasApiReviews ? (
-                  <Link
-                    href={`/${review.category}/model/${review.product.slug}`}
-                    className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground hover:text-accent transition-colors"
-                  >
-                    <span>{review.product.brand} {review.product.name}</span>
-                    <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
-                  </Link>
-                ) : (
-                  <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-                    <span>{review.product.brand} {review.product.name}</span>
-                    <TierBadge tier={review.product.tier} size="sm" showLabel={false} />
-                  </div>
-                )}
+                      {/* 제품 정보 (있는 경우에만 표시) */}
+                      {review.product && review.product.name && (
+                        <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
+                          <span>{review.product.brand} {review.product.name}</span>
+                          {review.product.tier && ['S', 'A', 'B', 'C', 'D'].includes(review.product.tier) && (
+                            <TierBadge tier={review.product.tier as TierLevel} size="sm" showLabel={false} />
+                          )}
+                        </div>
+                      )}
 
-                {/* 별점 */}
-                <div className="mb-2">
-                  <StarRating rating={review.rating} />
-                </div>
+                      {/* 별점 (rating이 있는 경우에만 표시) */}
+                      {review.rating > 0 && (
+                        <div className="mb-2">
+                          <StarRating rating={review.rating} />
+                        </div>
+                      )}
 
-                {/* 내용 */}
-                <p className="text-sm text-foreground/90 mb-3 line-clamp-2">{review.content}</p>
+                      {/* 제목 또는 내용 */}
+                      <p className="text-sm text-foreground/90 mb-3 line-clamp-2">
+                        {review.tag === 'product_review' ? review.content : review.title || review.content}
+                      </p>
 
-                {/* 액션 */}
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <button className="flex items-center gap-1 hover:text-accent transition-colors">
-                    <ThumbsUp className="h-3.5 w-3.5" />
-                    <span>{review.likes}</span>
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-accent transition-colors">
-                    <MessageCircle className="h-3.5 w-3.5" />
-                    <span>{review.comments}</span>
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                      {/* 액션 */}
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <ThumbsUp className="h-3.5 w-3.5" />
+                          <span>{review.likes}</span>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MessageCircle className="h-3.5 w-3.5" />
+                          <span>{review.comments}</span>
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
 
-        <div className="mt-4 text-center">
-          <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
-            더 많은 리뷰 보기 →
-          </Link>
-        </div>
+            <div className="mt-4 text-center">
+              <Link href="/community/reviews" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                더 많은 리뷰 보기 →
+              </Link>
+            </div>
+          </>
+        ) : (
+          <Card className="card-base">
+            <CardContent className="p-8 text-center">
+              <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground mb-4">
+                아직 작성된 글이 없습니다. 첫 번째 글을 작성해보세요!
+              </p>
+              <Button asChild>
+                <Link href={`/${DEFAULT_CATEGORY.slug}/board?write=true`}>
+                  글 작성하기
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </section>
 
     </div>
