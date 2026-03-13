@@ -3,6 +3,10 @@ import { TierBadge } from '@/components/tier/TierBadge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
+import { NAV_CATEGORIES } from '@/config/categories';
+
+// 홈페이지에서 사용할 기본 카테고리
+const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
 
 interface TrendItem {
   rank: number;
@@ -97,7 +101,7 @@ export function TrendingSection() {
             <p className="text-sm text-muted-foreground">다양한 커뮤니티와 검색수 반영</p>
           </div>
           <Link
-            href="/running-shoes/tier"
+            href={`/${DEFAULT_CATEGORY.slug}/tier`}
             className="text-sm text-muted-foreground hover:text-accent transition-colors"
           >
             전체보기 →
@@ -108,7 +112,7 @@ export function TrendingSection() {
           title="이번 주 관심 급상승"
           items={TRENDING_UP}
           type="up"
-          category="running-shoes"
+          category={DEFAULT_CATEGORY.slug}
         />
       </div>
     </section>

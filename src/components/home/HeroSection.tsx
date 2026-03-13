@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Trophy, Users, Star } from 'lucide-react';
+import { NAV_CATEGORIES } from '@/config/categories';
+
+// 홈페이지 히어로 섹션에서 사용할 기본 카테고리 (첫 번째 카테고리)
+const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
 
 export function HeroSection() {
   return (
@@ -37,7 +41,7 @@ export function HeroSection() {
               className="text-lg px-8 bg-accent hover:bg-accent/90"
               asChild
             >
-              <Link href="/running-shoes/tier">
+              <Link href={`/${DEFAULT_CATEGORY.slug}/tier`}>
                 계급도 보러가기
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -48,7 +52,7 @@ export function HeroSection() {
               className="text-lg px-8"
               asChild
             >
-              <Link href="/running-shoes/compare">
+              <Link href={`/${DEFAULT_CATEGORY.slug}/compare`}>
                 VS 비교하기
               </Link>
             </Button>

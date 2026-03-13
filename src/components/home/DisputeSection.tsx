@@ -8,6 +8,10 @@ import { TierBadge } from '@/components/tier/TierBadge';
 import { ChevronUp, ChevronDown, MessageCircle, Users, Clock, Loader2 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
 import { useActiveDisputes, DisputeListResponse } from '@/hooks/useDisputes';
+import { NAV_CATEGORIES } from '@/config/categories';
+
+// 홈페이지에서 사용할 기본 카테고리
+const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
 
 export function DisputeSection() {
   const { data: disputes, isLoading } = useActiveDisputes();
@@ -26,7 +30,7 @@ export function DisputeSection() {
             <p className="text-muted-foreground">커뮤니티 등급 조정 투표</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/running-shoes/tier">
+            <Link href={`/${DEFAULT_CATEGORY.slug}/tier`}>
               전체 이의 보기
             </Link>
           </Button>

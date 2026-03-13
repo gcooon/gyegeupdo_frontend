@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronUp, ChevronDown, Crown, Medal, Award } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
 import { TIER_CONFIG } from '@/lib/tier';
+import { NAV_CATEGORIES } from '@/config/categories';
+
+// 홈페이지 미리보기에서 사용할 기본 카테고리
+const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
 
 interface TierModel {
   name: string;
@@ -64,11 +67,11 @@ export function TierPreviewSection() {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold mb-1">러닝화 계급도</h2>
+            <h2 className="text-2xl font-bold mb-1">{DEFAULT_CATEGORY.icon} {DEFAULT_CATEGORY.name} 계급도</h2>
             <p className="text-muted-foreground">커뮤니티 리뷰 기반</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/running-shoes/tier">전체 계급도 보기</Link>
+            <Link href={`/${DEFAULT_CATEGORY.slug}/tier`}>전체 계급도 보기</Link>
           </Button>
         </div>
 
@@ -133,7 +136,7 @@ export function TierPreviewSection() {
 
                     {/* 더보기 버튼 */}
                     <Link
-                      href={`/running-shoes/tier?tier=${row.tier}`}
+                      href={`/${DEFAULT_CATEGORY.slug}/tier?tier=${row.tier}`}
                       className="shrink-0 self-center"
                     >
                       <div className="px-4 py-2 rounded-lg border-2 border-dashed border-muted-foreground/30 text-muted-foreground text-sm hover:border-accent hover:text-accent transition-colors">
@@ -186,7 +189,7 @@ function TierModelCard({ model, tier, rank }: TierModelCardProps) {
 
   return (
     <Link
-      href={`/running-shoes/model/${model.slug}`}
+      href={`/${DEFAULT_CATEGORY.slug}/model/${model.slug}`}
       className="group shrink-0"
     >
       <div

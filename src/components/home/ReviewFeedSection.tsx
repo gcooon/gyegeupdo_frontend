@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button';
 import { TierBadge } from '@/components/tier/TierBadge';
 import { Star, ThumbsUp, MessageCircle } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
+import { NAV_CATEGORIES } from '@/config/categories';
+
+// 홈페이지에서 사용할 기본 카테고리
+const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
 
 interface Review {
   id: number;
@@ -92,7 +96,7 @@ export function ReviewFeedSection() {
             <p className="text-muted-foreground">실제 러너들의 솔직한 후기</p>
           </div>
           <Button variant="outline" asChild>
-            <Link href="/running-shoes/board?tag=product_review">전체 리뷰 보기</Link>
+            <Link href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review`}>전체 리뷰 보기</Link>
           </Button>
         </div>
 
@@ -112,7 +116,7 @@ export function ReviewFeedSection() {
                 </div>
               </div>
               <Button className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                <Link href="/running-shoes/board?tag=product_review&write=true">
+                <Link href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review&write=true`}>
                   리뷰 작성하기
                 </Link>
               </Button>
@@ -144,7 +148,7 @@ export function ReviewFeedSection() {
 
                 {/* Product Link */}
                 <Link
-                  href={`/running-shoes/model/${review.model.slug}`}
+                  href={`/${DEFAULT_CATEGORY.slug}/model/${review.model.slug}`}
                   className="flex items-center gap-2 mb-3 text-sm text-muted-foreground hover:text-accent transition-colors"
                 >
                   <span>{review.model.brand} {review.model.name}</span>
@@ -180,7 +184,7 @@ export function ReviewFeedSection() {
         {/* More Reviews Link */}
         <div className="mt-6 text-center">
           <Link
-            href="/running-shoes/board?tag=product_review"
+            href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review`}
             className="text-sm text-muted-foreground hover:text-accent transition-colors"
           >
             더 많은 리뷰 보기 →
