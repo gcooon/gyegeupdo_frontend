@@ -1100,24 +1100,18 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
               </CardContent>
             </Card>
 
-            {/* Report / Dispute */}
+            {/* Report */}
             <Card className="card-base">
               <CardContent className="py-4">
                 <p className="text-sm text-muted-foreground mb-3">
-                  정보가 잘못되었거나 티어가 부적절한가요?
+                  제품 정보가 잘못되었나요?
                 </p>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                <Button variant="outline" size="sm" className="w-full" asChild>
+                  <a href={`mailto:contact@gyegeupdo.kr?subject=[정보수정] ${product?.brand?.name || ''} ${product?.name || ''}&body=수정이 필요한 내용을 작성해주세요.`}>
                     <AlertTriangle className="h-4 w-4 mr-1" />
                     정보 수정 요청
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1" asChild>
-                    <Link href={`/community/colosseum/new?model=${slug}`}>
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      이의제기
-                    </Link>
-                  </Button>
-                </div>
+                  </a>
+                </Button>
               </CardContent>
             </Card>
           </div>
