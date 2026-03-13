@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { ChevronUp, ChevronDown, Crown, Medal, Award } from 'lucide-react';
+import { ChevronUp, ChevronDown, Crown, Medal, Award, Loader2 } from 'lucide-react';
 import type { TierLevel } from '@/lib/tier';
 import { TIER_CONFIG } from '@/lib/tier';
 import { NAV_CATEGORIES } from '@/config/categories';
+import { useCategoryProducts } from '@/hooks/useModels';
 
 // 홈페이지 미리보기에서 사용할 기본 카테고리
 const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
@@ -33,7 +34,8 @@ const TIER_ICONS: Record<TierLevel, React.ElementType | null> = {
   D: null,
 };
 
-const TIER_PREVIEW: TierRow[] = [
+// 폴백용 Mock 데이터
+const TIER_PREVIEW_MOCK: TierRow[] = [
   {
     tier: 'S',
     models: [
@@ -61,7 +63,36 @@ const TIER_PREVIEW: TierRow[] = [
   },
 ];
 
+// API 데이터를 TierRow 형태로 변환
+function convertToTierRows(products: { name: string; slug: string; tier: TierLevel; tier_score: number; brand: { name: string } }[]): TierRow[] {
+  const tiers: TierLevel[] = ['S', 'A', 'B'];
+
+  return tiers.map(tier => ({
+    tier,
+    models: products
+      .filter(p => p.tier === tier)
+      .slice(0, tier === 'A' ? 4 : 3) // A티어는 4개, 나머지는 3개
+      .map(p => ({
+        name: p.name,
+        brand: p.brand.name,
+        slug: p.slug,
+        score: p.tier_score || 0,
+        upVotes: 0,
+        downVotes: 0,
+      })),
+  })).filter(row => row.models.length > 0);
+}
+
 export function TierPreviewSection() {
+  const { data: products, isLoading } = useCategoryProducts(DEFAULT_CATEGORY.slug);
+
+  // API 데이터가 있으면 변환, 없으면 Mock 사용
+  const tierData = products && products.length > 0
+    ? convertToTierRows(products)
+    : TIER_PREVIEW_MOCK;
+
+  // 데이터가 없으면 Mock 사용
+  const displayData = tierData.length > 0 ? tierData : TIER_PREVIEW_MOCK;
   return (
     <section className="py-12 bg-muted/30 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -76,8 +107,13 @@ export function TierPreviewSection() {
         </div>
 
         {/* TierMaker 스타일 계급도 */}
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-accent" />
+          </div>
+        ) : (
         <div className="space-y-1 rounded-2xl overflow-hidden shadow-lg">
-          {TIER_PREVIEW.map((row) => {
+          {displayData.map((row) => {
             const config = TIER_CONFIG[row.tier];
             const TierIcon = TIER_ICONS[row.tier];
             const isSTier = row.tier === 'S';
@@ -149,6 +185,7 @@ export function TierPreviewSection() {
             );
           })}
         </div>
+        )}
 
         {/* 간단한 범례 */}
         <div className="flex items-center justify-center gap-6 mt-6 text-xs text-muted-foreground">
