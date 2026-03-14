@@ -1,27 +1,23 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { QuizContent } from './QuizContent';
+import { fetchCategory } from '@/lib/category-config';
 
 interface PageProps {
   params: Promise<{ category: string }>;
 }
 
-const categoryMeta: Record<string, { name: string }> = {
-  'running-shoes': { name: '러닝화' },
-  'padding': { name: '패딩' },
-  'chicken': { name: '치킨' },
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category } = await params;
-  const meta = categoryMeta[category] || { name: '제품' };
+  const categoryData = await fetchCategory(category);
+  const name = categoryData?.name || '제품';
 
   return {
-    title: `${meta.name} 추천 테스트 — 나에게 맞는 ${meta.name} 찾기`,
-    description: `3분이면 나에게 딱 맞는 ${meta.name}을 찾을 수 있어요. 나와 비슷한 사용자들의 선택을 확인하세요.`,
+    title: `${name} 추천 테스트 — 나에게 맞는 ${name} 찾기`,
+    description: `3분이면 나에게 딱 맞는 ${name}을 찾을 수 있어요. 나와 비슷한 사용자들의 선택을 확인하세요.`,
     openGraph: {
-      title: `${meta.name} 추천 테스트`,
-      description: `3분이면 나에게 딱 맞는 ${meta.name} 찾기`,
+      title: `${name} 추천 테스트`,
+      description: `3분이면 나에게 딱 맞는 ${name} 찾기`,
       images: [{ url: `/og/${category}-quiz.png`, width: 1200, height: 630 }],
     },
   };

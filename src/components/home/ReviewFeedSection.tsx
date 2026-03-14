@@ -5,10 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, ThumbsUp, MessageCircle } from 'lucide-react';
 import { NAV_CATEGORIES } from '@/config/categories';
+import { fetchCategories } from '@/lib/category-config';
 import { TIER_CONFIG } from '@/lib/tier';
 import type { PostListItem, PostListResponse } from '@/types/board';
 
-// 홈페이지에서 사용할 기본 카테고리
+// 홈페이지에서 사용할 기본 카테고리 (폴백)
 const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
@@ -64,7 +65,14 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export async function ReviewFeedSection() {
-  const reviews = await getRecentReviews();
+  const [reviews, apiCategories] = await Promise.all([
+    getRecentReviews(),
+    fetchCategories(),
+  ]);
+  // API 카테고리 우선, 폴백으로 NAV_CATEGORIES 사용
+  const navCategories = apiCategories.length > 0
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon || '📦' }))
+    : NAV_CATEGORIES;
 
   return (
     <section className="py-12 bg-muted/30 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8">
@@ -109,7 +117,7 @@ export async function ReviewFeedSection() {
           <div className="grid md:grid-cols-2 gap-4">
             {reviews.map((review) => {
               // 카테고리 아이콘 찾기
-              const categoryInfo = NAV_CATEGORIES.find((c) => c.slug === review.category_slug);
+              const categoryInfo = navCategories.find((c) => c.slug === review.category_slug);
               const categoryIcon = categoryInfo?.icon || '📦';
 
               return (

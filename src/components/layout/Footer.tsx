@@ -3,11 +3,17 @@
 import Link from 'next/link';
 import { useTranslations } from '@/i18n';
 import { useLocaleStore } from '@/store/localeStore';
+import { useCategories } from '@/hooks/useBrands';
 import { NAV_CATEGORIES } from '@/config/categories';
 
 export function Footer() {
   const t = useTranslations('footer');
   const { locale } = useLocaleStore();
+  const { data: apiCategories } = useCategories();
+  // API 카테고리 우선, 폴백으로 하드코딩 유지
+  const navCategories = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon || '📦' }))
+    : NAV_CATEGORIES;
   const currentYear = new Date().getFullYear();
   const logoChar = locale === 'ko' ? '티' : 'T';
 
@@ -27,7 +33,7 @@ export function Footer() {
             </p>
           </div>
 
-          {NAV_CATEGORIES.slice(0, 2).map((category) => (
+          {navCategories.slice(0, 3).map((category) => (
             <div key={category.slug}>
               <h3 className="font-semibold mb-3">{category.icon} {category.name}</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">

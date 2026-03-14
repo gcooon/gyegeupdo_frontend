@@ -23,10 +23,17 @@ import { useActiveDisputes, useDisputeVote, DisputeListResponse } from '@/hooks/
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { NAV_CATEGORIES } from '@/config/categories';
+import { useCategories } from '@/hooks/useBrands';
 
 type FilterCategory = 'all' | string;
 
 export function ColosseumContent() {
+  const { data: apiCategories } = useCategories();
+  // API 카테고리 우선, 폴백으로 하드코딩 유지
+  const navCategories = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon || '📦' }))
+    : NAV_CATEGORIES;
+
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
   const { data: disputes, isLoading, error } = useActiveDisputes(
     selectedCategory === 'all' ? undefined : selectedCategory
@@ -74,7 +81,7 @@ export function ColosseumContent() {
         >
           전체
         </Button>
-        {NAV_CATEGORIES.map((cat) => (
+        {navCategories.map((cat) => (
           <Button
             key={cat.slug}
             variant={selectedCategory === cat.slug ? 'default' : 'outline'}

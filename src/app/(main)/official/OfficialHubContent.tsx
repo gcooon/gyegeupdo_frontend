@@ -27,13 +27,11 @@ import { useCategories } from '@/hooks/useBrands';
 import type { CategoryListItem, CategoryGroup } from '@/types/model';
 import { useTranslations } from '@/i18n';
 
-const CATEGORY_TICKER = [
-  { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560', enabled: true },
-  { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00', enabled: true },
-  { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F', enabled: true },
-  { slug: 'perfume', name: '향수', icon: '🧴', color: '#9C27B0', enabled: false },
-  { slug: 'luxury-bag', name: '명품백', icon: '👜', color: '#8B4513', enabled: false },
-  { slug: 'camera', name: '카메라', icon: '📷', color: '#607D8B', enabled: false },
+// API 실패 시 폴백 티커
+const FALLBACK_TICKER = [
+  { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560' },
+  { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00' },
+  { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F' },
 ];
 
 const FALLBACK_CATEGORIES = [
@@ -160,6 +158,16 @@ export function OfficialHubContent() {
   const t = useTranslations('nav');
   const tOfficial = useTranslations('officialHub');
 
+  // API에서 활성 카테고리 목록 가져오기 (폴백 포함)
+  const categoryTicker = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({
+        slug: c.slug,
+        name: c.name,
+        icon: c.icon || '📦',
+        color: c.display_config?.color || '#3B82F6',
+      }))
+    : FALLBACK_TICKER;
+
   const categoryCards: CategoryListItem[] = (apiCategories || []).map((c) => ({
     id: c.id,
     name: c.name,
@@ -234,34 +242,23 @@ export function OfficialHubContent() {
             {tOfficial('subtitle')}
           </p>
 
-          {/* 카테고리 티커 */}
+          {/* 카테고리 티커 — API에서 활성 카테고리 자동 표시 */}
           <div className="flex flex-wrap justify-center gap-1.5 mt-6">
-            {CATEGORY_TICKER.map((cat) =>
-              cat.enabled ? (
-                <Link
-                  key={cat.slug}
-                  href={`/${cat.slug}`}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border font-medium text-xs transition-all hover:scale-105 hover:shadow-sm"
-                  style={{
-                    borderColor: cat.color,
-                    backgroundColor: `${cat.color}15`,
-                    color: cat.color,
-                  }}
-                >
-                  <span className="text-sm">{cat.icon}</span>
-                  <span>{cat.name}</span>
-                </Link>
-              ) : (
-                <span
-                  key={cat.slug}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-400 font-medium text-xs cursor-default"
-                >
-                  <span className="text-sm">{cat.icon}</span>
-                  <span>{cat.name}</span>
-                  <span className="text-[10px]">(준비중)</span>
-                </span>
-              )
-            )}
+            {categoryTicker.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/${cat.slug}`}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border font-medium text-xs transition-all hover:scale-105 hover:shadow-sm"
+                style={{
+                  borderColor: cat.color,
+                  backgroundColor: `${cat.color}15`,
+                  color: cat.color,
+                }}
+              >
+                <span className="text-sm">{cat.icon}</span>
+                <span>{cat.name}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

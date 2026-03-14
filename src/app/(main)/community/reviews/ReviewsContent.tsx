@@ -19,14 +19,15 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { usePosts } from '@/hooks/usePosts';
 import { useAuth } from '@/hooks/useAuth';
+import { useCategories } from '@/hooks/useBrands';
 import { useLocaleStore } from '@/store/localeStore';
 import { useTranslations } from '@/i18n';
 import { NAV_CATEGORIES } from '@/config/categories';
 import { TIER_CONFIG } from '@/lib/tier';
 import type { PostListItem } from '@/types/board';
 
-// 카테고리 필터 옵션 (전체 + 활성화된 카테고리들)
-const CATEGORY_FILTERS = [
+// API 실패 시 폴백용 필터
+const FALLBACK_FILTERS = [
   { slug: 'all', name: '전체', icon: '📋' },
   ...NAV_CATEGORIES,
 ];
@@ -36,6 +37,20 @@ export function ReviewsContent() {
   const { locale } = useLocaleStore();
   const t = useTranslations('board');
   const tCommon = useTranslations('common');
+  const { data: apiCategories } = useCategories();
+
+  // API 카테고리 기반 필터 (폴백 포함)
+  const categoryFilters = (apiCategories && apiCategories.length > 0)
+    ? [
+        { slug: 'all', name: '전체', icon: '📋' },
+        ...apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon || '📦' })),
+      ]
+    : FALLBACK_FILTERS;
+
+  // API 카테고리 기반 네비게이션 (아이콘 조회용)
+  const navCategories = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon || '📦' }))
+    : NAV_CATEGORIES;
 
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,7 +93,7 @@ export function ReviewsContent() {
         </div>
         <Button className="gap-2" disabled={!isAuthenticated} asChild={isAuthenticated}>
           {isAuthenticated ? (
-            <Link href={`/${NAV_CATEGORIES[0].slug}/board?tag=product_review&write=true`}>
+            <Link href={`/${navCategories[0]?.slug || 'running-shoes'}/board?tag=product_review&write=true`}>
               <PenLine className="h-4 w-4" />
               글쓰기
             </Link>
@@ -107,7 +122,7 @@ export function ReviewsContent() {
 
       {/* 카테고리 필터 탭 */}
       <div className="flex gap-2 flex-wrap">
-        {CATEGORY_FILTERS.map((cat) => (
+        {categoryFilters.map((cat) => (
           <Button
             key={cat.slug}
             variant={selectedCategory === cat.slug ? 'default' : 'outline'}
@@ -167,7 +182,7 @@ export function ReviewsContent() {
           <div className="space-y-3">
             {posts.length > 0 ? (
               posts.map((post) => (
-                <ReviewCard key={post.id} post={post} locale={locale} />
+                <ReviewCard key={post.id} post={post} locale={locale} navCategories={navCategories} />
               ))
             ) : (
               <Card>
@@ -216,9 +231,9 @@ export function ReviewsContent() {
 }
 
 // 리뷰 카드 컴포넌트 (메인화면 스타일과 동일)
-function ReviewCard({ post, locale }: { post: PostListItem; locale: string }) {
+function ReviewCard({ post, locale, navCategories }: { post: PostListItem; locale: string; navCategories: { slug: string; name: string; icon: string }[] }) {
   // 카테고리 아이콘 찾기
-  const categoryInfo = NAV_CATEGORIES.find((c) => c.slug === post.category_slug);
+  const categoryInfo = navCategories.find((c) => c.slug === post.category_slug);
   const categoryIcon = categoryInfo?.icon || '📦';
 
   // 티어 배경색 (S티어는 금색)

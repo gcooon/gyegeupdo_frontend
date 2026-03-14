@@ -35,21 +35,30 @@ import { NAV_CATEGORIES } from '@/config/categories';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
-// 홈페이지에서 사용할 기본 카테고리
-const DEFAULT_CATEGORY = NAV_CATEGORIES[0];
+// API 실패 시 폴백용 기본 카테고리
+const FALLBACK_NAV = NAV_CATEGORIES;
 
-// 카테고리 티커 데이터
-const CATEGORY_TICKER = [
-  { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560', enabled: true },
-  { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00', enabled: true },
-  { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F', enabled: true },
-  { slug: 'perfume', name: '향수', icon: '🧴', color: '#9C27B0', enabled: false },
-  { slug: 'luxury-bag', name: '명품백', icon: '👜', color: '#8B4513', enabled: false },
-  { slug: 'camera', name: '카메라', icon: '📷', color: '#607D8B', enabled: false },
-];
+// API 카테고리를 티커 형태로 변환하는 헬퍼
+function buildCategoryTicker(apiCategories: { slug: string; name: string; icon: string; display_config?: { color?: string } }[] | undefined) {
+  if (apiCategories && apiCategories.length > 0) {
+    return apiCategories.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      icon: c.icon || '📦',
+      color: c.display_config?.color || '#3B82F6',
+      enabled: true,
+    }));
+  }
+  // 폴백: 기존 3개 카테고리
+  return [
+    { slug: 'running-shoes', name: '러닝화', icon: '👟', color: '#E94560', enabled: true },
+    { slug: 'chicken', name: '치킨', icon: '🍗', color: '#FF6B00', enabled: true },
+    { slug: 'mens-watch', name: '남자시계', icon: '⌚', color: '#1E3A5F', enabled: true },
+  ];
+}
 
-// 카테고리 정보
-const CATEGORIES = [
+// API 실패 시 홈 카테고리 폴백 데이터
+const FALLBACK_HOME_CATEGORIES = [
   {
     slug: 'running-shoes',
     name: '러닝화',
@@ -209,10 +218,21 @@ export function AllCategoriesOverview() {
     brand_count: c.brand_count,
   }));
 
+  // API 카테고리 기반 네비게이션 (폴백 포함)
+  const navCategories = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon || '📦' }))
+    : FALLBACK_NAV;
+
+  // 첫 번째 카테고리 (기본 링크용)
+  const defaultCategory = navCategories[0] || FALLBACK_NAV[0];
+
+  // 히어로 티커: API 데이터 우선
+  const categoryTicker = buildCategoryTicker(apiCategories);
+
   // API 데이터 또는 폴백 데이터
   const categories: HomeCategory[] = homeSummary?.categories?.length
     ? homeSummary.categories
-    : CATEGORIES.map(c => ({
+    : FALLBACK_HOME_CATEGORIES.map(c => ({
         slug: c.slug,
         name: c.name,
         icon: c.icon,
@@ -280,34 +300,23 @@ export function AllCategoriesOverview() {
             다양한 카테고리의 제품/서비스를 커뮤니티 리뷰 기반으로 S~B 등급으로 분류했습니다
           </p>
 
-          {/* 카테고리 티커 */}
+          {/* 카테고리 티커 — API에서 활성 카테고리 자동 표시 */}
           <div className="flex flex-wrap justify-center gap-1.5 mt-6">
-            {CATEGORY_TICKER.map((cat) =>
-              cat.enabled ? (
-                <Link
-                  key={cat.slug}
-                  href={`/${cat.slug}`}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border font-medium text-xs transition-all hover:scale-105 hover:shadow-sm"
-                  style={{
-                    borderColor: cat.color,
-                    backgroundColor: `${cat.color}15`,
-                    color: cat.color,
-                  }}
-                >
-                  <span className="text-sm">{cat.icon}</span>
-                  <span>{cat.name}</span>
-                </Link>
-              ) : (
-                <span
-                  key={cat.slug}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-gray-300 bg-gray-100 text-gray-400 font-medium text-xs cursor-default"
-                >
-                  <span className="text-sm">{cat.icon}</span>
-                  <span>{cat.name}</span>
-                  <span className="text-[10px]">(준비중)</span>
-                </span>
-              )
-            )}
+            {categoryTicker.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/${cat.slug}`}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border font-medium text-xs transition-all hover:scale-105 hover:shadow-sm"
+                style={{
+                  borderColor: cat.color,
+                  backgroundColor: `${cat.color}15`,
+                  color: cat.color,
+                }}
+              >
+                <span className="text-sm">{cat.icon}</span>
+                <span>{cat.name}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -328,7 +337,7 @@ export function AllCategoriesOverview() {
 
         {/* 카테고리 카드 그리드 */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {(categoryCards.length > 0 ? categoryCards : CATEGORIES.map((c, i) => ({
+          {(categoryCards.length > 0 ? categoryCards : FALLBACK_HOME_CATEGORIES.map((c, i) => ({
             id: i,
             name: c.name,
             slug: c.slug,
@@ -521,7 +530,7 @@ export function AllCategoriesOverview() {
                 </div>
               </div>
               <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                <Link href={`/${DEFAULT_CATEGORY.slug}/board?tag=product_review&write=true`}>리뷰 작성하기</Link>
+                <Link href={`/${defaultCategory.slug}/board?tag=product_review&write=true`}>리뷰 작성하기</Link>
               </Button>
             </div>
           </CardContent>
@@ -533,7 +542,7 @@ export function AllCategoriesOverview() {
             <div className="grid md:grid-cols-2 gap-4">
               {reviewPosts.map((post) => {
                 // 카테고리 아이콘 찾기
-                const categoryInfo = NAV_CATEGORIES.find((c) => c.slug === post.category_slug);
+                const categoryInfo = navCategories.find((c) => c.slug === post.category_slug);
                 const categoryIcon = categoryInfo?.icon || '📦';
 
                 // 티어 배경색
@@ -634,7 +643,7 @@ export function AllCategoriesOverview() {
                 아직 작성된 글이 없습니다. 첫 번째 글을 작성해보세요!
               </p>
               <Button asChild>
-                <Link href={`/${DEFAULT_CATEGORY.slug}/board?write=true`}>
+                <Link href={`/${defaultCategory.slug}/board?write=true`}>
                   글 작성하기
                 </Link>
               </Button>
