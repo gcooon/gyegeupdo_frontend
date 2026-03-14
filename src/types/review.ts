@@ -34,7 +34,7 @@ export interface ReviewCreateInput {
 
 export interface SimilarUserStats {
   total: number;
-  repurchase_rate: number;
+  avg_fit_score: number;
   avg_size_fit: SizeFit;
 }
 

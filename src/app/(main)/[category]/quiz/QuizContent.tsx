@@ -28,7 +28,7 @@ function getQuizConfig(categoryData: import('@/types/model').Category | undefine
     title: `나에게 맞는 ${name} 찾기`,
     resultTitle: `추천 ${name}`,
     userLabel: name === '러닝화' ? '러너' : name === '치킨' ? '치킨러버' : name === '남자시계' ? '시계러' : '사용자',
-    repurchaseLabel: name === '치킨' ? '재주문' : '재구매',
+    // repurchaseLabel removed — no real data available
   };
 }
 
@@ -48,7 +48,7 @@ interface ApiRecommendation {
   };
   match_score: number;
   reasons: string[];
-  similar_user_count: number;
+  review_count: number;
 }
 
 interface QuizApiResponse {
@@ -187,7 +187,7 @@ export function QuizContent({ category }: QuizContentProps) {
   // Result Screen
   if (isComplete) {
     const recommendations = apiResult?.recommendations || [];
-    const totalSimilarUsers = recommendations.reduce((sum, r) => sum + r.similar_user_count, 0);
+    const totalReviews = recommendations.reduce((sum, r) => sum + r.review_count, 0);
 
     return (
       <div className="container py-8 max-w-2xl mx-auto">
@@ -216,7 +216,7 @@ export function QuizContent({ category }: QuizContentProps) {
             </motion.div>
             <h1 className="text-3xl font-bold mb-2">분석 완료!</h1>
             <p className="text-muted-foreground">
-              <span className="font-semibold text-accent">{totalSimilarUsers}명</span>의 비슷한 {config.userLabel} 데이터를 분석했습니다
+              <span className="font-semibold text-accent">{totalReviews}개</span>의 리뷰 데이터를 분석했습니다
             </p>
           </div>
 
@@ -272,7 +272,7 @@ export function QuizContent({ category }: QuizContentProps) {
 
                               <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
                                 <Users className="h-3 w-3" />
-                                <span>비슷한 조건 {rec.similar_user_count}명 선택</span>
+                                <span>리뷰 {rec.review_count}개</span>
                               </div>
                             </div>
                           </div>
@@ -282,15 +282,6 @@ export function QuizContent({ category }: QuizContentProps) {
                   </motion.div>
                 ))}
               </div>
-
-              {/* Repurchase Stats */}
-              <Card className="card-base gradient-primary text-white mb-8">
-                <CardContent className="py-6 text-center">
-                  <p className="text-sm opacity-80 mb-2">나와 비슷한 조건의 {config.userLabel} 중</p>
-                  <p className="text-5xl font-bold mb-2">73%</p>
-                  <p className="opacity-80">가 1위 제품을 {config.repurchaseLabel}했습니다</p>
-                </CardContent>
-              </Card>
 
               {/* Actions */}
               <div className="grid sm:grid-cols-2 gap-4 mb-6">

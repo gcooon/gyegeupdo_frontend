@@ -1,11 +1,68 @@
 import { MetadataRoute } from 'next';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tier-chart.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+interface Category {
+  slug: string;
+}
+
+interface Post {
+  id: number;
+  category?: { slug: string };
+}
+
+interface TierChart {
+  slug: string;
+}
+
+async function fetchCategories(): Promise<Category[]> {
+  try {
+    const res = await fetch(`${API_URL}/categories/`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data?.results || [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchPosts(): Promise<Post[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts/?page_size=100`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data?.results || [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchTierCharts(): Promise<TierChart[]> {
+  try {
+    const res = await fetch(`${API_URL}/tiers/user-charts/?page_size=50`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data?.results || [];
+  } catch {
+    return [];
+  }
+}
+
+// 카테고리별 서브페이지 경로
+const CATEGORY_SUB_PAGES = ['tier', 'quiz', 'discover', 'compare', 'board'];
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  // 정적 페이지
+  // API에서 동적 데이터 fetch (병렬)
+  const [categories, posts, tierCharts] = await Promise.all([
+    fetchCategories(),
+    fetchPosts(),
+    fetchTierCharts(),
+  ]);
+
+  // 1. 정적 페이지
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
@@ -14,135 +71,46 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
-      url: `${SITE_URL}/running-shoes`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/running-shoes/tier`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/running-shoes/quiz`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/running-shoes/discover`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/running-shoes/compare`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/running-shoes/board`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.6,
-    },
-    {
       url: `${SITE_URL}/open`,
       lastModified: now,
       changeFrequency: 'daily',
       priority: 0.7,
     },
-    // 치킨 카테고리
-    {
-      url: `${SITE_URL}/chicken`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/chicken/tier`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/chicken/quiz`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/chicken/discover`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/chicken/board`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.6,
-    },
-    // 남자시계 카테고리
-    {
-      url: `${SITE_URL}/mens-watch`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/mens-watch/tier`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/mens-watch/quiz`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/mens-watch/board`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.6,
-    },
   ];
 
-  // 게시글 상세 페이지
-  const boardPostIds: Record<string, string[]> = {
-    'running-shoes': ['1', '2', '3', '4', '5', '6', '7'],
-    'chicken': ['101', '102', '103', '104', '105', '106'],
-  };
+  // 2. 카테고리 페이지 (API 기반 동적 생성)
+  const categoryPages: MetadataRoute.Sitemap = categories.flatMap((cat) => [
+    {
+      url: `${SITE_URL}/${cat.slug}`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    ...CATEGORY_SUB_PAGES.map((sub) => ({
+      url: `${SITE_URL}/${cat.slug}/${sub}`,
+      lastModified: now,
+      changeFrequency: (sub === 'board' ? 'daily' : 'weekly') as 'daily' | 'weekly',
+      priority: sub === 'tier' ? 0.8 : 0.6,
+    })),
+  ]);
 
-  const boardPostPages: MetadataRoute.Sitemap = Object.entries(boardPostIds).flatMap(
-    ([category, ids]) =>
-      ids.map((id) => ({
-        url: `${SITE_URL}/${category}/board/${id}`,
-        lastModified: now,
-        changeFrequency: 'weekly' as const,
-        priority: 0.5,
-      }))
-  );
+  // 3. 게시글 상세 페이지 (API 기반)
+  const postPages: MetadataRoute.Sitemap = posts
+    .filter((post) => post.category?.slug)
+    .map((post) => ({
+      url: `${SITE_URL}/${post.category!.slug}/board/${post.id}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+    }));
 
-  // 내가 만든 계급도 샘플 페이지
-  const tierChartSlugs = [
-    'ramen-tier',
-    'coffee-franchise-tier',
-    'delivery-app-tier',
-    'convenience-store-dosirak-tier',
-  ];
-
-  const tierChartPages: MetadataRoute.Sitemap = tierChartSlugs.map((slug) => ({
-    url: `${SITE_URL}/open/${slug}`,
+  // 4. 사용자 계급도 (API 기반)
+  const tierChartPages: MetadataRoute.Sitemap = tierCharts.map((chart) => ({
+    url: `${SITE_URL}/open/${chart.slug}`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }));
 
-  return [...staticPages, ...boardPostPages, ...tierChartPages];
+  return [...staticPages, ...categoryPages, ...postPages, ...tierChartPages];
 }
