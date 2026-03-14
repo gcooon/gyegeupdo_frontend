@@ -93,8 +93,10 @@ export function BoardContent({ category }: BoardContentProps) {
     rating: 0,
   });
 
-  // 제품 목록 (제품후기 태그 선택 시 검색용)
-  const { data: allProducts } = useCategoryProducts(category);
+  // 제품 목록 (제품후기 태그 선택 시 검색용) — 글쓰기 다이얼로그 열릴 때만 로드
+  const { data: allProducts } = useCategoryProducts(
+    isWriteDialogOpen ? category : ''
+  );
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
     let products = allProducts;
