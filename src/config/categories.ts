@@ -154,7 +154,7 @@ export const CATEGORY_GROUPS: CategoryGroupConfig[] = [
     key: 'food',
     label: CATEGORY_GROUP_LABELS['food'],
     icon: '🍽',
-    categories: ['chicken'],
+    categories: ['chicken', 'coffee'],
   },
   {
     key: 'tech',
@@ -166,7 +166,7 @@ export const CATEGORY_GROUPS: CategoryGroupConfig[] = [
     key: 'lifestyle',
     label: CATEGORY_GROUP_LABELS['lifestyle'],
     icon: '✨',
-    categories: [],
+    categories: ['car-brands', 'perfume', 'mens-wallet'],
   },
 ];
 
@@ -295,6 +295,58 @@ export const CATEGORY_CONFIGS: CategoryConfig[] = [
       brandLinkType: 'brand',
       brandLabel: '브랜드',
       productLabel: '모델',
+    },
+  },
+  {
+    slug: 'car-brands',
+    name: '자동차',
+    icon: '🚗',
+    color: '#0F172A',
+    tierChart: {
+      brandTiers: EXTENDED_TIERS,
+      usageTiers: EXTENDED_TIERS,
+      brandLinkType: 'brand',
+      brandLabel: '브랜드',
+      productLabel: '모델',
+    },
+  },
+  {
+    slug: 'perfume',
+    name: '향수',
+    icon: '🧴',
+    color: '#7C3AED',
+    tierChart: {
+      brandTiers: EXTENDED_TIERS,
+      usageTiers: EXTENDED_TIERS,
+      brandLinkType: 'brand',
+      brandLabel: '브랜드',
+      productLabel: '향수',
+    },
+  },
+  {
+    slug: 'coffee',
+    name: '커피 프랜차이즈',
+    icon: '☕',
+    color: '#78350F',
+    tierChart: {
+      brandTiers: EXTENDED_TIERS,
+      usageTiers: EXTENDED_TIERS,
+      brandLinkType: 'brand',
+      brandLabel: '프랜차이즈',
+      productLabel: '메뉴',
+    },
+  },
+  {
+    slug: 'mens-wallet',
+    name: '남자지갑',
+    icon: '👛',
+    color: '#44403C',
+    tierChart: {
+      brandTiers: EXTENDED_TIERS,
+      usageTiers: EXTENDED_TIERS,
+      brandLinkType: 'brand',
+      brandLabel: '브랜드',
+      productLabel: '제품',
     },
   },
 ];
