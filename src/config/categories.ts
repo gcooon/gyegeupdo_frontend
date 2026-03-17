@@ -160,7 +160,7 @@ export const CATEGORY_GROUPS: CategoryGroupConfig[] = [
     key: 'tech',
     label: CATEGORY_GROUP_LABELS['tech'],
     icon: '⌚',
-    categories: ['mens-watch'],
+    categories: ['mens-watch', 'camera'],
   },
   {
     key: 'lifestyle',
@@ -278,6 +278,19 @@ export const CATEGORY_CONFIGS: CategoryConfig[] = [
     color: '#1E3A5F',
     tierChart: {
       brandTiers: EXTENDED_TIERS, // 모든 티어 표시 (S~D)
+      usageTiers: EXTENDED_TIERS,
+      brandLinkType: 'brand',
+      brandLabel: '브랜드',
+      productLabel: '모델',
+    },
+  },
+  {
+    slug: 'camera',
+    name: '카메라',
+    icon: '📷',
+    color: '#1A1A2E',
+    tierChart: {
+      brandTiers: EXTENDED_TIERS,
       usageTiers: EXTENDED_TIERS,
       brandLinkType: 'brand',
       brandLabel: '브랜드',
