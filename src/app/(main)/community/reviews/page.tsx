@@ -1,11 +1,11 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { ReviewsContent } from './ReviewsContent';
 import { generateSeoMeta } from '@/lib/seo';
 import { generateBreadcrumbJsonLd } from '@/lib/jsonLd';
+import { fetchPosts } from '@/lib/server-fetch';
 import { Loader2 } from 'lucide-react';
-
-export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   ...generateSeoMeta({
@@ -23,12 +23,21 @@ function LoadingFallback() {
   );
 }
 
-export default function ReviewsPage() {
+export default async function ReviewsPage() {
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: '홈', path: '/' },
     { name: '커뮤니티', path: '/community' },
     { name: '전체 리뷰', path: '/community/reviews' },
   ]);
+
+  // SSR prefetch: 클라이언트 훅과 동일한 queryKey로 prefetch
+  const queryClient = new QueryClient();
+  const filters = { tag: 'product_review', page: 1, page_size: 20 };
+  await queryClient.prefetchQuery({
+    queryKey: ['posts', filters],
+    queryFn: () => fetchPosts(filters),
+    staleTime: 60 * 1000,
+  });
 
   return (
     <>
@@ -37,9 +46,11 @@ export default function ReviewsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="max-w-4xl mx-auto py-8 px-4">
-        <Suspense fallback={<LoadingFallback />}>
-          <ReviewsContent />
-        </Suspense>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <Suspense fallback={<LoadingFallback />}>
+            <ReviewsContent />
+          </Suspense>
+        </HydrationBoundary>
       </div>
     </>
   );

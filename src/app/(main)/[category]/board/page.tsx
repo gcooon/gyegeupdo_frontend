@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { BoardContent } from './BoardContent';
 import { fetchCategory } from '@/lib/category-config';
+import { fetchPosts } from '@/lib/server-fetch';
 
 interface PageProps {
   params: Promise<{ category: string }>;
@@ -34,11 +36,30 @@ function BoardSkeleton() {
 export default async function BoardPage({ params }: PageProps) {
   const { category } = await params;
 
+  // SSR prefetch: 게시글 목록 + 카테고리를 서버에서 미리 가져옴
+  const queryClient = new QueryClient();
+  const filters = { category, page: 1 };
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ['posts', filters],
+      queryFn: () => fetchPosts(filters),
+      staleTime: 60 * 1000,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['category', category],
+      queryFn: () => fetchCategory(category),
+      staleTime: 5 * 60 * 1000,
+    }),
+  ]);
+
   return (
     <div className="container py-8">
-      <Suspense fallback={<BoardSkeleton />}>
-        <BoardContent category={category} />
-      </Suspense>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<BoardSkeleton />}>
+          <BoardContent category={category} />
+        </Suspense>
+      </HydrationBoundary>
     </div>
   );
 }

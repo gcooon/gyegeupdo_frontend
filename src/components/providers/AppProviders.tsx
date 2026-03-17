@@ -47,12 +47,13 @@ export function AppProviders({ children }: AppProvidersProps) {
     setMounted(true);
   }, []);
 
-  // Render a minimal layout during SSR
+  // SSR/hydration 전: 최소 레이아웃 (CLS 방지를 위해 실제 레이아웃 높이 유지)
   if (!mounted) {
     return (
       <QueryClientProvider client={queryClient}>
-        <div className="sticky top-0 z-50 w-full h-16 border-b border-border/40 bg-card/95" />
+        <header className="sticky top-0 z-50 w-full h-16 border-b border-border/40 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60" />
         <div className="flex min-h-[calc(100vh-4rem)]">
+          <aside className="hidden md:flex w-[250px] shrink-0" />
           <div className="flex-1 flex flex-col min-w-0">
             <main className="flex-1 pb-16 md:pb-0 px-4 md:px-6 lg:px-8">{children}</main>
             <Footer />

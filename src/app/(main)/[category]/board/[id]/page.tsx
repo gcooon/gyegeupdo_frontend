@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import { BoardPostDetailContent } from './BoardPostDetailContent';
-import { getMockPostMeta } from './mockPosts';
 import { fetchCategory } from '@/lib/category-config';
+import { fetchPost, fetchPostComments } from '@/lib/server-fetch';
 
 interface PageProps {
   params: Promise<{ category: string; id: string }>;
@@ -10,16 +11,17 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category, id } = await params;
-  const [postMeta, categoryData] = await Promise.all([
-    Promise.resolve(getMockPostMeta(category, id)),
+  const [postData, categoryData] = await Promise.all([
+    fetchPost(id),
     fetchCategory(category),
   ]);
   const categoryName = categoryData?.name || '계급도';
 
-  if (postMeta) {
+  if (postData && typeof postData === 'object' && 'title' in postData) {
+    const post = postData as { title: string; content: string };
     return {
-      title: `${postMeta.title} — ${categoryName} 게시판`,
-      description: postMeta.content.slice(0, 160),
+      title: `${post.title} — ${categoryName} 게시판`,
+      description: post.content?.slice(0, 160) || '게시글 상세 내용을 확인하세요.',
     };
   }
 
@@ -46,11 +48,33 @@ function PostDetailSkeleton() {
 export default async function BoardPostDetailPage({ params }: PageProps) {
   const { category, id } = await params;
 
+  // SSR prefetch: 게시글 + 댓글 + 카테고리를 서버에서 미리 가져옴
+  const queryClient = new QueryClient();
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ['post', id],
+      queryFn: () => fetchPost(id),
+      staleTime: 60 * 1000,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['post-comments', id, 1],
+      queryFn: () => fetchPostComments(id),
+      staleTime: 30 * 1000,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['category', category],
+      queryFn: () => fetchCategory(category),
+      staleTime: 5 * 60 * 1000,
+    }),
+  ]);
+
   return (
     <div className="container py-8">
-      <Suspense fallback={<PostDetailSkeleton />}>
-        <BoardPostDetailContent category={category} postId={id} />
-      </Suspense>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<PostDetailSkeleton />}>
+          <BoardPostDetailContent category={category} postId={id} />
+        </Suspense>
+      </HydrationBoundary>
     </div>
   );
 }
