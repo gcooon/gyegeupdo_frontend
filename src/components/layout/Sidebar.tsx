@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { useCategories } from '@/hooks/useBrands';
-import { ChevronDown, ChevronRight, Menu, X, Trophy, Sparkles, GitCompare, MessageSquare, Plus, Users, Flame, Clock, FileText, LayoutGrid, Crown, Home } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, X, Trophy, Plus, Users, Flame, Clock, FileText, Crown, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NAV_CATEGORIES, groupCategories } from '@/config/categories';
 import type { CategoryGroup } from '@/types/model';
@@ -20,13 +20,6 @@ interface NavCategory {
 
 // API 실패 시 폴백용 (중앙 설정에서 가져옴)
 const FALLBACK_CATEGORIES: NavCategory[] = NAV_CATEGORIES.map(c => ({ ...c, group: '' as CategoryGroup }));
-
-const CATEGORY_MENUS = [
-  { key: 'tier', labelKey: 'viewTier', icon: Trophy },
-  { key: 'quiz', labelKey: 'quiz', icon: Sparkles },
-  { key: 'compare', labelKey: 'compare', icon: GitCompare },
-  { key: 'board', labelKey: 'board', icon: MessageSquare },
-];
 
 // 오픈 계급도 서브메뉴
 const OPEN_TIER_MENUS = [
@@ -44,7 +37,7 @@ interface SidebarProps {
 export function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname() ?? '';
   const searchParams = useSearchParams();
-  const { isOpen, close, expandedCategories, expandedGroups, toggle, toggleCategory, toggleGroup } = useSidebarStore();
+  const { isOpen, close, expandedGroups, toggle, toggleGroup } = useSidebarStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: apiCategories } = useCategories();
   const t = useTranslations('nav');
@@ -192,66 +185,26 @@ export function Sidebar({ className = '' }: SidebarProps) {
                           </button>
                         )}
 
-                        {/* 카테고리가 6개 미만이면 항상 표시, 이상이면 그룹 확장 시에만 */}
+                        {/* 카테고리 목록 (서브메뉴 없이 단순 링크) */}
                         {(categories.length < 6 || isGroupExpanded) && items.map((category) => {
-                          const isExpanded = expandedCategories.includes(category.slug);
-                          const categoryPath = `/${category.slug}`;
-                          const isActiveCategory = pathname.startsWith(categoryPath);
+                          const isActiveCategory = pathname.startsWith(`/${category.slug}`);
 
                           return (
-                            <div key={category.slug}>
-                              <button
-                                onClick={() => toggleCategory(category.slug)}
-                                className={`
-                                  w-full flex items-center justify-between px-3 py-2 rounded-lg
-                                  text-sm transition-colors
-                                  ${isActiveCategory
-                                    ? 'bg-accent/10 text-accent font-medium'
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                                  }
-                                `}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <span>{category.icon}</span>
-                                  <span>{category.name}</span>
-                                </div>
-                                {isExpanded
-                                  ? <ChevronDown className="h-3 w-3" />
-                                  : <ChevronRight className="h-3 w-3" />
+                            <Link
+                              key={category.slug}
+                              href={`/${category.slug}`}
+                              className={`
+                                flex items-center gap-2 px-3 py-2 rounded-lg
+                                text-sm transition-colors
+                                ${isActiveCategory
+                                  ? 'bg-accent/10 text-accent font-medium'
+                                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }
-                              </button>
-
-                              {isExpanded && (
-                                <div className="ml-4 mt-0.5 border-l border-border pl-2 space-y-0.5">
-                                  {CATEGORY_MENUS.map((menu) => {
-                                    const menuPath = menu.key === 'tier'
-                                      ? `/${category.slug}`
-                                      : `/${category.slug}/${menu.key}`;
-                                    const isActiveMenu = menu.key === 'tier'
-                                      ? pathname === `/${category.slug}`
-                                      : pathname === menuPath || pathname.startsWith(menuPath + '/');
-                                    const Icon = menu.icon;
-
-                                    return (
-                                      <Link
-                                        key={menu.key}
-                                        href={menuPath}
-                                        className={`
-                                          flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors
-                                          ${isActiveMenu
-                                            ? 'bg-accent text-accent-foreground font-medium'
-                                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                                          }
-                                        `}
-                                      >
-                                        <Icon className="h-3 w-3" />
-                                        {t(menu.labelKey)}
-                                      </Link>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                            </div>
+                              `}
+                            >
+                              <span>{category.icon}</span>
+                              <span>{category.name}</span>
+                            </Link>
                           );
                         })}
                       </div>
