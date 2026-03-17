@@ -9,8 +9,6 @@ import { TierBadge } from '@/components/tier/TierBadge';
 import {
   Trophy,
   Sparkles,
-  GitCompare,
-  MessageSquare,
   TrendingUp,
   Users,
   Clock,
@@ -26,6 +24,8 @@ import { useHomeSummary, HomeCategory, HomeDispute, HomeReview } from '@/hooks/u
 import { useCategories } from '@/hooks/useBrands';
 import type { CategoryListItem, CategoryGroup } from '@/types/model';
 import { useTranslations } from '@/i18n';
+import { OfficialHeroSection } from './OfficialHeroSection';
+import { OfficialQuickActions } from './OfficialQuickActions';
 
 // API 실패 시 폴백 티커
 const FALLBACK_TICKER = [
@@ -225,43 +225,13 @@ export function OfficialHubContent() {
   // 실제 API 데이터만 사용 (Mock 데이터 제거)
   const reviews: HomeReview[] = homeSummary?.reviews || [];
 
+  // 첫 번째 활성 카테고리 slug (하드코딩 방지)
+  const firstCategorySlug = categories[0]?.slug || 'running-shoes';
+
   return (
     <div className="container py-6 max-w-6xl space-y-12">
       {/* 히어로 섹션 */}
-      <section className="relative py-8 md:py-12 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-primary/5 pointer-events-none" />
-        <div className="relative text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-4 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">
-            <Trophy className="h-4 w-4" />
-            <span className="text-sm font-medium">{tOfficial('badge')}</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {tOfficial('title')}
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            {tOfficial('subtitle')}
-          </p>
-
-          {/* 카테고리 티커 — API에서 활성 카테고리 자동 표시 */}
-          <div className="flex flex-wrap justify-center gap-1.5 mt-6">
-            {categoryTicker.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/${cat.slug}`}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border font-medium text-xs transition-all hover:scale-105 hover:shadow-sm"
-                style={{
-                  borderColor: cat.color,
-                  backgroundColor: `${cat.color}15`,
-                  color: cat.color,
-                }}
-              >
-                <span className="text-sm">{cat.icon}</span>
-                <span>{cat.name}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <OfficialHeroSection ticker={categoryTicker.map(c => ({ ...c, enabled: true }))} />
 
       {/* 카테고리 그리드 */}
       <section>
@@ -390,32 +360,7 @@ export function OfficialHubContent() {
       </section>
 
       {/* 퀵 액션 CTA */}
-      <section className="py-8 bg-gradient-to-r from-primary/5 to-accent/5 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
-        <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">{tOfficial('quickActions')}</h2>
-          <p className="text-muted-foreground">{tOfficial('quickActionsDesc')}</p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Button size="lg" className="bg-accent hover:bg-accent/90" asChild>
-            <Link href="/running-shoes/quiz">
-              <Sparkles className="h-5 w-5 mr-2" />
-              3분 진단
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/running-shoes/compare">
-              <GitCompare className="h-5 w-5 mr-2" />
-              VS 비교
-            </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/running-shoes/board">
-              <MessageSquare className="h-5 w-5 mr-2" />
-              게시판
-            </Link>
-          </Button>
-        </div>
-      </section>
+      <OfficialQuickActions categorySlug={firstCategorySlug} />
 
       {/* 커뮤니티 리뷰 */}
       <section className="py-8 bg-muted/30 -mx-4 md:-mx-6 px-4 md:px-6 rounded-2xl">
@@ -430,7 +375,7 @@ export function OfficialHubContent() {
             </div>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/running-shoes/board?tag=product_review">
+            <Link href={`/${firstCategorySlug}/board?tag=product_review`}>
               {tOfficial('viewAll')}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
@@ -451,7 +396,7 @@ export function OfficialHubContent() {
                 </div>
               </div>
               <Button size="sm" className="bg-accent hover:bg-accent/90 shrink-0" asChild>
-                <Link href="/running-shoes/board?tag=product_review&write=true">{tOfficial('writeReviewButton')}</Link>
+                <Link href={`/${firstCategorySlug}/board?tag=product_review&write=true`}>{tOfficial('writeReviewButton')}</Link>
               </Button>
             </div>
           </CardContent>
@@ -537,7 +482,7 @@ export function OfficialHubContent() {
                 아직 작성된 글이 없습니다. 첫 번째 글을 작성해보세요!
               </p>
               <Button asChild>
-                <Link href="/running-shoes/board?write=true">
+                <Link href={`/${firstCategorySlug}/board?write=true`}>
                   글 작성하기
                 </Link>
               </Button>
@@ -559,7 +504,7 @@ export function OfficialHubContent() {
             </div>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/running-shoes/tier">
+            <Link href={`/${firstCategorySlug}/tier`}>
               {tOfficial('viewAll')}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>

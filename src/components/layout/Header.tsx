@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, ChevronDown, Trophy, Sparkles, GitCompare, MessageSquare, LogOut, User, Plus, Flame, Clock, Users, FileText, LayoutGrid, Crown, Home } from 'lucide-react';
+import { Menu, ChevronDown, Trophy, LogOut, User, Plus, Flame, Clock, Users, FileText, Crown, Home } from 'lucide-react';
+import { MegaMenu } from './MegaMenu';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,19 +17,19 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import { useAuth } from '@/hooks/useAuth';
 import { useCategories } from '@/hooks/useBrands';
 import { NAV_CATEGORIES } from '@/config/categories';
+import type { CategoryGroup } from '@/types/model';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslations } from '@/i18n';
 
-// API 실패 시 폴백용 (중앙 설정에서 가져옴)
-const FALLBACK_CATEGORIES = NAV_CATEGORIES;
+interface NavCategory {
+  slug: string;
+  name: string;
+  icon: string;
+  group: CategoryGroup;
+}
 
-// 공식 계급도 서브메뉴 (카테고리 선택 후) - 나중에 사용할 수 있으므로 유지
-const OFFICIAL_SUBMENUS = [
-  { key: 'tier', labelKey: 'viewTier', icon: Trophy },
-  { key: 'quiz', labelKey: 'quiz', icon: Sparkles },
-  { key: 'compare', labelKey: 'compare', icon: GitCompare },
-  { key: 'board', labelKey: 'board', icon: MessageSquare },
-];
+// API 실패 시 폴백용 (중앙 설정에서 가져옴)
+const FALLBACK_CATEGORIES: NavCategory[] = NAV_CATEGORIES.map(c => ({ ...c, group: '' as CategoryGroup }));
 
 // 오픈 계급도 메뉴
 const OPEN_TIER_MENUS = [
@@ -54,8 +55,8 @@ export function Header() {
   const { data: apiCategories } = useCategories();
   const t = useTranslations('nav');
   const tCommon = useTranslations('common');
-  const categories = (apiCategories && apiCategories.length > 0)
-    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon }))
+  const categories: NavCategory[] = (apiCategories && apiCategories.length > 0)
+    ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon, group: (c.group || '') as CategoryGroup }))
     : FALLBACK_CATEGORIES;
 
   // 로그인/회원가입 후 현재 페이지로 돌아오기 위한 redirect URL
@@ -92,7 +93,7 @@ export function Header() {
 
           {/* Desktop Navigation - lg 이상에서만 표시 */}
           <nav className="hidden lg:flex items-center gap-1 ml-4">
-            {/* 공식 계급도 드롭다운 */}
+            {/* 공식 계급도 메가 메뉴 */}
             <div
               className="relative"
               onMouseEnter={() => setOpenCategory('official')}
@@ -112,29 +113,11 @@ export function Header() {
                 <ChevronDown className="h-3 w-3" />
               </button>
 
-              {/* 공식 계급도 Dropdown - 카테고리 목록 */}
               {openCategory === 'official' && (
-                <div className="absolute top-full left-0 pt-1 w-48 z-[60]">
-                  <div className="bg-card border border-border rounded-lg shadow-lg py-1">
-                  <Link
-                    href="/official"
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors border-b border-border"
-                  >
-                    <Home className="h-4 w-4 text-amber-500" />
-                    <span>{t('officialTierHome')}</span>
-                  </Link>
-                  {categories.map((category) => (
-                    <Link
-                      key={category.slug}
-                      href={`/${category.slug}`}
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    >
-                      <span>{category.icon}</span>
-                      <span>{t('categoryTier', { name: category.name })}</span>
-                    </Link>
-                  ))}
-                  </div>
-                </div>
+                <MegaMenu
+                  categories={categories}
+                  onClose={() => setOpenCategory(null)}
+                />
               )}
             </div>
 

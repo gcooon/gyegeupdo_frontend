@@ -1,11 +1,8 @@
 import { MetadataRoute } from 'next';
+import { fetchCategories } from '@/lib/category-config';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://tier-chart.com';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-
-interface Category {
-  slug: string;
-}
 
 interface Post {
   id: number;
@@ -14,17 +11,6 @@ interface Post {
 
 interface TierChart {
   slug: string;
-}
-
-async function fetchCategories(): Promise<Category[]> {
-  try {
-    const res = await fetch(`${API_URL}/categories/`, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.data?.results || [];
-  } catch {
-    return [];
-  }
 }
 
 async function fetchPosts(): Promise<Post[]> {
@@ -49,8 +35,15 @@ async function fetchTierCharts(): Promise<TierChart[]> {
   }
 }
 
-// 카테고리별 서브페이지 경로
-const CATEGORY_SUB_PAGES = ['tier', 'quiz', 'discover', 'compare', 'board'];
+// 카테고리별 서브 페이지 정의
+const CATEGORY_SUB_PAGES = [
+  { path: '', changeFrequency: 'daily' as const, priority: 0.9 },
+  { path: '/tier', changeFrequency: 'weekly' as const, priority: 0.8 },
+  { path: '/quiz', changeFrequency: 'monthly' as const, priority: 0.7 },
+  { path: '/discover', changeFrequency: 'weekly' as const, priority: 0.7 },
+  { path: '/compare', changeFrequency: 'weekly' as const, priority: 0.6 },
+  { path: '/board', changeFrequency: 'daily' as const, priority: 0.6 },
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -62,13 +55,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchTierCharts(),
   ]);
 
-  // 1. 정적 페이지
+  // 1. 정적 페이지 (카테고리 무관)
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
       lastModified: now,
       changeFrequency: 'daily',
       priority: 1.0,
+    },
+    {
+      url: `${SITE_URL}/official`,
+      lastModified: now,
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
       url: `${SITE_URL}/open`,
@@ -79,20 +78,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // 2. 카테고리 페이지 (API 기반 동적 생성)
-  const categoryPages: MetadataRoute.Sitemap = categories.flatMap((cat) => [
-    {
-      url: `${SITE_URL}/${cat.slug}`,
+  const categoryPages: MetadataRoute.Sitemap = categories.flatMap((category) =>
+    CATEGORY_SUB_PAGES.map((subPage) => ({
+      url: `${SITE_URL}/${category.slug}${subPage.path}`,
       lastModified: now,
-      changeFrequency: 'daily' as const,
-      priority: 0.9,
-    },
-    ...CATEGORY_SUB_PAGES.map((sub) => ({
-      url: `${SITE_URL}/${cat.slug}/${sub}`,
-      lastModified: now,
-      changeFrequency: (sub === 'board' ? 'daily' : 'weekly') as 'daily' | 'weekly',
-      priority: sub === 'tier' ? 0.8 : 0.6,
-    })),
-  ]);
+      changeFrequency: subPage.changeFrequency,
+      priority: subPage.priority,
+    }))
+  );
 
   // 3. 게시글 상세 페이지 (API 기반)
   const postPages: MetadataRoute.Sitemap = posts

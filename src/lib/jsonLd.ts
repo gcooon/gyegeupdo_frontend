@@ -16,7 +16,7 @@ export function generateWebSiteJsonLd() {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/running-shoes/discover?q={search_term_string}`,
+        urlTemplate: `${SITE_URL}/open?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },

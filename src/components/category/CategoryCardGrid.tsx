@@ -5,7 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, TrendingUp } from 'lucide-react';
-import type { CategoryListItem, CategoryGroup, CATEGORY_GROUP_LABELS } from '@/types/model';
+import type { CategoryListItem, CategoryGroup } from '@/types/model';
+import { CATEGORY_GROUP_LABELS } from '@/config/categories';
 import { useState, useMemo } from 'react';
 
 interface CategoryCardGridProps {
@@ -17,11 +18,8 @@ interface CategoryCardGridProps {
 }
 
 const GROUP_LABELS: Record<string, string> = {
-  sports: '스포츠',
-  food: '음식',
-  tech: '테크',
-  lifestyle: '라이프',
-  '': '전체',
+  ...CATEGORY_GROUP_LABELS,
+  '': '전체', // 그리드에서는 '기타' 대신 '전체'로 표시
 };
 
 const GROUP_ORDER: CategoryGroup[] = ['sports', 'food', 'tech', 'lifestyle'];

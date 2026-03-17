@@ -70,9 +70,9 @@ export const TIER_CONFIG: Record<TierLevel, {
 
 export function getTierFromScore(score: number): TierLevel {
   if (score >= 85) return 'S';  // 황제
-  if (score >= 70) return 'A';  // 왕
-  if (score >= 55) return 'B';  // 양반
-  if (score >= 40) return 'C';  // 중인
+  if (score >= 75) return 'A';  // 왕 (백엔드 기준: 75)
+  if (score >= 60) return 'B';  // 양반 (백엔드 기준: 60)
+  if (score >= 45) return 'C';  // 중인 (백엔드 기준: 45)
   return 'D';                   // 평민
 }
 

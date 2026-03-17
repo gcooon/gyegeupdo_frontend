@@ -79,3 +79,23 @@ export function useBrandProducts(slug: string) {
 
 // 하위 호환성
 export const useBrandModels = useBrandProducts;
+
+/**
+ * 카테고리별 usage 옵션 조회 (filter_definitions에서 추출)
+ * - 용도별 계급도 탭 생성에 사용
+ */
+export function useCategoryUsages(slug: string) {
+  const { data: category, ...rest } = useCategory(slug);
+  const usages = category?.filter_definitions?.usage || [];
+  return { ...rest, data: usages };
+}
+
+/**
+ * 카테고리별 product_type 옵션 조회
+ * - 제품 타입 필터에 사용
+ */
+export function useCategoryProductTypes(slug: string) {
+  const { data: category, ...rest } = useCategory(slug);
+  const productTypes = category?.filter_definitions?.product_type || [];
+  return { ...rest, data: productTypes };
+}

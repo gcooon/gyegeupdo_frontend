@@ -18,15 +18,6 @@ export interface CategoryDisplayConfig {
 // 카테고리 그룹 타입
 export type CategoryGroup = 'sports' | 'food' | 'tech' | 'lifestyle' | '';
 
-// 카테고리 그룹 라벨
-export const CATEGORY_GROUP_LABELS: Record<CategoryGroup, string> = {
-  sports: '스포츠',
-  food: '음식',
-  tech: '테크',
-  lifestyle: '라이프',
-  '': '기타',
-};
-
 // 카테고리 (동적 정의 포함)
 export interface Category {
   id: number;

@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { getCategoryInfo } from '@/config/categories';
 import {
   Dialog,
   DialogContent,
@@ -421,11 +422,7 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
     }
   };
 
-  const categoryLabels: Record<string, { name: string; icon: string }> = {
-    'running-shoes': { name: '러닝화', icon: '👟' },
-    'chicken': { name: '치킨', icon: '🍗' },
-  };
-  const categoryInfo = categoryLabels[category] || { name: '제품', icon: '📦' };
+  const categoryInfo = getCategoryInfo(category);
 
   return (
     <div className="space-y-8">

@@ -12,7 +12,7 @@
  */
 
 import { TierLevel } from '@/lib/tier';
-import type { Category, CategoryDisplayConfig } from '@/types/model';
+import type { Category, CategoryDisplayConfig, CategoryGroup } from '@/types/model';
 
 /**
  * 카테고리 설정 인터페이스
@@ -109,6 +109,112 @@ export function getCategoryInfo(categoryOrSlug: Category | string): {
     color: '#3B82F6',
     itemLabel: '제품',
   };
+}
+
+/**
+ * 카테고리 그룹 라벨
+ */
+export const CATEGORY_GROUP_LABELS: Record<CategoryGroup, string> = {
+  sports: '스포츠',
+  food: '음식',
+  tech: '테크',
+  lifestyle: '라이프',
+  '': '기타',
+};
+
+/**
+ * 카테고리 그룹 설정 인터페이스
+ */
+export interface CategoryGroupConfig {
+  /** 그룹 키 (백엔드 CategoryGroup과 일치) */
+  key: CategoryGroup;
+  /** 표시 라벨 */
+  label: string;
+  /** 그룹 아이콘 (이모지) */
+  icon: string;
+  /** 소속 카테고리 slug 목록 (순서 = 표시 순서) */
+  categories: string[];
+}
+
+/**
+ * 카테고리 그룹 설정
+ *
+ * 새 카테고리 추가 시:
+ * 1. CATEGORY_CONFIGS에 카테고리 설정 추가
+ * 2. 해당 그룹의 categories 배열에 slug 추가
+ */
+export const CATEGORY_GROUPS: CategoryGroupConfig[] = [
+  {
+    key: 'sports',
+    label: CATEGORY_GROUP_LABELS['sports'],
+    icon: '🏃',
+    categories: ['running-shoes'],
+  },
+  {
+    key: 'food',
+    label: CATEGORY_GROUP_LABELS['food'],
+    icon: '🍽',
+    categories: ['chicken'],
+  },
+  {
+    key: 'tech',
+    label: CATEGORY_GROUP_LABELS['tech'],
+    icon: '⌚',
+    categories: ['mens-watch'],
+  },
+  {
+    key: 'lifestyle',
+    label: CATEGORY_GROUP_LABELS['lifestyle'],
+    icon: '✨',
+    categories: [],
+  },
+];
+
+/**
+ * 그룹 키로 그룹 설정 조회
+ */
+export function getCategoryGroup(groupKey: CategoryGroup): CategoryGroupConfig | undefined {
+  return CATEGORY_GROUPS.find((g) => g.key === groupKey);
+}
+
+/**
+ * 카테고리 slug로 소속 그룹 조회
+ */
+export function getGroupBySlug(slug: string): CategoryGroupConfig | undefined {
+  return CATEGORY_GROUPS.find((g) => g.categories.includes(slug));
+}
+
+/**
+ * API Category 배열을 그룹별로 분류
+ * 그룹이 없는 카테고리는 '기타'로 분류
+ */
+export function groupCategories<T extends { slug: string; group?: CategoryGroup | string }>(
+  categories: T[]
+): { group: CategoryGroupConfig; items: T[] }[] {
+  const result: { group: CategoryGroupConfig; items: T[] }[] = [];
+
+  for (const group of CATEGORY_GROUPS) {
+    const items = categories.filter((c) => {
+      // API group 필드 우선, 없으면 config의 categories 배열로 확인
+      if (c.group && c.group === group.key) return true;
+      return group.categories.includes(c.slug);
+    });
+    if (items.length > 0) {
+      result.push({ group, items });
+    }
+  }
+
+  // 어떤 그룹에도 속하지 않는 카테고리
+  const groupedSlugs = new Set(result.flatMap((r) => r.items.map((i) => i.slug)));
+  const ungrouped = categories.filter((c) => !groupedSlugs.has(c.slug));
+  if (ungrouped.length > 0) {
+    result.push({
+      group: { key: '' as CategoryGroup, label: '기타', icon: '📦', categories: [] },
+      items: ungrouped,
+    });
+  }
+
+  return result;
 }
 
 /**

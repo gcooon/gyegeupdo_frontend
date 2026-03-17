@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 interface SidebarState {
   isOpen: boolean;
   expandedCategories: string[];
+  expandedGroups: string[];
   _hasHydrated: boolean;
 
   toggle: () => void;
@@ -12,6 +13,7 @@ interface SidebarState {
   toggleCategory: (categorySlug: string) => void;
   expandCategory: (categorySlug: string) => void;
   collapseCategory: (categorySlug: string) => void;
+  toggleGroup: (groupKey: string) => void;
   setHasHydrated: (state: boolean) => void;
 }
 
@@ -20,6 +22,7 @@ export const useSidebarStore = create<SidebarState>()(
     (set) => ({
       isOpen: true,
       expandedCategories: [],
+      expandedGroups: [],
       _hasHydrated: false,
 
       toggle: () => set((state) => ({ isOpen: !state.isOpen })),
@@ -45,6 +48,13 @@ export const useSidebarStore = create<SidebarState>()(
           expandedCategories: state.expandedCategories.filter((c) => c !== categorySlug),
         })),
 
+      toggleGroup: (groupKey) =>
+        set((state) => ({
+          expandedGroups: state.expandedGroups.includes(groupKey)
+            ? state.expandedGroups.filter((g) => g !== groupKey)
+            : [...state.expandedGroups, groupKey],
+        })),
+
       setHasHydrated: (state) => set({ _hasHydrated: state }),
     }),
     {
@@ -61,6 +71,7 @@ export const useSidebarStore = create<SidebarState>()(
       }),
       partialize: (state) => ({
         expandedCategories: state.expandedCategories,
+        expandedGroups: state.expandedGroups,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
