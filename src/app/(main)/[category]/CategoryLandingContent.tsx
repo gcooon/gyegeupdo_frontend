@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { useBrands, useCategory } from '@/hooks/useBrands';
 import { useCategoryProducts } from '@/hooks/useModels';
+import { usePosts } from '@/hooks/usePosts';
 import type { Brand, Category, Product } from '@/types/model';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -280,144 +281,7 @@ const DISPUTE_DATA: Record<string, {
   ],
 };
 
-// Mock 리뷰 데이터
-const REVIEW_DATA: Record<string, {
-  id: number;
-  user: { name: string; footType: string };
-  model: { name: string; brand: string; tier: TierLevel; slug: string };
-  rating: number;
-  content: string;
-  likes: number;
-  comments: number;
-  createdAt: string;
-}[]> = {
-  'running-shoes': [
-    {
-      id: 1,
-      user: { name: '러닝좋아', footType: '평발 / 넓은 발' },
-      model: { name: '노바블라스트 5', brand: '아식스', tier: 'A', slug: 'novablast-5' },
-      rating: 5,
-      content: '평발인데 아치 서포트가 적당하고 쿠셔닝이 정말 좋아요. 10km 이상 달려도 발이 편합니다.',
-      likes: 24,
-      comments: 5,
-      createdAt: '2시간 전',
-    },
-    {
-      id: 2,
-      user: { name: '마라토너K', footType: '보통 / 보통 발' },
-      model: { name: '알파플라이 3', brand: '나이키', tier: 'S', slug: 'alphafly-3' },
-      rating: 4,
-      content: '가격이 비싸지만 레이스용으로는 최고입니다. 다만 내구성은 좀 아쉬워요.',
-      likes: 18,
-      comments: 3,
-      createdAt: '5시간 전',
-    },
-    {
-      id: 3,
-      user: { name: '초보러너', footType: '오버프로네이션 / 좁은 발' },
-      model: { name: '젤 카야노 31', brand: '아식스', tier: 'S', slug: 'gel-kayano-31' },
-      rating: 5,
-      content: '오버프로네이션 교정이 필요한 분들께 강력 추천합니다. 안정성이 뛰어나요.',
-      likes: 31,
-      comments: 8,
-      createdAt: '1일 전',
-    },
-    {
-      id: 4,
-      user: { name: '런런런', footType: '정상 / 보통 발' },
-      model: { name: '클리프톤 10', brand: '호카', tier: 'A', slug: 'clifton-10' },
-      rating: 4,
-      content: '가볍고 쿠셔닝 좋습니다. 다만 통기성이 조금 아쉬워요. 여름에는 덥습니다.',
-      likes: 12,
-      comments: 2,
-      createdAt: '1일 전',
-    },
-  ],
-  'chicken': [
-    {
-      id: 101,
-      user: { name: '치킨마스터', footType: '매운맛 좋아함' },
-      model: { name: '뿌링클', brand: 'BHC', tier: 'S', slug: 'bhc-puringkle' },
-      rating: 5,
-      content: '치즈 시즈닝이 정말 맛있어요. 맥주 안주로 최고입니다. 재주문 확정!',
-      likes: 32,
-      comments: 7,
-      createdAt: '1시간 전',
-    },
-    {
-      id: 102,
-      user: { name: '야식킹', footType: '바삭함 선호' },
-      model: { name: '황금올리브치킨', brand: 'BBQ', tier: 'S', slug: 'bbq-golden-olive' },
-      rating: 5,
-      content: '올리브유로 튀겨서 담백하고 바삭해요. 치킨 본연의 맛을 느끼기 좋습니다.',
-      likes: 28,
-      comments: 4,
-      createdAt: '3시간 전',
-    },
-    {
-      id: 103,
-      user: { name: '혼닭러버', footType: '가성비 중시' },
-      model: { name: '교촌 오리지날', brand: '교촌', tier: 'S', slug: 'kyochon-original' },
-      rating: 4,
-      content: '간장 소스가 은은하게 배어서 좋아요. 다만 양이 조금 아쉽습니다.',
-      likes: 19,
-      comments: 3,
-      createdAt: '5시간 전',
-    },
-    {
-      id: 104,
-      user: { name: '파티플래너', footType: '모임용' },
-      model: { name: '굽네 고추바사삭', brand: '굽네', tier: 'A', slug: 'goobne-gochu' },
-      rating: 4,
-      content: '오븐에 구워서 건강한 느낌이에요. 매콤한 맛이 좋고 살짝 덜 느끼해요.',
-      likes: 15,
-      comments: 2,
-      createdAt: '1일 전',
-    },
-  ],
-  'mens-watch': [
-    {
-      id: 301,
-      user: { name: '시계입문자', footType: '첫 명품시계' },
-      model: { name: '오메가 스피드마스터', brand: '오메가', tier: 'B', slug: 'omega' },
-      rating: 5,
-      content: '달에 간 시계라는 스토리가 매력적이에요. 디자인도 클래식하고 어디에나 잘 어울립니다.',
-      likes: 45,
-      comments: 12,
-      createdAt: '1시간 전',
-    },
-    {
-      id: 302,
-      user: { name: '워치매니아', footType: '컬렉터' },
-      model: { name: '롤렉스 서브마리너', brand: '롤렉스', tier: 'A', slug: 'rolex' },
-      rating: 5,
-      content: '결국 돌고 돌아 롤렉스입니다. 환금성도 최고, 내구성도 최고. 시계질의 끝.',
-      likes: 67,
-      comments: 18,
-      createdAt: '3시간 전',
-    },
-    {
-      id: 303,
-      user: { name: '직장인K', footType: '사회초년생' },
-      model: { name: '튜더 블랙베이', brand: '튜더', tier: 'C', slug: 'tudor' },
-      rating: 4,
-      content: '롤렉스의 동생답게 품질이 좋습니다. 가격 대비 만족도가 높아요.',
-      likes: 38,
-      comments: 8,
-      createdAt: '5시간 전',
-    },
-    {
-      id: 304,
-      user: { name: '가성비왕', footType: '입문자' },
-      model: { name: '티쏘 PRX', brand: '티쏘', tier: 'D', slug: 'tissot' },
-      rating: 5,
-      content: '50만원대에 이 정도 디자인이면 국밥급이죠. 출근용으로 완벽합니다.',
-      likes: 52,
-      comments: 14,
-      createdAt: '1일 전',
-    },
-  ],
-};
+// 리뷰 데이터는 API에서 가져옵니다 (usePosts 훅 → product_review 태그)
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -471,10 +335,33 @@ export function CategoryLandingContent({ category, initialBrands, initialCategor
     return grouped;
   }, [products]);
 
-  // Mock 데이터 (추후 API 연동 필요)
+  // Mock 데이터 (trending/disputes는 아직 API 없음)
   const trending = TRENDING_DATA[category] || [];
   const disputes = DISPUTE_DATA[category] || [];
-  const reviews = REVIEW_DATA[category] || [];
+
+  // API에서 실제 리뷰를 가져옴
+  const { data: postsData } = usePosts({ category, tag: 'product_review', page_size: 4 });
+  const reviews = useMemo(() => {
+    const posts = postsData?.results || [];
+    return posts.map((post) => ({
+      id: post.id,
+      user: {
+        name: post.user?.username || '사용자',
+        footType: '',
+      },
+      model: {
+        name: post.product_info?.name || '',
+        brand: post.product_info?.brand_name || '',
+        tier: (post.product_info?.tier || 'B') as TierLevel,
+        slug: post.product_info?.slug || '',
+      },
+      rating: post.rating || 4,
+      content: (post.content_preview || '').slice(0, 100),
+      likes: post.like_count || 0,
+      comments: post.comment_count || 0,
+      createdAt: new Date(post.created_at).toLocaleDateString('ko-KR'),
+    }));
+  }, [postsData]);
 
   const handleDownloadImage = async () => {
     if (!tierGridRef.current) {
