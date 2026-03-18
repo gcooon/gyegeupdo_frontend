@@ -108,6 +108,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
           flex flex-col overflow-x-hidden
         `}
       >
+        {/* 모바일: 헤더 2줄(메인+퀵메뉴) 아래로 밀어주는 여백 */}
+        <div className="h-[100px] shrink-0 md:hidden" />
         <div className="flex items-center justify-between p-4 border-b border-border">
           <span className="font-semibold">{tCommon('all')}</span>
           <Button variant="ghost" size="icon" onClick={toggle}>
