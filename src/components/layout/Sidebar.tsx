@@ -56,6 +56,17 @@ export function Sidebar({ className = '' }: SidebarProps) {
     return pathname.startsWith('/open');
   });
 
+  // 초기 마운트 시 데스크톱이면 사이드바 열기, 모바일이면 닫힌 상태 유지
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    if (isDesktop && !isOpen) {
+      toggle();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // 모바일에서 링크 클릭(경로 또는 쿼리 파라미터 변경) 시 사이드바 닫기
   const searchParamsString = searchParams?.toString() || '';
   useEffect(() => {
@@ -97,8 +108,8 @@ export function Sidebar({ className = '' }: SidebarProps) {
       <aside
         className={`
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          fixed md:sticky top-16 left-0 z-40
-          h-[calc(100vh-4rem)]
+          fixed md:sticky top-0 md:top-16 left-0 z-[45] md:z-40
+          h-screen md:h-[calc(100vh-4rem)]
           ${isOpen ? 'w-64' : 'w-0 md:w-0'}
           bg-card border-r border-border
           transition-all duration-200 ease-in-out
@@ -298,7 +309,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 z-[44] md:hidden"
           onClick={toggle}
           style={{ touchAction: 'none' }}
         />

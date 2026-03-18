@@ -20,7 +20,7 @@ interface SidebarState {
 export const useSidebarStore = create<SidebarState>()(
   persist(
     (set) => ({
-      isOpen: true,
+      isOpen: false,
       expandedCategories: [],
       expandedGroups: [],
       _hasHydrated: false,
