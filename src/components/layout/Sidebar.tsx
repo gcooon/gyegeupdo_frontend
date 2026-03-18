@@ -148,19 +148,19 @@ export function Sidebar({ className = '' }: SidebarProps) {
               </button>
 
               {isOfficialExpanded && (
-                <div className="ml-3 mt-1 border-l-2 border-amber-200 pl-3 space-y-1">
+                <div className="mt-1 pl-5 space-y-0.5">
                   {/* 공식 계급도 홈 링크 */}
                   <Link
                     href="/official"
                     className={`
-                      flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                      flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors
                       ${pathname === '/official'
-                        ? 'bg-amber-500/20 text-amber-600'
+                        ? 'bg-amber-500/15 text-amber-600 font-medium'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }
                     `}
                   >
-                    <Home className="h-4 w-4 text-amber-500" />
+                    <Home className="h-3.5 w-3.5 text-amber-500" />
                     <span>{t('officialTierHome')}</span>
                   </Link>
                   {groupCategories(categories).map(({ group, items }) => {
@@ -172,20 +172,20 @@ export function Sidebar({ className = '' }: SidebarProps) {
                         {categories.length >= 6 && (
                           <button
                             onClick={() => toggleGroup(group.key)}
-                            className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
+                            className="w-full flex items-center justify-between px-2 py-1 mt-2 mb-0.5 text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider hover:text-muted-foreground transition-colors"
                           >
                             <div className="flex items-center gap-1.5">
-                              <span className="text-sm">{group.icon}</span>
+                              <span className="text-xs">{group.icon}</span>
                               <span>{group.label}</span>
                             </div>
                             {isGroupExpanded
-                              ? <ChevronDown className="h-3 w-3" />
-                              : <ChevronRight className="h-3 w-3" />
+                              ? <ChevronDown className="h-2.5 w-2.5" />
+                              : <ChevronRight className="h-2.5 w-2.5" />
                             }
                           </button>
                         )}
 
-                        {/* 카테고리 목록 (서브메뉴 없이 단순 링크) */}
+                        {/* 카테고리 목록 */}
                         {(categories.length < 6 || isGroupExpanded) && items.map((category) => {
                           const isActiveCategory = pathname.startsWith(`/${category.slug}`);
 
@@ -194,15 +194,15 @@ export function Sidebar({ className = '' }: SidebarProps) {
                               key={category.slug}
                               href={`/${category.slug}`}
                               className={`
-                                flex items-center gap-2 px-3 py-2 rounded-lg
-                                text-sm transition-colors
+                                flex items-center gap-2 px-2 py-1.5 rounded-md
+                                text-[13px] transition-colors
                                 ${isActiveCategory
                                   ? 'bg-accent/10 text-accent font-medium'
                                   : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }
                               `}
                             >
-                              <span>{category.icon}</span>
+                              <span className="text-sm">{category.icon}</span>
                               <span>{category.name}</span>
                             </Link>
                           );
@@ -240,25 +240,20 @@ export function Sidebar({ className = '' }: SidebarProps) {
               </button>
 
               {isOpenTierExpanded && (
-                <div className="ml-3 mt-1 border-l-2 border-accent/30 pl-3 space-y-0.5">
+                <div className="mt-1 pl-5 space-y-0.5">
                   {OPEN_TIER_MENUS.map((menu) => {
-                    // 정확한 활성 상태 체크
                     let isActive = false;
                     const isHeader = 'isHeader' in menu && menu.isHeader;
                     if (menu.key === 'home') {
-                      // /open 메인 페이지 (쿼리 파라미터 없을 때)
                       const hasSort = searchParams?.get('sort');
                       const hasTab = searchParams?.get('tab');
                       isActive = pathname === '/open' && !hasSort && !hasTab;
                     } else if (menu.key === 'my') {
-                      // /open/my 페이지
                       isActive = pathname === '/open/my' || pathname.startsWith('/open/my/');
                     } else if (menu.key === 'hallOfFame') {
-                      // /open?tab=hall_of_fame
                       const currentTab = searchParams?.get('tab');
                       isActive = pathname === '/open' && currentTab === 'hall_of_fame';
                     } else {
-                      // /open?sort=popular 또는 /open?sort=latest
                       const currentSort = searchParams?.get('sort');
                       isActive = pathname === '/open' && currentSort === menu.key;
                     }
@@ -268,7 +263,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                         key={menu.key}
                         href={menu.href}
                         className={`
-                          flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
+                          flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors
                           ${isHeader ? 'font-medium' : ''}
                           ${isActive
                             ? 'bg-accent text-accent-foreground font-medium'
@@ -276,7 +271,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                           }
                         `}
                       >
-                        <Icon className={`h-4 w-4 ${isHeader && !isActive ? 'text-accent' : ''}`} />
+                        <Icon className={`h-3.5 w-3.5 ${isHeader && !isActive ? 'text-accent' : ''}`} />
                         {t(menu.labelKey)}
                       </Link>
                     );
