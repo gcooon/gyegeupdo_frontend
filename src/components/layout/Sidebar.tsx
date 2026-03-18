@@ -46,17 +46,11 @@ export function Sidebar({ className = '' }: SidebarProps) {
     ? apiCategories.map(c => ({ slug: c.slug, name: c.name, icon: c.icon, group: (c.group || '') as CategoryGroup }))
     : FALLBACK_CATEGORIES;
 
-  // 공식 계급도 / 오픈 계급도 확장 상태 (현재 경로에 따라 초기값 설정)
-  const [isOfficialExpanded, setIsOfficialExpanded] = useState(() => {
-    // 오픈 계급도 경로가 아니면 공식 계급도 확장
-    return !pathname.startsWith('/open');
-  });
-  const [isOpenTierExpanded, setIsOpenTierExpanded] = useState(() => {
-    // 오픈 계급도 경로이면 오픈 계급도 확장
-    return pathname.startsWith('/open');
-  });
+  // 공식 계급도 / 오픈 계급도 확장 상태
+  const [isOfficialExpanded, setIsOfficialExpanded] = useState(() => !pathname.startsWith('/open'));
+  const [isOpenTierExpanded, setIsOpenTierExpanded] = useState(() => pathname.startsWith('/open'));
 
-  // 초기 마운트 시 데스크톱이면 사이드바 열기, 모바일이면 닫힌 상태 유지
+  // 초기 마운트 시 데스크톱이면 사이드바 열기
   const hasInitialized = useRef(false);
   useEffect(() => {
     if (hasInitialized.current) return;
@@ -67,13 +61,11 @@ export function Sidebar({ className = '' }: SidebarProps) {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 모바일에서 링크 클릭(경로 또는 쿼리 파라미터 변경) 시 사이드바 닫기
+  // 모바일에서 링크 클릭 시 사이드바 닫기
   const searchParamsString = searchParams?.toString() || '';
   useEffect(() => {
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
-    if (isMobile && isOpen) {
-      close();
-    }
+    if (isMobile && isOpen) close();
   }, [pathname, searchParamsString]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 모바일에서 사이드바 열릴 때 body 스크롤 방지
@@ -135,89 +127,99 @@ export function Sidebar({ className = '' }: SidebarProps) {
           onTouchMove={(e) => e.stopPropagation()}
         >
           <div className="px-2">
-            {/* 🏆 공식 계급도 섹션 */}
-            <div className="mb-2">
+
+            {/* ═══════════════════════════════════════
+                대메뉴: 🏆 공식 계급도
+                스타일: 큰 아이콘, 굵은 글씨, 배경색
+               ═══════════════════════════════════════ */}
+            <div className="mb-1">
               <button
                 onClick={() => setIsOfficialExpanded(!isOfficialExpanded)}
                 className={`
-                  w-full flex items-center justify-between px-3 py-3 rounded-lg
-                  text-sm font-semibold transition-colors
+                  w-full flex items-center justify-between px-3 py-2.5 rounded-lg
+                  text-[14px] font-bold transition-colors
                   ${categories.some(c => pathname.startsWith(`/${c.slug}`))
-                    ? 'bg-amber-500/10 text-amber-600'
-                    : 'hover:bg-muted'
+                    ? 'bg-amber-500/10 text-amber-700'
+                    : 'text-foreground hover:bg-muted'
                   }
                 `}
               >
-                <div className="flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-amber-500" />
+                <div className="flex items-center gap-2.5">
+                  <Trophy className="h-[18px] w-[18px] text-amber-500" />
                   <span>{t('officialTier')}</span>
                 </div>
                 {isOfficialExpanded
-                  ? <ChevronDown className="h-4 w-4" />
-                  : <ChevronRight className="h-4 w-4" />
+                  ? <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  : <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 }
               </button>
 
               {isOfficialExpanded && (
-                <div className="mt-1 pl-5 space-y-0.5">
-                  {/* 공식 계급도 홈 링크 */}
+                <div className="mt-1">
+                  {/* 공식 계급도 홈 — 대메뉴 바로 아래 링크 */}
                   <Link
                     href="/official"
                     className={`
-                      flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors
+                      flex items-center gap-2 ml-7 mr-1 px-2 py-1.5 rounded-md text-[13px] transition-colors
                       ${pathname === '/official'
-                        ? 'bg-amber-500/15 text-amber-600 font-medium'
+                        ? 'bg-amber-500/15 text-amber-700 font-medium'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }
                     `}
                   >
-                    <Home className="h-3.5 w-3.5 text-amber-500" />
+                    <Home className="h-3.5 w-3.5 shrink-0 text-amber-500/70" />
                     <span>{t('officialTierHome')}</span>
                   </Link>
+
+                  {/* ─── 중메뉴: 그룹 헤더 (스포츠/음식/테크/라이프) ─── */}
                   {groupCategories(categories).map(({ group, items }) => {
                     const isGroupExpanded = expandedGroups.includes(group.key) || items.some(c => pathname.startsWith(`/${c.slug}`));
 
                     return (
-                      <div key={group.key || 'etc'}>
-                        {/* 그룹 헤더 (카테고리가 6개 이상일 때만 표시) */}
+                      <div key={group.key || 'etc'} className="mt-1">
+                        {/* 중메뉴: 구분선 + 라벨 — 들여쓰기 없음, 배경 바 형태 */}
                         {categories.length >= 6 && (
                           <button
                             onClick={() => toggleGroup(group.key)}
-                            className="w-full flex items-center justify-between px-2 py-1 mt-2 mb-0.5 text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider hover:text-muted-foreground transition-colors"
+                            className="w-full flex items-center justify-between ml-3 mr-1 px-2 py-1.5 mt-1 rounded-md text-[12px] font-bold text-muted-foreground/60 uppercase tracking-widest hover:text-muted-foreground hover:bg-muted/50 transition-colors"
                           >
                             <div className="flex items-center gap-1.5">
-                              <span className="text-xs">{group.icon}</span>
+                              <span>{group.icon}</span>
                               <span>{group.label}</span>
                             </div>
                             {isGroupExpanded
-                              ? <ChevronDown className="h-2.5 w-2.5" />
-                              : <ChevronRight className="h-2.5 w-2.5" />
+                              ? <ChevronDown className="h-3 w-3" />
+                              : <ChevronRight className="h-3 w-3" />
                             }
                           </button>
                         )}
 
-                        {/* 카테고리 목록 */}
-                        {(categories.length < 6 || isGroupExpanded) && items.map((category) => {
-                          const isActiveCategory = pathname.startsWith(`/${category.slug}`);
+                        {/* ─── 소메뉴: 카테고리 목록 — 가장 깊은 들여쓰기 ─── */}
+                        {(categories.length < 6 || isGroupExpanded) && (
+                          <div className="ml-8 mr-1 border-l-2 border-border/60 pl-2 space-y-px mt-0.5">
+                            {items.map((category) => {
+                              const isActiveCategory = pathname.startsWith(`/${category.slug}`);
 
-                          return (
-                            <Link
-                              key={category.slug}
-                              href={`/${category.slug}`}
-                              className={`
-                                flex items-center gap-2 px-2 py-1.5 rounded-md
-                                text-[13px] transition-colors
-                                ${isActiveCategory
-                                  ? 'bg-accent/10 text-accent font-medium'
-                                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                                }
-                              `}
-                            >
-                              <span className="text-sm">{category.icon}</span>
-                              <span>{category.name}</span>
-                            </Link>
-                          );
-                        })}
+                              return (
+                                <Link
+                                  key={category.slug}
+                                  href={`/${category.slug}`}
+                                  className={`
+                                    flex items-center gap-2 px-2 py-1.5 rounded-md
+                                    text-[13px] transition-colors
+                                    ${isActiveCategory
+                                      ? 'bg-accent/10 text-accent font-medium border-l-2 border-accent -ml-[2px] pl-[10px]'
+                                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                    }
+                                  `}
+                                >
+                                  <span className="text-[14px] shrink-0">{category.icon}</span>
+                                  <span className="truncate">{category.name}</span>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -225,33 +227,35 @@ export function Sidebar({ className = '' }: SidebarProps) {
               )}
             </div>
 
-            <div className="border-t border-border my-3 mx-2" />
+            <div className="border-t border-border my-2 mx-1" />
 
-            {/* 🎨 오픈 계급도 섹션 */}
-            <div className="mb-2">
+            {/* ═══════════════════════════════════════
+                대메뉴: 🌐 오픈 계급도
+               ═══════════════════════════════════════ */}
+            <div className="mb-1">
               <button
                 onClick={() => setIsOpenTierExpanded(!isOpenTierExpanded)}
                 className={`
-                  w-full flex items-center justify-between px-3 py-3 rounded-lg
-                  text-sm font-semibold transition-colors
+                  w-full flex items-center justify-between px-3 py-2.5 rounded-lg
+                  text-[14px] font-bold transition-colors
                   ${pathname.startsWith('/open')
                     ? 'bg-accent/10 text-accent'
-                    : 'hover:bg-muted'
+                    : 'text-foreground hover:bg-muted'
                   }
                 `}
               >
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-accent" />
+                <div className="flex items-center gap-2.5">
+                  <Users className="h-[18px] w-[18px] text-accent" />
                   <span>{t('openTier')}</span>
                 </div>
                 {isOpenTierExpanded
-                  ? <ChevronDown className="h-4 w-4" />
-                  : <ChevronRight className="h-4 w-4" />
+                  ? <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  : <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 }
               </button>
 
               {isOpenTierExpanded && (
-                <div className="mt-1 pl-5 space-y-0.5">
+                <div className="ml-8 mr-1 mt-1 border-l-2 border-accent/20 pl-2 space-y-px">
                   {OPEN_TIER_MENUS.map((menu) => {
                     let isActive = false;
                     const isHeader = 'isHeader' in menu && menu.isHeader;
@@ -282,7 +286,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
                           }
                         `}
                       >
-                        <Icon className={`h-3.5 w-3.5 ${isHeader && !isActive ? 'text-accent' : ''}`} />
+                        <Icon className={`h-3.5 w-3.5 shrink-0 ${isHeader && !isActive ? 'text-accent' : ''}`} />
                         {t(menu.labelKey)}
                       </Link>
                     );
@@ -291,7 +295,7 @@ export function Sidebar({ className = '' }: SidebarProps) {
               )}
             </div>
 
-            <div className="border-t border-border my-3 mx-2" />
+            <div className="border-t border-border my-2 mx-1" />
 
             {/* ➕ 만들기 버튼 */}
             <div className="px-2">
