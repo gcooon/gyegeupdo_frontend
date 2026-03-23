@@ -1013,20 +1013,6 @@ export function ModelDetailContent({ category, slug, initialProduct }: Props) {
                 </p>
 
                 <div className="flex flex-col gap-2 mt-4">
-                  {product.coupang_link ? (
-                    <Button className="w-full bg-accent hover:bg-accent/90" asChild>
-                      <a href={product.coupang_link} target="_blank" rel="noopener noreferrer">
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        쿠팡에서 구매
-                        <ExternalLink className="h-3 w-3 ml-1 opacity-50" />
-                      </a>
-                    </Button>
-                  ) : (
-                    <Button className="w-full bg-accent hover:bg-accent/90">
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      최저가 검색
-                    </Button>
-                  )}
                   {product.naver_link ? (
                     <Button variant="outline" className="w-full" asChild>
                       <a href={product.naver_link} target="_blank" rel="noopener noreferrer">

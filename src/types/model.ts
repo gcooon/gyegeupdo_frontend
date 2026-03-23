@@ -156,7 +156,6 @@ export interface ProductTrap {
 
 export interface ProductDetail extends Omit<Product, 'specs' | 'scores'> {
   description: string;
-  coupang_link?: string;
   naver_link?: string;
   release_year?: number;
   version_number?: number;
